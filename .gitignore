@@ -3,3 +3,4 @@ node_modules
 server-error.log
 server-output.log
 check_all.py
+.vercel
