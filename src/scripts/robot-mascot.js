@@ -206,7 +206,7 @@
   wrapper.innerHTML = `
     <div id="mascot-chat-window">
       <div class="chat-header">
-        <span>ScaleBot 🤖</span>
+        <span>ScaleBot</span>
         <span class="chat-close" id="chat-close-btn">&times;</span>
       </div>
       <div class="chat-body" id="chat-body">

@@ -1495,12 +1495,12 @@ a.service-card:hover .card-link::after {
   gap: 12px;
 }
 
-.footer-logo-mark {
+.footer-logo-img {
   width: 32px;
   height: 32px;
   flex-shrink: 0;
+  object-fit: contain;
 }
-.footer-logo-mark svg { width: 100%; height: 100%; }
 
 .footer-logo {
   font-family: var(--font-display);
@@ -1601,8 +1601,11 @@ a.service-card:hover .card-link::after {
 .footer-bottom {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  flex-direction: row;
+  gap: 24px;
   padding-top: 28px;
+  flex-wrap: wrap;
 }
 
 .footer-copy {
@@ -1622,6 +1625,64 @@ a.service-card:hover .card-link::after {
   transition: color 0.2s;
 }
 .footer-bottom-links a:hover { color: rgba(253, 246, 237, 0.6); }
+
+/* ── LEGAL CONTENT (privacy, terms) ───────────────── */
+.legal-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.legal-content h2 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--sage-dark);
+  margin-top: 40px;
+  margin-bottom: 16px;
+}
+
+.legal-content h2:first-child {
+  margin-top: 0;
+}
+
+.legal-content h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--sage-mid);
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+.legal-content p {
+  font-size: 0.95rem;
+  color: rgba(50, 60, 50, 0.8);
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+
+.legal-content ul {
+  list-style: disc;
+  margin-left: 24px;
+  margin-bottom: 16px;
+}
+
+.legal-content li {
+  font-size: 0.95rem;
+  color: rgba(50, 60, 50, 0.8);
+  line-height: 1.75;
+  margin-bottom: 8px;
+}
+
+.legal-content a {
+  color: var(--sage-mid);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.legal-content a:hover {
+  color: var(--sage-dark);
+}
 
 /* ── SERVICES FULL GRID (services.html) ───────────────── */
 .services-full-grid {
@@ -2554,6 +2615,11 @@ a.service-card:hover .card-link::after {
   }
 
   .nav-dropdown-trigger { text-align: center; }
+
+  .nav-dropdown-wrap {
+    width: 100%;
+    text-align: center;
+  }
 
   /* Page hero mobile */
   .page-hero { padding: 130px 24px 60px; }

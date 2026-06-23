@@ -47,17 +47,24 @@ function initNav() {
 
   /* ── SERVICES DROPDOWN ─────────────────────────────────── */
   if (dropBtn && dropdown) {
-    // Desktop: hover
+    // Desktop: hover with delay
     const dropWrap = dropBtn.closest('.nav-dropdown-wrap');
+    let closeTimeout = null;
 
     dropWrap.addEventListener('mouseenter', function () {
+      if (closeTimeout) {
+        clearTimeout(closeTimeout);
+        closeTimeout = null;
+      }
       dropdown.classList.add('open');
       dropBtn.setAttribute('aria-expanded', 'true');
     });
 
     dropWrap.addEventListener('mouseleave', function () {
-      dropdown.classList.remove('open');
-      dropBtn.setAttribute('aria-expanded', 'false');
+      closeTimeout = setTimeout(function () {
+        dropdown.classList.remove('open');
+        dropBtn.setAttribute('aria-expanded', 'false');
+      }, 300);
     });
 
     // Mobile: click toggle
