@@ -27,8 +27,8 @@ const transporter = nodemailer.createTransport({
 // Serve static files from src directory
 app.use('/src', express.static(path.join(__dirname, 'src')));
 
-// Serve favicon from root
-app.use('/Favicon.png', express.static(path.join(__dirname, 'Favicon.png')));
+// Serve favicon from assets
+app.use('/src/assets/images/Favicon.png', express.static(path.join(__dirname, 'src/assets/images/Favicon.png')));
 
 // Serve public directory
 app.use('/public', express.static(path.join(__dirname, 'public')));
