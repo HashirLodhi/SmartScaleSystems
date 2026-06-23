@@ -1,4 +1,4 @@
-{
+﻿{
   "version": 2,
   "builds": [
     {
@@ -26,6 +26,8 @@
     { "src": "/service-nlp", "dest": "/src/pages/service-nlp.html" },
     { "src": "/service-llm", "dest": "/src/pages/service-llm.html" },
     { "src": "/service-data-annotation", "dest": "/src/pages/service-data-annotation.html" },
-    { "src": "/service-ai-training-data", "dest": "/src/pages/service-ai-training-data.html" }
+    { "src": "/service-ai-training-data", "dest": "/src/pages/service-ai-training-data.html" },
+    { "src": "/privacy-policy", "dest": "/src/pages/privacy-policy.html" },
+    { "src": "/terms-of-service", "dest": "/src/pages/terms-of-service.html" }
   ]
 }
