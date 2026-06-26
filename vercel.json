@@ -12,6 +12,7 @@
   ],
   "routes": [
     { "src": "/api/contact", "dest": "/api/contact.js" },
+    { "src": "/api/custom-service", "dest": "/api/custom-service.js" },
     { "src": "/api/chat", "dest": "/api/chat.js" },
     { "src": "/src/(.*)", "dest": "/src/$1" },
     { "src": "/", "dest": "/src/pages/index.html" },
@@ -27,6 +28,7 @@
     { "src": "/service-llm", "dest": "/src/pages/service-llm.html" },
     { "src": "/service-data-annotation", "dest": "/src/pages/service-data-annotation.html" },
     { "src": "/service-ai-training-data", "dest": "/src/pages/service-ai-training-data.html" },
+    { "src": "/service-custom", "dest": "/src/pages/service-custom.html" },
     { "src": "/privacy-policy", "dest": "/src/pages/privacy-policy.html" },
     { "src": "/terms-of-service", "dest": "/src/pages/terms-of-service.html" }
   ]
