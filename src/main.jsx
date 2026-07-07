@@ -351,6 +351,7 @@ function updateDocumentSeo(rawHtml, pathname) {
     meta[property^="og:"],
     meta[name^="twitter:"],
     link[rel="canonical"],
+    link[rel="alternate"][hreflang],
     script[type="application/ld+json"]
   `).forEach((element) => element.remove());
 
@@ -372,6 +373,8 @@ function updateDocumentSeo(rawHtml, pathname) {
     ['meta', { name: 'twitter:description', content: description }],
     ['meta', { name: 'twitter:image', content: DEFAULT_IMAGE }],
     ['link', { rel: 'canonical', href: url }],
+    ['link', { rel: 'alternate', hreflang: 'en', href: url }],
+    ['link', { rel: 'alternate', hreflang: 'x-default', href: url }],
   ].forEach(([tagName, attributes]) => {
     document.head.appendChild(managedHeadElement(tagName, attributes));
   });

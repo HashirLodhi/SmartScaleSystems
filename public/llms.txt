@@ -1,0 +1,28 @@
+# Smart Scale Systems
+
+Smart Scale Systems is an AI services agency helping businesses build practical AI systems, automation workflows, training datasets, and production-ready machine learning solutions.
+
+Website: https://smartscalesystems.com
+Contact: hello@smartscalesystems.com
+
+## Services
+
+- AI Model Training: custom model development, fine-tuning, dataset preparation, evaluation, optimization, and deployment support.
+- AI Automation: AI agents, workflow automation, CRM automation, lead generation automation, and business process automation.
+- Computer Vision: object detection, OCR, image classification, segmentation, video analytics, and visual AI systems.
+- NLP Services: text classification, sentiment analysis, named entity recognition, intent detection, search relevance, and language AI.
+- LLM Solutions: prompt engineering, LLM fine-tuning, RLHF, response evaluation, AI assistants, and custom large language model workflows.
+- Data Annotation: image, video, text, audio, OCR, bounding boxes, polygons, segmentation masks, and QA review.
+- AI Training Data: dataset creation, collection, cleaning, curation, synthetic data, and benchmark datasets.
+
+## Important Pages
+
+- Home: https://smartscalesystems.com/
+- AI Services: https://smartscalesystems.com/services
+- AI Agency Pakistan: https://smartscalesystems.com/ai-agency-pakistan
+- AI Services Pakistan: https://smartscalesystems.com/ai-services-pakistan
+- Contact: https://smartscalesystems.com/contact
+
+## Entity Summary
+
+Smart Scale Systems serves Pakistan-based and international clients that need AI automation, machine learning services, data annotation, computer vision, NLP, LLM systems, and AI training data.
