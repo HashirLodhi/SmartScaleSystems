@@ -69,6 +69,7 @@ const pages = {
 };
 
 const SITE_URL = 'https://smartscalesystems.com';
+const TAB_TITLE = 'Smart Scale Systems';
 const DEFAULT_IMAGE = `${SITE_URL}/logo-main.png`;
 const DEFAULT_DESCRIPTION = 'Smart Scale Systems helps businesses scale smarter with AI model training, automation, computer vision, NLP, LLM solutions, data annotation, and AI training data creation.';
 const DEFAULT_KEYWORDS = 'AI services, AI model training, AI automation, computer vision, NLP, LLMs, data annotation, AI training data, machine learning datasets, RLHF';
@@ -339,7 +340,7 @@ function updateDocumentSeo(rawHtml, pathname) {
   const url = canonicalUrl(pathname);
   const kind = pageKind(pathname);
 
-  document.title = title;
+  document.title = TAB_TITLE;
   document.head.querySelectorAll(`
     [data-managed-seo],
     meta[name="description"],
