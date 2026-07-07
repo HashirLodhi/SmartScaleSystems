@@ -591,6 +591,63 @@ function initSplineLoader() {
   };
 }
 
+function initCountUpStats() {
+  const stats = Array.from(document.querySelectorAll('[data-count-up]'));
+  if (!stats.length) return () => {};
+
+  const formatValue = (value, decimals) => {
+    if (decimals > 0) return value.toFixed(decimals);
+    return String(Math.round(value));
+  };
+
+  const renderValue = (el, value) => {
+    const decimals = Number(el.dataset.countDecimals || 0);
+    const suffix = el.dataset.countSuffix || '';
+    el.innerHTML = `${formatValue(value, decimals)}<span>${suffix}</span>`;
+  };
+
+  const animateValue = (el) => {
+    if (el.dataset.counted === 'true') return;
+    el.dataset.counted = 'true';
+
+    const target = Number(el.dataset.countValue || 0);
+    const duration = 1400;
+
+    if (prefersReducedMotion()) {
+      renderValue(el, target);
+      return;
+    }
+
+    const start = performance.now();
+    const tick = (now) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      renderValue(el, target * eased);
+      if (progress < 1) window.requestAnimationFrame(tick);
+    };
+
+    renderValue(el, 0);
+    window.requestAnimationFrame(tick);
+  };
+
+  if (!('IntersectionObserver' in window)) {
+    stats.forEach(animateValue);
+    return () => {};
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      animateValue(entry.target);
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.45, rootMargin: '0px 0px -40px 0px' });
+
+  stats.forEach((stat) => observer.observe(stat));
+
+  return () => observer.disconnect();
+}
+
 function ReactSplineMounts({ contentKey }) {
   const [mounts, setMounts] = useState([]);
   const [visibleMounts, setVisibleMounts] = useState([]);
@@ -1460,7 +1517,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const cleanups = [initRevealAnimations(), initSplineLoader(), initAiCanvases(), initCarousels(), initForms(), initPremiumAnimations()];
+    const cleanups = [initRevealAnimations(), initSplineLoader(), initCountUpStats(), initAiCanvases(), initCarousels(), initForms(), initPremiumAnimations()];
     return () => cleanups.forEach((cleanup) => cleanup && cleanup());
   }, [content]);
 
