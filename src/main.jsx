@@ -426,6 +426,20 @@ function setActiveNav(pathname) {
   }
 }
 
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function scrollToPageTop({ smooth = false } = {}) {
+  window.requestAnimationFrame(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: smooth && !prefersReducedMotion() ? 'smooth' : 'auto',
+    });
+  });
+}
+
 function initNav() {
   const nav = document.getElementById('nav');
   const hamburger = document.getElementById('navHamburger');
@@ -1205,9 +1219,12 @@ function App() {
       if (url.origin !== window.location.origin || url.pathname.startsWith('/api')) return;
       if (!pages[url.pathname]) return;
       event.preventDefault();
-      window.history.pushState({}, '', url.pathname);
-      setPathname(url.pathname);
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      const isSamePage = url.pathname === window.location.pathname;
+      if (!isSamePage) {
+        window.history.pushState({}, '', url.pathname);
+        setPathname(url.pathname);
+      }
+      scrollToPageTop({ smooth: isSamePage || url.pathname === '/' });
     };
     document.addEventListener('click', onClick);
 
