@@ -8,6 +8,8 @@ const { retrieveContext } = require('./lib/rag');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const SMTP_USER = process.env.GMAIL_USER;
+const CONTACT_RECIPIENT = process.env.CONTACT_EMAIL || process.env.MAIL_TO || 'contact@smartscalesystems.tech';
 const distDir = path.join(__dirname, 'dist');
 const reactIndex = path.join(distDir, 'index.html');
 const compressedTypes = new Map([
@@ -51,7 +53,7 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: process.env.GMAIL_USER,
+    user: SMTP_USER,
     pass: (process.env.GMAIL_APP_PASSWORD || '').replace(/\s/g, '')
   },
   tls: {
@@ -185,6 +187,10 @@ app.post('/api/chat', handleChat);
 // Contact form email endpoint
 app.post('/api/contact', async (req, res) => {
   try {
+    if (!SMTP_USER || !process.env.GMAIL_APP_PASSWORD) {
+      return res.status(500).json({ error: 'Email service is not configured.' });
+    }
+
     const { name, email, phone, nationality, subject, message } = req.body;
 
     if (!name || !email || !phone || !nationality || !subject || !message) {
@@ -210,8 +216,8 @@ app.post('/api/contact', async (req, res) => {
     `;
 
     await transporter.sendMail({
-      from: `"Smart Scale Systems" <${process.env.GMAIL_USER}>`,
-      to: process.env.GMAIL_USER,
+      from: `"Smart Scale Systems" <${SMTP_USER}>`,
+      to: CONTACT_RECIPIENT,
       replyTo: `"${name}" <${email}>`,
       subject: `Contact: ${subject}`,
       text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nNationality: ${nationality}\nSubject: ${subject}\n\n${message}`,

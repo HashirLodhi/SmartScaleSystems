@@ -1,11 +1,14 @@
 const nodemailer = require('nodemailer');
 
+const SMTP_USER = process.env.GMAIL_USER;
+const CONTACT_RECIPIENT = process.env.CONTACT_EMAIL || process.env.MAIL_TO || 'contact@smartscalesystems.tech';
+
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 587,
   secure: false,
   auth: {
-    user: process.env.GMAIL_USER,
+    user: SMTP_USER,
     pass: (process.env.GMAIL_APP_PASSWORD || '').replace(/\s/g, '')
   },
   tls: { rejectUnauthorized: false }
@@ -25,6 +28,10 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    if (!SMTP_USER || !process.env.GMAIL_APP_PASSWORD) {
+      return res.status(500).json({ error: 'Email service is not configured.' });
+    }
+
     const { fullName, email, projectDetails } = req.body;
 
     if (!fullName || !email || !projectDetails) {
@@ -47,8 +54,8 @@ module.exports = async function handler(req, res) {
     `;
 
     await transporter.sendMail({
-      from: `"Smart Scale Systems" <${process.env.GMAIL_USER}>`,
-      to: process.env.GMAIL_USER,
+      from: `"Smart Scale Systems" <${SMTP_USER}>`,
+      to: CONTACT_RECIPIENT,
       replyTo: `"${fullName}" <${email}>`,
       subject: `Custom Service Request: ${fullName}`,
       text: `Full Name: ${fullName}\nEmail: ${email}\n\nProject Details:\n${projectDetails}`,
