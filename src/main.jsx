@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import { createPortal } from 'react-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './styles/style.css';
@@ -388,6 +389,19 @@ function updateDocumentSeo(rawHtml, pathname) {
 function bodyContent(html) {
   const doc = new DOMParser().parseFromString(html, 'text/html');
   doc.querySelectorAll('script, #nav-placeholder, #footer-placeholder, .noise-overlay').forEach((node) => node.remove());
+  doc.querySelectorAll('spline-viewer').forEach((viewer, index) => {
+    const mount = doc.createElement('div');
+    mount.className = 'react-spline-viewer';
+    mount.dataset.splineUrl = viewer.getAttribute('url') || '';
+    if (viewer.id) mount.id = viewer.id;
+    mount.dataset.splineMount = viewer.id || `spline-mount-${index}`;
+    viewer.replaceWith(mount);
+  });
+  doc.querySelectorAll('.react-spline-viewer').forEach((mount, index) => {
+    if (!mount.dataset.splineMount) {
+      mount.dataset.splineMount = mount.id || `spline-mount-${index}`;
+    }
+  });
   return doc.body.innerHTML;
 }
 
@@ -565,6 +579,98 @@ function initRevealAnimations() {
   }
 
   return () => observers.forEach((observer) => observer.disconnect());
+}
+
+function initSplineLoader() {
+  const loader = document.getElementById('spline-loader');
+  if (!loader) return () => {};
+  const hideLoader = () => loader.classList.add('hidden');
+  const timer = window.setTimeout(hideLoader, 7000);
+  return () => {
+    window.clearTimeout(timer);
+  };
+}
+
+function ReactSplineMounts({ contentKey }) {
+  const [mounts, setMounts] = useState([]);
+  const [visibleMounts, setVisibleMounts] = useState([]);
+  const [SplineComponent, setSplineComponent] = useState(null);
+
+  useEffect(() => {
+    setMounts(Array.from(document.querySelectorAll('.react-spline-viewer')));
+    setVisibleMounts([]);
+  }, [contentKey]);
+
+  useEffect(() => {
+    const splineMounts = mounts.filter((mount) => mount.dataset.splineUrl);
+    if (!splineMounts.length) return undefined;
+
+    const revealMount = (mount) => {
+      setVisibleMounts((current) => (current.includes(mount) ? current : [...current, mount]));
+    };
+
+    if (!('IntersectionObserver' in window)) {
+      splineMounts.forEach(revealMount);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        revealMount(entry.target);
+        observer.unobserve(entry.target);
+      });
+    }, { rootMargin: '450px 0px' });
+
+    splineMounts.forEach((mount) => observer.observe(mount));
+
+    return () => observer.disconnect();
+  }, [mounts]);
+
+  useEffect(() => {
+    if (!visibleMounts.length) return undefined;
+    if (SplineComponent) return undefined;
+
+    let isMounted = true;
+    const loadSpline = () => {
+      import('@splinetool/react-spline').then((module) => {
+        if (isMounted) setSplineComponent(() => module.default);
+      });
+    };
+
+    const idleId = 'requestIdleCallback' in window
+      ? window.requestIdleCallback(loadSpline, { timeout: 1200 })
+      : window.setTimeout(loadSpline, 350);
+
+    return () => {
+      isMounted = false;
+      if ('cancelIdleCallback' in window && typeof idleId === 'number') {
+        window.cancelIdleCallback(idleId);
+      } else {
+        window.clearTimeout(idleId);
+      }
+    };
+  }, [visibleMounts, SplineComponent]);
+
+  if (!SplineComponent) return null;
+
+  return visibleMounts.map((mount) => {
+    const scene = mount.dataset.splineUrl;
+    if (!scene) return null;
+
+    return createPortal(
+      <SplineComponent
+        scene={scene}
+        onLoad={() => {
+          if (mount.id === 'spline-viewer') {
+            document.getElementById('spline-loader')?.classList.add('hidden');
+          }
+        }}
+      />,
+      mount,
+      `${mount.dataset.splineMount}-${scene}`
+    );
+  });
 }
 
 function initAiCanvases() {
@@ -1025,7 +1131,7 @@ function initPremiumAnimations() {
     const heroTitle = document.querySelector('.hero-title, .page-hero-title');
     const heroSubtitle = document.querySelector('.hero-subtitle, .page-hero-subtitle');
     const heroActions = document.querySelector('.hero-actions, .cta-actions');
-    const heroVisual = document.querySelector('.ai-network-shell, .page-hero-orb, .home-ai-showcase .ai-network-canvas');
+    const heroVisual = document.querySelector('.spline-wrapper, .ai-network-shell, .page-hero-orb, .home-ai-showcase .ai-network-canvas');
 
     if (heroTitle) {
       gsap.fromTo(heroTitle,
@@ -1353,13 +1459,14 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const cleanups = [initRevealAnimations(), initAiCanvases(), initCarousels(), initForms(), initPremiumAnimations()];
+    const cleanups = [initRevealAnimations(), initSplineLoader(), initAiCanvases(), initCarousels(), initForms(), initPremiumAnimations()];
     return () => cleanups.forEach((cleanup) => cleanup && cleanup());
   }, [content]);
 
   return (
     <Layout pathname={pathname}>
       <main dangerouslySetInnerHTML={{ __html: content }} />
+      <ReactSplineMounts contentKey={content} />
     </Layout>
   );
 }

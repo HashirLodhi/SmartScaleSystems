@@ -73,11 +73,18 @@
         </div>
       </div>
       <div class="hero-right">
-        <div class="ai-network-shell hero-ai-shell" aria-label="Interactive AI network visualization">
-          <canvas class="ai-network-canvas" data-ai-network="hero"></canvas>
-          <div class="ai-core-orbit orbit-one"></div>
-          <div class="ai-core-orbit orbit-two"></div>
-          <div class="ai-core-pulse"></div>
+        <div class="spline-wrapper" id="spline-wrapper" aria-label="Interactive AI robot animation">
+          <div class="spline-loader" id="spline-loader">
+            <div class="spline-loader-dot"></div>
+            <div class="spline-loader-dot"></div>
+            <div class="spline-loader-dot"></div>
+            <span>Loading 3D scene...</span>
+          </div>
+          <div
+            id="spline-viewer"
+            class="react-spline-viewer"
+            data-spline-url="https://prod.spline.design/Zff-nbYm4vXOgRRQ/scene.splinecode"
+          ></div>
         </div>
       </div>
     </div>
