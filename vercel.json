@@ -23,6 +23,9 @@
     { "src": "/api/chat", "dest": "/api/chat.js" },
     { "src": "/src/(.*)", "dest": "/src/$1" },
     { "src": "/assets/(.*)", "dest": "/assets/$1" },
+    { "src": "/logo-main.png", "dest": "/logo-main.png" },
+    { "src": "/robots.txt", "dest": "/robots.txt" },
+    { "src": "/sitemap.xml", "dest": "/sitemap.xml" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
