@@ -177,7 +177,7 @@ function buildStructuredData({ title, description, url, kind }) {
     '@id': `${SITE_URL}/#organization`,
     name: 'Smart Scale Systems',
     url: SITE_URL,
-    email: 'hello@smartscalesystems.com',
+    email: 'contact@smartscalesystems.tech',
     logo: DEFAULT_IMAGE,
     description: 'AI services agency delivering model training, automation, computer vision, NLP, LLM solutions, and data annotation at scale.',
     areaServed: {
@@ -204,7 +204,7 @@ function buildStructuredData({ title, description, url, kind }) {
       url: SITE_URL,
       image: DEFAULT_IMAGE,
       description: 'AI agency in Pakistan providing AI model training, automation, computer vision, NLP, LLM solutions, data annotation, and AI training data services.',
-      email: 'hello@smartscalesystems.com',
+      email: 'contact@smartscalesystems.tech',
       areaServed: {
         '@type': 'Country',
         name: 'Pakistan',
