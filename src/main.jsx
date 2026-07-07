@@ -453,9 +453,18 @@ function initNav() {
   if (!nav) return () => {};
 
   const cleanups = [];
-  const updateNav = () => nav.classList.toggle('scrolled', window.scrollY > 60);
-  window.addEventListener('scroll', updateNav, { passive: true });
-  cleanups.push(() => window.removeEventListener('scroll', updateNav));
+  let navTicking = false;
+  const updateNav = () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+    navTicking = false;
+  };
+  const onNavScroll = () => {
+    if (navTicking) return;
+    navTicking = true;
+    window.requestAnimationFrame(updateNav);
+  };
+  window.addEventListener('scroll', onNavScroll, { passive: true });
+  cleanups.push(() => window.removeEventListener('scroll', onNavScroll));
   updateNav();
 
   if (hamburger && navLinks) {
@@ -584,28 +593,68 @@ function initSplineLoader() {
 
 function ReactSplineMounts({ contentKey }) {
   const [mounts, setMounts] = useState([]);
+  const [visibleMounts, setVisibleMounts] = useState([]);
   const [SplineComponent, setSplineComponent] = useState(null);
 
   useEffect(() => {
     setMounts(Array.from(document.querySelectorAll('.react-spline-viewer')));
+    setVisibleMounts([]);
   }, [contentKey]);
 
   useEffect(() => {
-    if (!mounts.some((mount) => mount.dataset.splineUrl)) return;
+    const splineMounts = mounts.filter((mount) => mount.dataset.splineUrl);
+    if (!splineMounts.length) return undefined;
+
+    const revealMount = (mount) => {
+      setVisibleMounts((current) => (current.includes(mount) ? current : [...current, mount]));
+    };
+
+    if (!('IntersectionObserver' in window)) {
+      splineMounts.forEach(revealMount);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        revealMount(entry.target);
+        observer.unobserve(entry.target);
+      });
+    }, { rootMargin: '450px 0px' });
+
+    splineMounts.forEach((mount) => observer.observe(mount));
+
+    return () => observer.disconnect();
+  }, [mounts]);
+
+  useEffect(() => {
+    if (!visibleMounts.length) return undefined;
+    if (SplineComponent) return undefined;
 
     let isMounted = true;
-    import('@splinetool/react-spline').then((module) => {
-      if (isMounted) setSplineComponent(() => module.default);
-    });
+    const loadSpline = () => {
+      import('@splinetool/react-spline').then((module) => {
+        if (isMounted) setSplineComponent(() => module.default);
+      });
+    };
+
+    const idleId = 'requestIdleCallback' in window
+      ? window.requestIdleCallback(loadSpline, { timeout: 1200 })
+      : window.setTimeout(loadSpline, 350);
 
     return () => {
       isMounted = false;
+      if ('cancelIdleCallback' in window && typeof idleId === 'number') {
+        window.cancelIdleCallback(idleId);
+      } else {
+        window.clearTimeout(idleId);
+      }
     };
-  }, [mounts]);
+  }, [visibleMounts, SplineComponent]);
 
   if (!SplineComponent) return null;
 
-  return mounts.map((mount) => {
+  return visibleMounts.map((mount) => {
     const scene = mount.dataset.splineUrl;
     if (!scene) return null;
 
@@ -912,18 +961,16 @@ function initPremiumAnimations() {
     const heroVisual = document.querySelector('.spline-wrapper, .page-hero-orb, .home-spline-showcase .react-spline-viewer');
 
     if (heroTitle) {
-      splitTextNodes(heroTitle, 'words');
-      gsap.fromTo(heroTitle.querySelectorAll('.gsap-word'),
-        { yPercent: 115, rotateX: -72, autoAlpha: 0, transformOrigin: '50% 100%' },
-        { yPercent: 0, rotateX: 0, autoAlpha: 1, duration: 1.15, stagger: 0.035, ease: 'expo.out', delay: 0.08 }
+      gsap.fromTo(heroTitle,
+        { y: 28, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.78, ease: 'power3.out', delay: 0.08 }
       );
     }
 
     if (heroSubtitle) {
-      splitTextNodes(heroSubtitle, 'words');
-      gsap.fromTo(heroSubtitle.querySelectorAll('.gsap-word'),
-        { y: 24, autoAlpha: 0, filter: 'blur(8px)' },
-        { y: 0, autoAlpha: 1, filter: 'blur(0px)', duration: 0.82, stagger: 0.018, ease: 'power3.out', delay: 0.42 }
+      gsap.fromTo(heroSubtitle,
+        { y: 18, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.68, ease: 'power3.out', delay: 0.22 }
       );
     }
 
