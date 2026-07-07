@@ -1667,8 +1667,7 @@ a.service-card:hover .card-link::after {
   gap: clamp(40px, 6vw, 96px);
   justify-content: space-between;
   align-items: start;
-  padding-bottom: 54px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0;
 }
 
 .footer-brand {
@@ -1809,30 +1808,13 @@ a.service-card:hover .card-link::after {
   border-color: rgba(255, 255, 255, 0.3);
 }
 
-.footer-bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 24px;
-}
-
 .footer-copy {
   font-size: 0.82rem;
   color: rgba(255, 255, 255, 0.34);
+  line-height: 1.45;
+  max-width: 260px;
+  margin-top: 2px;
 }
-
-.footer-bottom-links {
-  display: flex;
-  gap: 24px;
-}
-
-.footer-bottom-links a {
-  font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.3);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-.footer-bottom-links a:hover { color: rgba(255, 255, 255, 0.6); }
 
 /* ── LEGAL CONTENT (privacy, terms) ───────────────── */
 .legal-content {
@@ -3396,7 +3378,7 @@ a.service-card:hover .card-link::after {
   .footer-legal-links { align-items: center; }
   .footer-socials { justify-content: center; }
   .footer-links-group { align-items: center; }
-  .footer-bottom { justify-content: center; text-align: center; }
+  .footer-copy { text-align: center; }
 
   /* Orbs */
   .orb-1 { width: 300px; height: 300px; }
