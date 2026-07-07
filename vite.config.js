@@ -47,5 +47,6 @@ module.exports = defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    chunkSizeWarningLimit: 2500,
   },
 });
