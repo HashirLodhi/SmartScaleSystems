@@ -73,18 +73,11 @@
         </div>
       </div>
       <div class="hero-right">
-        <div class="spline-wrapper" id="spline-wrapper" aria-label="Interactive AI robot animation">
-          <div class="spline-loader" id="spline-loader">
-            <div class="spline-loader-dot"></div>
-            <div class="spline-loader-dot"></div>
-            <div class="spline-loader-dot"></div>
-            <span>Loading 3D scene...</span>
-          </div>
-          <div
-            id="spline-viewer"
-            class="react-spline-viewer"
-            data-spline-url="https://prod.spline.design/Zff-nbYm4vXOgRRQ/scene.splinecode"
-          ></div>
+        <div class="ai-network-shell hero-ai-shell" aria-label="Interactive AI network visualization">
+          <canvas class="ai-network-canvas" data-ai-network="hero"></canvas>
+          <div class="ai-core-orbit orbit-one"></div>
+          <div class="ai-core-orbit orbit-two"></div>
+          <div class="ai-core-pulse"></div>
         </div>
       </div>
     </div>
@@ -230,12 +223,12 @@
   </div>
 </section>
 
-<!-- FULLSCREEN SPLINE SHOWCASE -->
-<section class="home-spline-showcase home-end-showcase" aria-label="Interactive AI showcase">
-  <div class="home-spline-copy">
+<!-- FULLSCREEN AI SHOWCASE -->
+<section class="home-ai-showcase home-end-showcase" aria-label="Interactive AI showcase">
+  <canvas class="ai-network-canvas showcase-ai-canvas" data-ai-network="showcase"></canvas>
+  <div class="home-ai-copy">
     <h2>Ascend in the world of Artificial Intelligence!</h2>
   </div>
-  <div class="react-spline-viewer" data-spline-url="https://prod.spline.design/ajkQRBe4v8CDY97p/scene.splinecode"></div>
 </section>
 
 <!-- FOOTER -->

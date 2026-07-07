@@ -39,19 +39,3 @@
   });
 })();
 
-/* ── HERO SPLINE LOADER ────────────────────────────────── */
-(function () {
-  'use strict';
-
-  var iframe = document.getElementById('spline-viewer');
-  var loader = document.getElementById('spline-loader');
-  if (!iframe || !loader) return;
-
-  var hideLoader = function () {
-    loader.classList.add('hidden');
-  };
-
-  iframe.addEventListener('load', hideLoader, { once: true });
-
-  window.setTimeout(hideLoader, 7000);
-})();

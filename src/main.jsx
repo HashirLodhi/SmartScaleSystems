@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { createPortal } from 'react-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './styles/style.css';
@@ -389,19 +388,6 @@ function updateDocumentSeo(rawHtml, pathname) {
 function bodyContent(html) {
   const doc = new DOMParser().parseFromString(html, 'text/html');
   doc.querySelectorAll('script, #nav-placeholder, #footer-placeholder, .noise-overlay').forEach((node) => node.remove());
-  doc.querySelectorAll('spline-viewer').forEach((viewer, index) => {
-    const mount = doc.createElement('div');
-    mount.className = 'react-spline-viewer';
-    mount.dataset.splineUrl = viewer.getAttribute('url') || '';
-    if (viewer.id) mount.id = viewer.id;
-    mount.dataset.splineMount = viewer.id || `spline-mount-${index}`;
-    viewer.replaceWith(mount);
-  });
-  doc.querySelectorAll('.react-spline-viewer').forEach((mount, index) => {
-    if (!mount.dataset.splineMount) {
-      mount.dataset.splineMount = mount.id || `spline-mount-${index}`;
-    }
-  });
   return doc.body.innerHTML;
 }
 
@@ -581,96 +567,177 @@ function initRevealAnimations() {
   return () => observers.forEach((observer) => observer.disconnect());
 }
 
-function initSplineLoader() {
-  const loader = document.getElementById('spline-loader');
-  if (!loader) return () => {};
-  const hideLoader = () => loader.classList.add('hidden');
-  const timer = window.setTimeout(hideLoader, 7000);
-  return () => {
-    window.clearTimeout(timer);
-  };
-}
+function initAiCanvases() {
+  const canvases = Array.from(document.querySelectorAll('[data-ai-network]'));
+  if (!canvases.length) return () => {};
 
-function ReactSplineMounts({ contentKey }) {
-  const [mounts, setMounts] = useState([]);
-  const [visibleMounts, setVisibleMounts] = useState([]);
-  const [SplineComponent, setSplineComponent] = useState(null);
+  const cleanupFns = canvases.map((canvas) => {
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return () => {};
 
-  useEffect(() => {
-    setMounts(Array.from(document.querySelectorAll('.react-spline-viewer')));
-    setVisibleMounts([]);
-  }, [contentKey]);
+    const variant = canvas.dataset.aiNetwork || 'hero';
+    const reducedMotion = prefersReducedMotion();
+    const pointer = { x: 0, y: 0, active: false };
+    let width = 0;
+    let height = 0;
+    let frame = 0;
+    let animationId = 0;
+    let particles = [];
 
-  useEffect(() => {
-    const splineMounts = mounts.filter((mount) => mount.dataset.splineUrl);
-    if (!splineMounts.length) return undefined;
-
-    const revealMount = (mount) => {
-      setVisibleMounts((current) => (current.includes(mount) ? current : [...current, mount]));
-    };
-
-    if (!('IntersectionObserver' in window)) {
-      splineMounts.forEach(revealMount);
-      return undefined;
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        revealMount(entry.target);
-        observer.unobserve(entry.target);
-      });
-    }, { rootMargin: '450px 0px' });
-
-    splineMounts.forEach((mount) => observer.observe(mount));
-
-    return () => observer.disconnect();
-  }, [mounts]);
-
-  useEffect(() => {
-    if (!visibleMounts.length) return undefined;
-    if (SplineComponent) return undefined;
-
-    let isMounted = true;
-    const loadSpline = () => {
-      import('@splinetool/react-spline').then((module) => {
-        if (isMounted) setSplineComponent(() => module.default);
+    const createParticles = () => {
+      const baseCount = variant === 'showcase' ? 92 : 58;
+      const areaFactor = Math.min(Math.max((width * height) / 420000, 0.8), 1.45);
+      const count = Math.round(baseCount * areaFactor);
+      particles = Array.from({ length: count }, (_, index) => {
+        const angle = (index / count) * Math.PI * 2;
+        const radius = Math.min(width, height) * (0.16 + Math.random() * 0.34);
+        return {
+          x: width / 2 + Math.cos(angle) * radius + (Math.random() - 0.5) * width * 0.22,
+          y: height / 2 + Math.sin(angle) * radius + (Math.random() - 0.5) * height * 0.2,
+          vx: (Math.random() - 0.5) * (variant === 'showcase' ? 0.22 : 0.16),
+          vy: (Math.random() - 0.5) * (variant === 'showcase' ? 0.22 : 0.16),
+          size: 1.3 + Math.random() * 2.2,
+          pulse: Math.random() * Math.PI * 2,
+        };
       });
     };
 
-    const idleId = 'requestIdleCallback' in window
-      ? window.requestIdleCallback(loadSpline, { timeout: 1200 })
-      : window.setTimeout(loadSpline, 350);
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      width = Math.max(1, rect.width);
+      height = Math.max(1, rect.height);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      createParticles();
+    };
 
-    return () => {
-      isMounted = false;
-      if ('cancelIdleCallback' in window && typeof idleId === 'number') {
-        window.cancelIdleCallback(idleId);
+    const drawCore = (time) => {
+      const centerX = width * (variant === 'showcase' ? 0.64 : 0.5);
+      const centerY = height * 0.5;
+      const coreRadius = Math.min(width, height) * (variant === 'showcase' ? 0.13 : 0.18);
+      const glow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, coreRadius * 2.2);
+      glow.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+      glow.addColorStop(0.25, 'rgba(160, 160, 160, 0.34)');
+      glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, coreRadius * 2.2, 0, Math.PI * 2);
+      ctx.fill();
+
+      for (let ring = 0; ring < 3; ring += 1) {
+        const radius = coreRadius * (1 + ring * 0.36 + Math.sin(time * 0.0014 + ring) * 0.035);
+        ctx.strokeStyle = `rgba(255, 255, 255, ${0.34 - ring * 0.08})`;
+        ctx.lineWidth = 1;
+        ctx.setLineDash([10 + ring * 5, 12 + ring * 4]);
+        ctx.lineDashOffset = -time * (0.018 + ring * 0.006);
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.setLineDash([]);
+    };
+
+    const draw = (time = 0) => {
+      frame += 1;
+      ctx.clearRect(0, 0, width, height);
+
+      const background = ctx.createLinearGradient(0, 0, width, height);
+      if (variant === 'showcase') {
+        background.addColorStop(0, '#050505');
+        background.addColorStop(0.48, '#111111');
+        background.addColorStop(1, '#000000');
       } else {
-        window.clearTimeout(idleId);
+        background.addColorStop(0, 'rgba(255,255,255,0)');
+        background.addColorStop(1, 'rgba(0,0,0,0.05)');
+      }
+      ctx.fillStyle = background;
+      ctx.fillRect(0, 0, width, height);
+
+      const maxDistance = variant === 'showcase' ? 150 : 122;
+      for (let i = 0; i < particles.length; i += 1) {
+        const a = particles[i];
+        if (!reducedMotion) {
+          const drift = Math.sin(time * 0.0007 + a.pulse) * 0.045;
+          a.x += a.vx + drift;
+          a.y += a.vy + Math.cos(time * 0.0006 + a.pulse) * 0.04;
+
+          if (pointer.active) {
+            const dx = pointer.x - a.x;
+            const dy = pointer.y - a.y;
+            const dist = Math.hypot(dx, dy) || 1;
+            if (dist < 210) {
+              a.x += (dx / dist) * 0.22;
+              a.y += (dy / dist) * 0.22;
+            }
+          }
+
+          if (a.x < -20) a.x = width + 20;
+          if (a.x > width + 20) a.x = -20;
+          if (a.y < -20) a.y = height + 20;
+          if (a.y > height + 20) a.y = -20;
+        }
+
+        for (let j = i + 1; j < particles.length; j += 1) {
+          const b = particles[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const distance = Math.hypot(dx, dy);
+          if (distance > maxDistance) continue;
+          const alpha = (1 - distance / maxDistance) * (variant === 'showcase' ? 0.24 : 0.18);
+          ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+
+      drawCore(time);
+
+      particles.forEach((particle) => {
+        const pulse = 0.75 + Math.sin(time * 0.002 + particle.pulse) * 0.25;
+        ctx.fillStyle = variant === 'showcase'
+          ? `rgba(255, 255, 255, ${0.42 + pulse * 0.34})`
+          : `rgba(0, 0, 0, ${0.28 + pulse * 0.22})`;
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size * pulse, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      if (!reducedMotion) {
+        animationId = window.requestAnimationFrame(draw);
       }
     };
-  }, [visibleMounts, SplineComponent]);
 
-  if (!SplineComponent) return null;
+    const onPointerMove = (event) => {
+      const rect = canvas.getBoundingClientRect();
+      pointer.x = event.clientX - rect.left;
+      pointer.y = event.clientY - rect.top;
+      pointer.active = true;
+    };
+    const onPointerLeave = () => {
+      pointer.active = false;
+    };
 
-  return visibleMounts.map((mount) => {
-    const scene = mount.dataset.splineUrl;
-    if (!scene) return null;
+    resize();
+    draw();
+    if (!reducedMotion) animationId = window.requestAnimationFrame(draw);
+    canvas.addEventListener('pointermove', onPointerMove, { passive: true });
+    canvas.addEventListener('pointerleave', onPointerLeave);
+    window.addEventListener('resize', resize, { passive: true });
 
-    return createPortal(
-      <SplineComponent
-        scene={scene}
-        onLoad={() => {
-          if (mount.id === 'spline-viewer') {
-            document.getElementById('spline-loader')?.classList.add('hidden');
-          }
-        }}
-      />,
-      mount,
-      `${mount.dataset.splineMount}-${scene}`
-    );
+    return () => {
+      window.cancelAnimationFrame(animationId);
+      canvas.removeEventListener('pointermove', onPointerMove);
+      canvas.removeEventListener('pointerleave', onPointerLeave);
+      window.removeEventListener('resize', resize);
+    };
   });
+
+  return () => cleanupFns.forEach((cleanup) => cleanup());
 }
 
 function initCarousels() {
@@ -958,7 +1025,7 @@ function initPremiumAnimations() {
     const heroTitle = document.querySelector('.hero-title, .page-hero-title');
     const heroSubtitle = document.querySelector('.hero-subtitle, .page-hero-subtitle');
     const heroActions = document.querySelector('.hero-actions, .cta-actions');
-    const heroVisual = document.querySelector('.spline-wrapper, .page-hero-orb, .home-spline-showcase .react-spline-viewer');
+    const heroVisual = document.querySelector('.ai-network-shell, .page-hero-orb, .home-ai-showcase .ai-network-canvas');
 
     if (heroTitle) {
       gsap.fromTo(heroTitle,
@@ -1152,7 +1219,7 @@ function initPremiumAnimations() {
       }
     });
 
-    document.querySelectorAll('.contact-form-wrap, .contact-info-wrap, .home-spline-copy, .service-choice-shell').forEach((panel) => {
+    document.querySelectorAll('.contact-form-wrap, .contact-info-wrap, .home-ai-copy, .service-choice-shell').forEach((panel) => {
       gsap.fromTo(panel,
         { y: 42, autoAlpha: 0, filter: 'blur(10px)' },
         {
@@ -1286,14 +1353,13 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const cleanups = [initRevealAnimations(), initSplineLoader(), initCarousels(), initForms(), initPremiumAnimations()];
+    const cleanups = [initRevealAnimations(), initAiCanvases(), initCarousels(), initForms(), initPremiumAnimations()];
     return () => cleanups.forEach((cleanup) => cleanup && cleanup());
   }, [content]);
 
   return (
     <Layout pathname={pathname}>
       <main dangerouslySetInnerHTML={{ __html: content }} />
-      <ReactSplineMounts contentKey={content} />
     </Layout>
   );
 }
