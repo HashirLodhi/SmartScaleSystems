@@ -33,7 +33,7 @@ module.exports = async function handler(req, res) {
 
     const htmlBody = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #778873; border-bottom: 2px solid #A1BC98; padding-bottom: 8px;">New Contact Form Submission</h2>
+        <h2 style="color: #000000; border-bottom: 2px solid #666666; padding-bottom: 8px;">New Contact Form Submission</h2>
         <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
           <tr><td style="padding: 8px 0; font-weight: bold; color: #555; width: 140px;">Name</td><td style="padding: 8px 0;">${name}</td></tr>
           <tr><td style="padding: 8px 0; font-weight: bold; color: #555;">Email</td><td style="padding: 8px 0;"><a href="mailto:${email}">${email}</a></td></tr>
@@ -41,7 +41,7 @@ module.exports = async function handler(req, res) {
           <tr><td style="padding: 8px 0; font-weight: bold; color: #555;">Nationality</td><td style="padding: 8px 0;">${nationality}</td></tr>
           <tr><td style="padding: 8px 0; font-weight: bold; color: #555;">Subject</td><td style="padding: 8px 0;">${subject}</td></tr>
         </table>
-        <div style="margin-top: 20px; padding: 16px; background: #f9f9f9; border-radius: 8px; border-left: 4px solid #A1BC98;">
+        <div style="margin-top: 20px; padding: 16px; background: #f9f9f9; border-radius: 8px; border-left: 4px solid #666666;">
           <p style="margin: 0 0 8px 0; font-weight: bold; color: #555;">Message</p>
           <p style="margin: 0; color: #333; line-height: 1.6;">${message.replace(/\n/g, '<br/>')}</p>
         </div>

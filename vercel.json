@@ -6,6 +6,13 @@
       "use": "@vercel/node"
     },
     {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
       "src": "src/**",
       "use": "@vercel/static"
     }
@@ -15,21 +22,7 @@
     { "src": "/api/custom-service", "dest": "/api/custom-service.js" },
     { "src": "/api/chat", "dest": "/api/chat.js" },
     { "src": "/src/(.*)", "dest": "/src/$1" },
-    { "src": "/", "dest": "/src/pages/index.html" },
-    { "src": "/services", "dest": "/src/pages/services.html" },
-    { "src": "/team", "dest": "/src/pages/team.html" },
-    { "src": "/careers", "dest": "/src/pages/careers.html" },
-    { "src": "/testimonials", "dest": "/src/pages/testimonials.html" },
-    { "src": "/contact", "dest": "/src/pages/contact.html" },
-    { "src": "/service-ai-model-training", "dest": "/src/pages/service-ai-model-training.html" },
-    { "src": "/service-ai-automation", "dest": "/src/pages/service-ai-automation.html" },
-    { "src": "/service-computer-vision", "dest": "/src/pages/service-computer-vision.html" },
-    { "src": "/service-nlp", "dest": "/src/pages/service-nlp.html" },
-    { "src": "/service-llm", "dest": "/src/pages/service-llm.html" },
-    { "src": "/service-data-annotation", "dest": "/src/pages/service-data-annotation.html" },
-    { "src": "/service-ai-training-data", "dest": "/src/pages/service-ai-training-data.html" },
-    { "src": "/service-custom", "dest": "/src/pages/service-custom.html" },
-    { "src": "/privacy-policy", "dest": "/src/pages/privacy-policy.html" },
-    { "src": "/terms-of-service", "dest": "/src/pages/terms-of-service.html" }
+    { "src": "/assets/(.*)", "dest": "/assets/$1" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

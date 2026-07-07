@@ -67,13 +67,11 @@ function initNav() {
       }, 300);
     });
 
-    // Mobile: click toggle
+    // Click and keyboard activation toggle the dropdown on every viewport.
     dropBtn.addEventListener('click', function (e) {
-      if (window.innerWidth <= 768) {
-        e.stopPropagation();
-        const isOpen = dropdown.classList.toggle('open');
-        dropBtn.setAttribute('aria-expanded', String(isOpen));
-      }
+      e.stopPropagation();
+      const isOpen = dropdown.classList.toggle('open');
+      dropBtn.setAttribute('aria-expanded', String(isOpen));
     });
 
     // Close dropdown on outside click

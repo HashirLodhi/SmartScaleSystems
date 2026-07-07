@@ -54,4 +54,49 @@
     });
   }
 
+  /* Cursor-following cyber portrait reveal */
+  var teamPhotos = document.querySelectorAll('.team-member-photo');
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function setRevealPosition(photo, clientX, clientY) {
+    var rect = photo.getBoundingClientRect();
+    var x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+    var y = Math.max(0, Math.min(clientY - rect.top, rect.height));
+    var size = Math.max(92, Math.min(rect.width, rect.height) * 0.28);
+
+    photo.style.setProperty('--reveal-x', x + 'px');
+    photo.style.setProperty('--reveal-y', y + 'px');
+    photo.style.setProperty('--reveal-size', size + 'px');
+  }
+
+  teamPhotos.forEach(function (photo) {
+    photo.addEventListener('pointerenter', function (event) {
+      if (reduceMotion) return;
+      photo.classList.add('is-revealing');
+      setRevealPosition(photo, event.clientX, event.clientY);
+    });
+
+    photo.addEventListener('pointermove', function (event) {
+      if (reduceMotion) return;
+      setRevealPosition(photo, event.clientX, event.clientY);
+    });
+
+    photo.addEventListener('pointerleave', function () {
+      photo.classList.remove('is-revealing');
+      photo.style.setProperty('--reveal-size', '0px');
+    });
+
+    photo.addEventListener('focusin', function () {
+      photo.classList.add('is-revealing');
+      photo.style.setProperty('--reveal-x', '50%');
+      photo.style.setProperty('--reveal-y', '38%');
+      photo.style.setProperty('--reveal-size', '110px');
+    });
+
+    photo.addEventListener('focusout', function () {
+      photo.classList.remove('is-revealing');
+      photo.style.setProperty('--reveal-size', '0px');
+    });
+  });
+
 })();

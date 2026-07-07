@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -42,14 +42,43 @@
     <div class="section-tag" data-section-reveal>What We Offer</div>
     <h2 class="section-title" data-section-reveal>Our AI Services</h2>
     <p class="section-body" data-section-reveal>From data creation to deployed models, comprehensive AI services designed to move your business forward.</p>
-    <div class="carousel-scene services-carousel">
-      <div class="carousel-controls">
-        <button class="carousel-btn carousel-prev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-        <button class="carousel-btn carousel-next"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+    <div class="services-motion-board reveal-on-scroll" aria-label="Animated overview of Smart Scale Systems AI services">
+      <div class="services-motion-viewport">
+        <div class="services-motion-track track-a">
+          <div class="motion-tile tile-cream tile-pattern"><span>AI Model Training</span><em>Model Development</em></div>
+          <div class="motion-tile tile-photo"><span>Automation Systems</span><em>Workflow AI</em></div>
+          <div class="motion-tile tile-dark"><span>LLM Solutions</span><em>Prompt + RLHF</em></div>
+          <div class="motion-tile tile-split"><span>Computer Vision</span><em>Visual AI</em></div>
+          <div class="motion-tile tile-olive"><span>Data Annotation</span><em>QA Ready</em></div>
+          <div class="motion-tile tile-cream"><span>NLP Pipelines</span><em>Intent + NER</em></div>
+        </div>
+        <div class="services-motion-track track-b">
+          <div class="motion-tile tile-dark"><span>Training Data</span><em>Datasets</em></div>
+          <div class="motion-tile tile-olive"><span>AI Agents</span><em>Operations</em></div>
+          <div class="motion-tile tile-cream tile-pattern alt"><span>OCR + Vision</span><em>Document AI</em></div>
+          <div class="motion-tile tile-photo alt"><span>Custom AI Builds</span><em>Tailored Systems</em></div>
+          <div class="motion-tile tile-split"><span>Evaluation</span><em>Precision</em></div>
+          <div class="motion-tile tile-dark"><span>Scale Systems</span><em>Delivery</em></div>
+        </div>
+        <div class="services-motion-track track-a">
+          <div class="motion-tile tile-split"><span>Fine-Tuning</span><em>SFT + Eval</em></div>
+          <div class="motion-tile tile-cream"><span>Business Automation</span><em>CRM</em></div>
+          <div class="motion-tile tile-photo"><span>Text Intelligence</span><em>Language AI</em></div>
+          <div class="motion-tile tile-olive tile-pattern"><span>Image Labeling</span><em>Masks</em></div>
+          <div class="motion-tile tile-dark"><span>AI Consulting</span><em>Build Plan</em></div>
+          <div class="motion-tile tile-cream"><span>Deploy Faster</span><em>Ship</em></div>
+        </div>
       </div>
-      <div class="carousel-spinner" id="services-full-spinner">
+    </div>
+    <div class="service-choice-shell" data-service-picker>
+      <div class="service-choice-intro">
+        <span>Choose Your Service</span>
+        <h3>Pick the AI capability you want to build next.</h3>
+        <p>Each tile opens a focused service page with scope, delivery areas, and the fastest path to start.</p>
+      </div>
+      <div class="service-choice-grid" id="services-full-spinner">
 
-      <a href="/service-ai-model-training" class="service-full-card reveal-on-scroll">
+      <a href="/service-ai-model-training" class="service-full-card service-choice-card reveal-on-scroll">
         <div class="sfc-header">
           <div class="service-icon large">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
@@ -66,7 +95,7 @@
         <div class="sfc-cta">Explore Service <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </a>
 
-      <a href="/service-ai-automation" class="service-full-card reveal-on-scroll">
+      <a href="/service-ai-automation" class="service-full-card service-choice-card reveal-on-scroll">
         <div class="sfc-header">
           <div class="service-icon large">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -83,7 +112,7 @@
         <div class="sfc-cta">Explore Service <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </a>
 
-      <a href="/service-computer-vision" class="service-full-card reveal-on-scroll">
+      <a href="/service-computer-vision" class="service-full-card service-choice-card reveal-on-scroll">
         <div class="sfc-header">
           <div class="service-icon large">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/></svg>
@@ -100,7 +129,7 @@
         <div class="sfc-cta">Explore Service <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </a>
 
-      <a href="/service-nlp" class="service-full-card reveal-on-scroll">
+      <a href="/service-nlp" class="service-full-card service-choice-card reveal-on-scroll">
         <div class="sfc-header">
           <div class="service-icon large">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
@@ -117,7 +146,7 @@
         <div class="sfc-cta">Explore Service <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </a>
 
-      <a href="/service-llm" class="service-full-card reveal-on-scroll">
+      <a href="/service-llm" class="service-full-card service-choice-card reveal-on-scroll">
         <div class="sfc-header">
           <div class="service-icon large">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
@@ -134,7 +163,7 @@
         <div class="sfc-cta">Explore Service <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </a>
 
-      <a href="/service-data-annotation" class="service-full-card reveal-on-scroll">
+      <a href="/service-data-annotation" class="service-full-card service-choice-card reveal-on-scroll">
         <div class="sfc-header">
           <div class="service-icon large">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7M4 7c0-2 1-3 3-3h10c2 0 3 1 3 3M4 7h16M10 11h4M10 15h4"/></svg>
@@ -151,7 +180,7 @@
         <div class="sfc-cta">Explore Service <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </a>
 
-      <a href="/contact" class="service-full-card reveal-on-scroll">
+      <a href="/contact" class="service-full-card service-choice-card reveal-on-scroll">
         <div class="sfc-header">
           <div class="service-icon large">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
@@ -168,7 +197,7 @@
         <div class="sfc-cta">Explore Service <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </a>
 
-      <a href="/service-ai-training-data" class="service-full-card reveal-on-scroll">
+      <a href="/service-ai-training-data" class="service-full-card service-choice-card reveal-on-scroll">
         <div class="sfc-header">
           <div class="service-icon large">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
@@ -185,7 +214,7 @@
         <div class="sfc-cta">Explore Service <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </a>
 
-    </div>
+      </div>
     </div>
   </div>
 </section>
@@ -206,10 +235,15 @@
 <!-- FOOTER -->
 <div id="footer-placeholder"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/TextPlugin.min.js"></script>
 <script src="/src/scripts/nav.js"></script>
-<script src="/src/scripts/components.js"></script>
+<script src="/src/scripts/components.js?v=20260707-transparent-logo"></script>
 <script src="/src/scripts/scroll-reveal.js"></script>
-<script src="/src/scripts/robot-mascot.js" defer></script>
+<script src="/src/scripts/robot-mascot.js?v=20260707-structured" defer></script>
 <script src="/src/scripts/carousel.js" defer></script>
+<script src="/src/scripts/gsap-text-animations.js" defer></script>
 </body>
 </html>

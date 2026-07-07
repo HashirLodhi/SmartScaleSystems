@@ -31,6 +31,9 @@
       'service-llm',
       'service-data-annotation',
       'service-ai-training-data',
+      'service-custom',
+      'ai-agency-pakistan',
+      'ai-services-pakistan',
       'services'
     ];
     const dropBtn = document.getElementById('servicesDropBtn');
@@ -41,8 +44,8 @@
 
   async function initComponents() {
     await Promise.all([
-      loadComponent('nav-placeholder', '/src/components/nav.html'),
-      loadComponent('footer-placeholder', '/src/components/footer.html')
+      loadComponent('nav-placeholder', '/src/components/nav.html?v=20260707-transparent-logo'),
+      loadComponent('footer-placeholder', '/src/components/footer.html?v=20260707-transparent-logo')
     ]);
 
     setActiveNavLink();

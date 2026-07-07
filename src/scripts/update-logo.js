@@ -5,7 +5,7 @@ const dir = 'd:\\Downloads\\web1';
 const files = fs.readdirSync(dir).filter(f => f.endsWith('.html'));
 
 const replacement = `<a href="index.html" class="nav-logo">
-      <img src="Logo.png" alt="Smart Scale Systems Logo" class="nav-logo-img" />
+      <img src="/logo-main.png" alt="Smart Scale Systems Logo" class="nav-logo-img" />
     </a>`;
 
 for (const file of files) {
@@ -15,7 +15,7 @@ for (const file of files) {
   // Regex to match the nav-logo anchor and its contents
   const regex = /<a href="index\.html" class="nav-logo">[\s\S]*?<\/a>/;
   
-  if (regex.test(content) && !content.includes('<img src="Logo.png"')) {
+  if (regex.test(content) && !content.includes('<img src="/logo-main.png"')) {
     content = content.replace(regex, replacement);
     fs.writeFileSync(filePath, content, 'utf8');
     console.log(`Updated logo in ${file}`);
