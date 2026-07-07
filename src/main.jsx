@@ -582,10 +582,10 @@ function initRevealAnimations() {
 }
 
 function initSplineLoader() {
-  const loader = document.getElementById('spline-loader');
-  if (!loader) return () => {};
-  const hideLoader = () => loader.classList.add('hidden');
-  const timer = window.setTimeout(hideLoader, 7000);
+  const loaders = Array.from(document.querySelectorAll('.spline-loader'));
+  if (!loaders.length) return () => {};
+  const hideLoaders = () => loaders.forEach((loader) => loader.classList.add('hidden'));
+  const timer = window.setTimeout(hideLoaders, 9000);
   return () => {
     window.clearTimeout(timer);
   };
@@ -662,9 +662,10 @@ function ReactSplineMounts({ contentKey }) {
       <SplineComponent
         scene={scene}
         onLoad={() => {
-          if (mount.id === 'spline-viewer') {
-            document.getElementById('spline-loader')?.classList.add('hidden');
-          }
+          mount
+            .closest('.spline-wrapper, .team-hero-spline-shell')
+            ?.querySelector('.spline-loader')
+            ?.classList.add('hidden');
         }}
       />,
       mount,
