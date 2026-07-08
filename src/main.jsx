@@ -480,13 +480,16 @@ function initNav() {
 
   if (dropBtn && dropdown) {
     const wrap = dropBtn.closest('.nav-dropdown-wrap');
+    const supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)');
     let closeTimeout = null;
     const open = () => {
+      if (!supportsHover.matches) return;
       clearTimeout(closeTimeout);
       dropdown.classList.add('open');
       dropBtn.setAttribute('aria-expanded', 'true');
     };
     const close = () => {
+      if (!supportsHover.matches) return;
       closeTimeout = setTimeout(() => {
         dropdown.classList.remove('open');
         dropBtn.setAttribute('aria-expanded', 'false');
@@ -992,13 +995,15 @@ function initCarousels() {
       items.forEach((item) => {
         item.style.position = 'static';
         item.style.width = '340px';
+        item.style.height = 'auto';
       });
       const tallestCard = Math.max(...items.map((item) => item.offsetHeight));
       items.forEach((item) => {
         item.style.position = '';
         item.style.width = '';
+        item.style.height = '';
       });
-      const sceneHeight = Math.min(Math.max(tallestCard + 80, 360), 580);
+      const sceneHeight = Math.min(Math.max(tallestCard + 80, 300), 500);
       scene.style.height = `${sceneHeight}px`;
       spinner.style.height = `${sceneHeight - 80}px`;
       spinner.style.marginTop = '20px';

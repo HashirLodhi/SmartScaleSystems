@@ -20,15 +20,17 @@ document.addEventListener('DOMContentLoaded', () => {
       items.forEach(item => {
         item.style.position = 'static';
         item.style.width = itemWidth + 'px';
+        item.style.height = 'auto';
       });
       const tallestCard = Math.max(...items.map(i => i.offsetHeight));
       items.forEach(item => {
         item.style.position = '';
         item.style.width = '';
+        item.style.height = '';
       });
 
       // Add extra top padding for dots
-      const sceneHeight = Math.min(Math.max(tallestCard + 80, 360), 580);
+      const sceneHeight = Math.min(Math.max(tallestCard + 80, 300), 500);
       scene.style.height = sceneHeight + 'px';
       spinner.style.height = (sceneHeight - 80) + 'px';
       spinner.style.marginTop = '20px'; // Push spinner down to make room for dots

@@ -157,6 +157,49 @@
   line-height: 1.5 !important;
 }
 
+/* Service detail cards */
+.carousel-scene .offering-card,
+.carousel-scene .use-case-card,
+.carousel-scene .related-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1.75rem !important;
+}
+
+.carousel-scene .offering-icon:empty {
+  display: none;
+}
+
+.carousel-scene .offering-card h3,
+.carousel-scene .offering-card h4,
+.carousel-scene .use-case-card h3,
+.carousel-scene .use-case-card h4 {
+  margin-bottom: 0.65rem !important;
+  font-size: 1.25rem !important;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.carousel-scene .offering-card p,
+.carousel-scene .use-case-card p {
+  font-size: 0.94rem !important;
+  line-height: 1.6 !important;
+}
+
+.carousel-scene .related-card h3,
+.carousel-scene .related-card h4 {
+  margin-bottom: 0.65rem !important;
+  font-size: 1.25rem !important;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.carousel-scene .related-card p {
+  font-size: 0.94rem !important;
+  line-height: 1.6 !important;
+}
+
 /* Team card typography */
 .team-card h3 {
   font-size: 1rem !important;

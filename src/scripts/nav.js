@@ -49,9 +49,11 @@ function initNav() {
   if (dropBtn && dropdown) {
     // Desktop: hover with delay
     const dropWrap = dropBtn.closest('.nav-dropdown-wrap');
+    const supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)');
     let closeTimeout = null;
 
     dropWrap.addEventListener('mouseenter', function () {
+      if (!supportsHover.matches) return;
       if (closeTimeout) {
         clearTimeout(closeTimeout);
         closeTimeout = null;
@@ -61,6 +63,7 @@ function initNav() {
     });
 
     dropWrap.addEventListener('mouseleave', function () {
+      if (!supportsHover.matches) return;
       closeTimeout = setTimeout(function () {
         dropdown.classList.remove('open');
         dropBtn.setAttribute('aria-expanded', 'false');
