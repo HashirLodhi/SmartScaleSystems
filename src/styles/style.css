@@ -268,8 +268,8 @@ textarea:focus-visible,
 .nav-logo-crop {
   position: relative;
   display: block;
-  width: 164px;
-  height: 62px;
+  width: 132px;
+  height: 50px;
   overflow: hidden;
   flex: 0 0 auto;
   transition: width 0.35s ease, height 0.35s ease;
@@ -277,25 +277,25 @@ textarea:focus-visible,
 
 .nav-logo-img {
   position: absolute;
-  width: 198px;
-  height: 198px;
-  left: -17px;
-  top: -63px;
+  width: 160px;
+  height: 160px;
+  left: -14px;
+  top: -51px;
   max-width: none;
   object-fit: contain;
   transition: width 0.35s ease, height 0.35s ease, left 0.35s ease, top 0.35s ease, filter 0.25s ease;
 }
 
 .nav.scrolled .nav-logo-crop {
-  width: 150px;
-  height: 56px;
+  width: 122px;
+  height: 46px;
 }
 
 .nav.scrolled .nav-logo-img {
-  width: 180px;
-  height: 180px;
-  left: -15px;
-  top: -58px;
+  width: 146px;
+  height: 146px;
+  left: -12px;
+  top: -47px;
 }
 
 .nav-links {
@@ -3404,16 +3404,16 @@ a.service-card:hover .card-link::after {
 
   .nav-logo-crop,
   .nav.scrolled .nav-logo-crop {
-    width: 148px;
-    height: 56px;
+    width: 124px;
+    height: 46px;
   }
 
   .nav-logo-img,
   .nav.scrolled .nav-logo-img {
-    width: 178px;
-    height: 178px;
-    left: -15px;
-    top: -57px;
+    width: 148px;
+    height: 148px;
+    left: -12px;
+    top: -47px;
   }
 
   .nav-links {
