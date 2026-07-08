@@ -22,6 +22,8 @@ Always direct users to the "Services" or "Contact Us" pages when they want to st
 
 const RAG_RULES = `Use the retrieved agency context when it is relevant to the visitor's question.
 Treat retrieved context as the latest source of truth for Smart Scale Systems.
+For direct team questions about one person or role, answer only that person or role unless the visitor asks for the full team.
+If asked "who is Hashir" or "who is the founder", answer directly: Muhammad Hashir Lodhi is the Founder of Smart Scale Systems, then add one concise sentence about his technical leadership.
 If the retrieved context does not answer the question, say what you know from the agency overview and guide the visitor to Contact Us.
 Do not invent pricing, private details, credentials, client names, or unsupported claims.`;
 

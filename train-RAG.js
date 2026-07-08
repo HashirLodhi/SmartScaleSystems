@@ -5,6 +5,32 @@ const { PDFParse } = require('pdf-parse');
 const DEFAULT_PDF = path.join(__dirname, 'output', 'pdf', 'smart-scale-systems-agency-chatbot-guide.pdf');
 const OUT_DIR = path.join(__dirname, 'content');
 const OUT_FILE = path.join(OUT_DIR, 'rag-index.json');
+const PINNED_FACTS = [
+  {
+    id: 'agency-team-hashir-founder',
+    content: 'Team fact. Muhammad Hashir Lodhi, also called Hashir, is the Founder of Smart Scale Systems. He founded Smart Scale Systems and leads the agency technical direction, AI strategy, machine learning, automation systems, computer vision, deep learning, and scalable AI solutions.',
+  },
+  {
+    id: 'agency-team-founder',
+    content: 'Founder fact. The founder of Smart Scale Systems is Muhammad Hashir Lodhi. If a visitor asks who the founder is, answer directly that Muhammad Hashir Lodhi is the Founder, then briefly mention that he leads technical direction and AI strategy.',
+  },
+  {
+    id: 'agency-team-shahryar-marketing',
+    content: 'Team fact. Muhammad Shahryar Lodhi, also called Shahryar, is the Marketing Expert at Smart Scale Systems. He leads marketing strategy, outreach, client acquisition, brand visibility, lead generation, campaign planning, and business relationships.',
+  },
+  {
+    id: 'agency-team-nouman-engineer',
+    content: 'Team fact. Muhammad Nouman Qadeer, also called Nouman, is an AI Engineer at Smart Scale Systems. He works on AI solutions, machine learning workflows, model development, data processing, and AI system integration.',
+  },
+  {
+    id: 'agency-team-mudassir-annotator',
+    content: 'Team fact. Muhammad Mudassir, also called Mudassir, is the AI Data Annotator and Labeling Expert at Smart Scale Systems. He specializes in data annotation, labeling, dataset preparation, image annotation, bounding boxes, polygon annotation, and quality assurance.',
+  },
+  {
+    id: 'agency-team-answer-rule',
+    content: 'Team answer rule. For direct person or role questions, answer only the specific person requested unless the visitor asks for the full team. Examples: Who is Hashir? Answer that Muhammad Hashir Lodhi is the Founder. Who is Shahryar? Answer that Muhammad Shahryar Lodhi is the Marketing Expert. Who is the founder? Answer that Muhammad Hashir Lodhi is the Founder.',
+  },
+];
 const STOP_WORDS = new Set([
   'a', 'an', 'and', 'are', 'as', 'at', 'be', 'but', 'by', 'can', 'for', 'from', 'has', 'have',
   'how', 'i', 'in', 'is', 'it', 'its', 'me', 'my', 'of', 'on', 'or', 'our', 'should', 'so',
@@ -80,7 +106,7 @@ async function main() {
   }
 
   const text = await extractPdfText(pdfPath);
-  const chunks = chunkText(text).map((content, index) => {
+  const pdfChunks = chunkText(text).map((content, index) => {
     const tokens = tokenize(content);
     return {
       id: `agency-${String(index + 1).padStart(3, '0')}`,
@@ -90,6 +116,17 @@ async function main() {
       tokenCount: tokens.length,
     };
   });
+  const pinnedChunks = PINNED_FACTS.map((fact) => {
+    const tokens = tokenize(fact.content);
+    return {
+      id: fact.id,
+      source: 'pinned/team-facts',
+      content: fact.content,
+      keywords: [...new Set(tokens)].slice(0, 60),
+      tokenCount: tokens.length,
+    };
+  });
+  const chunks = [...pinnedChunks, ...pdfChunks];
 
   const index = {
     version: 1,
