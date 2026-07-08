@@ -1,0 +1,52 @@
+How to update/retrain the bot:
+
+1. Update this PDF:
+   C:\Users\MUHAMMAD HASHIR\Documents\Agency-Site\output\pdf\smart-scale-systems-agency-chatbot-guide.pdf
+
+2. Run this from the project root:
+
+   node train-RAG.js
+
+   Or:
+
+   npm run train:rag
+
+3. It will regenerate:
+
+   content/rag-index.json
+
+   That file is what the chatbot reads for updated knowledge.
+
+4. You can also train from another PDF:
+
+   node train-RAG.js "C:\path\to\your-updated-file.pdf"
+
+5. Test before pushing:
+
+   npm.cmd run build
+
+   Optional local API test:
+
+   npm.cmd run api
+
+   Then ask the bot questions about the updated services, team, contact details, or page content.
+
+6. Push the chatbot update to GitHub:
+
+   git status
+   git add content/rag-index.json
+   git commit -m "Update chatbot knowledge"
+   git push origin main
+
+7. If you also changed the PDF or public website files, include them in the same commit:
+
+   git add output/pdf/smart-scale-systems-agency-chatbot-guide.pdf src/pages/team.html src/pages/services.html
+   git commit -m "Update website and chatbot knowledge"
+   git push origin main
+
+Verified last time:
+
+- RAG training ran successfully.
+- It created 21 knowledge chunks.
+- Chat API test confirmed RAG context is injected before calling Groq.
+- npm.cmd run build passed.

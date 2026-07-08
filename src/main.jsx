@@ -749,19 +749,22 @@ function initAiCanvases() {
     let particles = [];
 
     const createParticles = () => {
-      const baseCount = variant === 'showcase' ? 92 : 58;
+      const baseCount = variant === 'showcase' ? 128 : 58;
       const areaFactor = Math.min(Math.max((width * height) / 420000, 0.8), 1.45);
       const count = Math.round(baseCount * areaFactor);
       particles = Array.from({ length: count }, (_, index) => {
         const angle = (index / count) * Math.PI * 2;
-        const radius = Math.min(width, height) * (0.16 + Math.random() * 0.34);
+        const radius = Math.min(width, height) * (variant === 'showcase' ? 0.22 + Math.random() * 0.5 : 0.16 + Math.random() * 0.34);
+        const anchorX = width * (variant === 'showcase' ? 0.68 : 0.5);
+        const anchorY = height * 0.5;
         return {
-          x: width / 2 + Math.cos(angle) * radius + (Math.random() - 0.5) * width * 0.22,
-          y: height / 2 + Math.sin(angle) * radius + (Math.random() - 0.5) * height * 0.2,
-          vx: (Math.random() - 0.5) * (variant === 'showcase' ? 0.22 : 0.16),
-          vy: (Math.random() - 0.5) * (variant === 'showcase' ? 0.22 : 0.16),
-          size: 1.3 + Math.random() * 2.2,
+          x: anchorX + Math.cos(angle) * radius + (Math.random() - 0.5) * width * (variant === 'showcase' ? 0.44 : 0.22),
+          y: anchorY + Math.sin(angle) * radius * 0.68 + (Math.random() - 0.5) * height * (variant === 'showcase' ? 0.28 : 0.2),
+          vx: (Math.random() - 0.5) * (variant === 'showcase' ? 0.16 : 0.16),
+          vy: (Math.random() - 0.5) * (variant === 'showcase' ? 0.14 : 0.16),
+          size: variant === 'showcase' ? 0.9 + Math.random() * 2.8 : 1.3 + Math.random() * 2.2,
           pulse: Math.random() * Math.PI * 2,
+          hue: Math.random(),
         };
       });
     };
@@ -782,25 +785,88 @@ function initAiCanvases() {
       const centerY = height * 0.5;
       const coreRadius = Math.min(width, height) * (variant === 'showcase' ? 0.13 : 0.18);
       const glow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, coreRadius * 2.2);
-      glow.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
-      glow.addColorStop(0.25, 'rgba(160, 160, 160, 0.34)');
+      glow.addColorStop(0, variant === 'showcase' ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.9)');
+      glow.addColorStop(0.18, variant === 'showcase' ? 'rgba(212, 196, 138, 0.38)' : 'rgba(160, 160, 160, 0.34)');
+      glow.addColorStop(0.42, variant === 'showcase' ? 'rgba(126, 156, 125, 0.22)' : 'rgba(0, 0, 0, 0)');
       glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = glow;
       ctx.beginPath();
       ctx.arc(centerX, centerY, coreRadius * 2.2, 0, Math.PI * 2);
       ctx.fill();
 
-      for (let ring = 0; ring < 3; ring += 1) {
+      const ringCount = variant === 'showcase' ? 5 : 3;
+      for (let ring = 0; ring < ringCount; ring += 1) {
         const radius = coreRadius * (1 + ring * 0.36 + Math.sin(time * 0.0014 + ring) * 0.035);
-        ctx.strokeStyle = `rgba(255, 255, 255, ${0.34 - ring * 0.08})`;
+        ctx.strokeStyle = variant === 'showcase'
+          ? `rgba(${ring % 2 ? '212, 196, 138' : '255, 255, 255'}, ${0.38 - ring * 0.052})`
+          : `rgba(255, 255, 255, ${0.34 - ring * 0.08})`;
         ctx.lineWidth = 1;
         ctx.setLineDash([10 + ring * 5, 12 + ring * 4]);
         ctx.lineDashOffset = -time * (0.018 + ring * 0.006);
         ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        ctx.ellipse(centerX, centerY, radius * (variant === 'showcase' ? 1.46 : 1), radius * (variant === 'showcase' ? 0.72 : 1), -0.22 + ring * 0.16, 0, Math.PI * 2);
         ctx.stroke();
       }
       ctx.setLineDash([]);
+
+      if (variant === 'showcase') {
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
+        for (let i = 0; i < 7; i += 1) {
+          const angle = -0.95 + i * 0.32 + Math.sin(time * 0.00045 + i) * 0.06;
+          const length = Math.max(width, height) * 0.56;
+          const gradient = ctx.createLinearGradient(centerX, centerY, centerX + Math.cos(angle) * length, centerY + Math.sin(angle) * length);
+          gradient.addColorStop(0, 'rgba(255, 255, 255, 0.18)');
+          gradient.addColorStop(0.28, 'rgba(212, 196, 138, 0.08)');
+          gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+          ctx.strokeStyle = gradient;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.lineTo(centerX + Math.cos(angle) * length, centerY + Math.sin(angle) * length);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+    };
+
+    const drawShowcaseBackdrop = (time) => {
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+
+      const goldGlow = ctx.createRadialGradient(width * 0.7, height * 0.44, 0, width * 0.7, height * 0.44, Math.max(width, height) * 0.62);
+      goldGlow.addColorStop(0, 'rgba(212, 196, 138, 0.2)');
+      goldGlow.addColorStop(0.36, 'rgba(126, 156, 125, 0.1)');
+      goldGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = goldGlow;
+      ctx.fillRect(0, 0, width, height);
+
+      const leftGlow = ctx.createRadialGradient(width * 0.1, height * 0.15, 0, width * 0.1, height * 0.15, width * 0.55);
+      leftGlow.addColorStop(0, 'rgba(255, 255, 255, 0.08)');
+      leftGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = leftGlow;
+      ctx.fillRect(0, 0, width, height);
+      ctx.restore();
+
+      ctx.save();
+      ctx.globalAlpha = 0.18;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.28)';
+      ctx.lineWidth = 1;
+      const gridGap = 54;
+      const offset = (time * 0.012) % gridGap;
+      for (let x = -gridGap + offset; x < width + gridGap; x += gridGap) {
+        ctx.beginPath();
+        ctx.moveTo(x, height * 0.18);
+        ctx.lineTo(x + width * 0.2, height);
+        ctx.stroke();
+      }
+      for (let y = offset; y < height + gridGap; y += gridGap) {
+        ctx.beginPath();
+        ctx.moveTo(width * 0.42, y);
+        ctx.lineTo(width, y + height * 0.12);
+        ctx.stroke();
+      }
+      ctx.restore();
     };
 
     const draw = (time = 0) => {
@@ -810,7 +876,8 @@ function initAiCanvases() {
       const background = ctx.createLinearGradient(0, 0, width, height);
       if (variant === 'showcase') {
         background.addColorStop(0, '#050505');
-        background.addColorStop(0.48, '#111111');
+        background.addColorStop(0.38, '#141611');
+        background.addColorStop(0.72, '#080908');
         background.addColorStop(1, '#000000');
       } else {
         background.addColorStop(0, 'rgba(255,255,255,0)');
@@ -818,12 +885,13 @@ function initAiCanvases() {
       }
       ctx.fillStyle = background;
       ctx.fillRect(0, 0, width, height);
+      if (variant === 'showcase') drawShowcaseBackdrop(time);
 
-      const maxDistance = variant === 'showcase' ? 150 : 122;
+      const maxDistance = variant === 'showcase' ? 132 : 122;
       for (let i = 0; i < particles.length; i += 1) {
         const a = particles[i];
         if (!reducedMotion) {
-          const drift = Math.sin(time * 0.0007 + a.pulse) * 0.045;
+          const drift = Math.sin(time * 0.0007 + a.pulse) * (variant === 'showcase' ? 0.08 : 0.045);
           a.x += a.vx + drift;
           a.y += a.vy + Math.cos(time * 0.0006 + a.pulse) * 0.04;
 
@@ -849,8 +917,10 @@ function initAiCanvases() {
           const dy = a.y - b.y;
           const distance = Math.hypot(dx, dy);
           if (distance > maxDistance) continue;
-          const alpha = (1 - distance / maxDistance) * (variant === 'showcase' ? 0.24 : 0.18);
-          ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+          const alpha = (1 - distance / maxDistance) * (variant === 'showcase' ? 0.28 : 0.18);
+          ctx.strokeStyle = variant === 'showcase' && (a.hue + b.hue) > 1.08
+            ? `rgba(212, 196, 138, ${alpha * 0.8})`
+            : `rgba(255, 255, 255, ${alpha})`;
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
@@ -863,9 +933,13 @@ function initAiCanvases() {
 
       particles.forEach((particle) => {
         const pulse = 0.75 + Math.sin(time * 0.002 + particle.pulse) * 0.25;
-        ctx.fillStyle = variant === 'showcase'
-          ? `rgba(255, 255, 255, ${0.42 + pulse * 0.34})`
-          : `rgba(0, 0, 0, ${0.28 + pulse * 0.22})`;
+        if (variant === 'showcase') {
+          ctx.fillStyle = particle.hue > 0.7
+            ? `rgba(212, 196, 138, ${0.36 + pulse * 0.34})`
+            : `rgba(255, 255, 255, ${0.34 + pulse * 0.34})`;
+        } else {
+          ctx.fillStyle = `rgba(0, 0, 0, ${0.28 + pulse * 0.22})`;
+        }
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.size * pulse, 0, Math.PI * 2);
         ctx.fill();
