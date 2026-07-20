@@ -520,6 +520,10 @@ textarea:focus-visible,
   margin-bottom: 48px;
 }
 
+.page-hero .hero-actions {
+  justify-content: center;
+}
+
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -1277,6 +1281,13 @@ textarea:focus-visible,
   cursor: pointer;
   font-family: var(--font-body);
   padding: 0;
+  will-change: transform;
+}
+
+.nav-links > a,
+.nav-dropdown-trigger,
+.nav-cta {
+  transform-origin: 50% 50%;
 }
 
 .nav-link::after {
@@ -1463,8 +1474,10 @@ textarea:focus-visible,
 
 .page-hero-content {
   max-width: 680px;
+  margin-inline: auto;
   position: relative;
   z-index: 2;
+  text-align: center;
 }
 
 .page-hero-title {
@@ -1483,6 +1496,7 @@ textarea:focus-visible,
   color: var(--text-mid);
   line-height: 1.75;
   max-width: 520px;
+  margin-inline: auto;
   margin-bottom: 0;
 }
 

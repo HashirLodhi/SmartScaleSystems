@@ -68,6 +68,41 @@ const pages = {
   '/terms-of-service.html': termsHtml,
 };
 
+const SPLINE_SCENES = {
+  '/': 'https://prod.spline.design/Zff-nbYm4vXOgRRQ/scene.splinecode',
+  '/index': 'https://prod.spline.design/Zff-nbYm4vXOgRRQ/scene.splinecode',
+  '/index.html': 'https://prod.spline.design/Zff-nbYm4vXOgRRQ/scene.splinecode',
+  '/team': 'https://prod.spline.design/gK4Rs3Br2IqpULHy/scene.splinecode',
+  '/team.html': 'https://prod.spline.design/gK4Rs3Br2IqpULHy/scene.splinecode',
+};
+
+let splineModulePromise;
+
+function loadSplineModule() {
+  if (!splineModulePromise) {
+    splineModulePromise = import('@splinetool/react-spline');
+  }
+  return splineModulePromise;
+}
+
+function primeSplineLoading(pathname) {
+  const scene = SPLINE_SCENES[pathname];
+  if (!scene) return;
+
+  if (!document.head.querySelector('link[data-spline-origin]')) {
+    const preconnect = document.createElement('link');
+    preconnect.rel = 'preconnect';
+    preconnect.href = 'https://prod.spline.design';
+    preconnect.crossOrigin = 'anonymous';
+    preconnect.dataset.splineOrigin = 'true';
+    document.head.appendChild(preconnect);
+  }
+
+  loadSplineModule();
+}
+
+primeSplineLoading(window.location.pathname);
+
 const SITE_URL = 'https://smartscalesystems.com';
 const TAB_TITLE = 'Smart Scale Systems';
 const DEFAULT_IMAGE = `${SITE_URL}/logo-main.png`;
@@ -664,27 +699,9 @@ function ReactSplineMounts({ contentKey }) {
   useEffect(() => {
     const splineMounts = mounts.filter((mount) => mount.dataset.splineUrl);
     if (!splineMounts.length) return undefined;
-
-    const revealMount = (mount) => {
-      setVisibleMounts((current) => (current.includes(mount) ? current : [...current, mount]));
-    };
-
-    if (!('IntersectionObserver' in window)) {
-      splineMounts.forEach(revealMount);
-      return undefined;
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        revealMount(entry.target);
-        observer.unobserve(entry.target);
-      });
-    }, { rootMargin: '450px 0px' });
-
-    splineMounts.forEach((mount) => observer.observe(mount));
-
-    return () => observer.disconnect();
+    setVisibleMounts(splineMounts);
+    primeSplineLoading(window.location.pathname);
+    return undefined;
   }, [mounts]);
 
   useEffect(() => {
@@ -692,23 +709,12 @@ function ReactSplineMounts({ contentKey }) {
     if (SplineComponent) return undefined;
 
     let isMounted = true;
-    const loadSpline = () => {
-      import('@splinetool/react-spline').then((module) => {
-        if (isMounted) setSplineComponent(() => module.default);
-      });
-    };
-
-    const idleId = 'requestIdleCallback' in window
-      ? window.requestIdleCallback(loadSpline, { timeout: 1200 })
-      : window.setTimeout(loadSpline, 350);
+    loadSplineModule().then((module) => {
+      if (isMounted) setSplineComponent(() => module.default);
+    });
 
     return () => {
       isMounted = false;
-      if ('cancelIdleCallback' in window && typeof idleId === 'number') {
-        window.cancelIdleCallback(idleId);
-      } else {
-        window.clearTimeout(idleId);
-      }
     };
   }, [visibleMounts, SplineComponent]);
 
