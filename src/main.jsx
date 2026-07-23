@@ -68,6 +68,12 @@ const pages = {
   '/terms-of-service.html': termsHtml,
 };
 
+function normalizeRoutePath(pathname) {
+  if (!pathname) return '/';
+  const withoutTrailingSlashes = pathname.replace(/\/+$/, '');
+  return withoutTrailingSlashes || '/';
+}
+
 const SPLINE_SCENES = {
   '/': 'https://prod.spline.design/Zff-nbYm4vXOgRRQ/scene.splinecode',
   '/index': 'https://prod.spline.design/Zff-nbYm4vXOgRRQ/scene.splinecode',
@@ -86,7 +92,7 @@ function loadSplineModule() {
 }
 
 function primeSplineLoading(pathname) {
-  const scene = SPLINE_SCENES[pathname];
+  const scene = SPLINE_SCENES[normalizeRoutePath(pathname)];
   if (!scene) return;
 
   if (!document.head.querySelector('link[data-spline-origin]')) {
@@ -101,7 +107,7 @@ function primeSplineLoading(pathname) {
   loadSplineModule();
 }
 
-primeSplineLoading(window.location.pathname);
+primeSplineLoading(normalizeRoutePath(window.location.pathname));
 
 const SITE_URL = 'https://smartscalesystems.com';
 const TAB_TITLE = 'Smart Scale Systems';
@@ -481,6 +487,9 @@ function scrollToPageTop({ smooth = false } = {}) {
 
 function initNav() {
   const nav = document.getElementById('nav');
+  const hero = document.querySelector('.hero-section, .page-hero');
+  const navInner = nav?.querySelector('.nav-inner');
+  const compactToggle = document.getElementById('navCompactToggle');
   const hamburger = document.getElementById('navHamburger');
   const navLinks = document.getElementById('navLinks');
   const dropBtn = document.getElementById('servicesDropBtn');
@@ -488,9 +497,87 @@ function initNav() {
   if (!nav) return () => {};
 
   const cleanups = [];
+  const mobileNavQuery = window.matchMedia('(max-width: 768px)');
   let navTicking = false;
+  let isPastHero = false;
+  let isExpandedPastHero = false;
+  let wasMobileNav = mobileNavQuery.matches;
+
+  const renderCompactNav = (animate = true) => {
+    const isMobileNav = mobileNavQuery.matches;
+    if (isMobileNav) {
+      nav.classList.remove('compact', 'expanded-past-hero');
+      nav.classList.toggle('compact-mobile', isPastHero);
+      gsap.killTweensOf([navInner, compactToggle]);
+      gsap.set(navInner, { x: 0, scale: 1, autoAlpha: 1 });
+      gsap.set(compactToggle, { x: 18, scale: 0.78, autoAlpha: 0 });
+      return;
+    }
+
+    nav.classList.remove('compact-mobile');
+    const shouldCompact = isPastHero && !isExpandedPastHero;
+    const shouldShowToggle = isPastHero;
+    nav.classList.toggle('compact', shouldCompact);
+    nav.classList.toggle('expanded-past-hero', isPastHero && isExpandedPastHero);
+    compactToggle?.setAttribute('aria-expanded', String(isPastHero && isExpandedPastHero));
+    compactToggle?.setAttribute('aria-label', isExpandedPastHero ? 'Collapse navigation' : 'Open navigation');
+
+    const duration = animate && !prefersReducedMotion() ? 0.48 : 0;
+    gsap.killTweensOf([navInner, compactToggle]);
+
+    if (shouldCompact) {
+      gsap.to(navInner, {
+        x: 34,
+        scale: 0.88,
+        autoAlpha: 0,
+        duration: duration * 0.72,
+        ease: 'power3.in',
+        overwrite: 'auto',
+      });
+    } else {
+      gsap.to(navInner, {
+        x: 0,
+        scale: 1,
+        autoAlpha: 1,
+        duration,
+        delay: duration * 0.12,
+        ease: 'expo.out',
+        overwrite: 'auto',
+      });
+    }
+
+    if (shouldShowToggle) {
+      gsap.to(compactToggle, {
+        x: 0,
+        scale: 1,
+        autoAlpha: 1,
+        duration,
+        delay: shouldCompact ? duration * 0.28 : 0,
+        ease: 'back.out(1.7)',
+        overwrite: 'auto',
+      });
+    } else {
+      gsap.to(compactToggle, {
+        x: 18,
+        scale: 0.78,
+        autoAlpha: 0,
+        duration: duration * 0.55,
+        ease: 'power2.in',
+        overwrite: 'auto',
+      });
+    }
+  };
+
   const updateNav = () => {
     nav.classList.toggle('scrolled', window.scrollY > 60);
+    const nextIsPastHero = Boolean(hero && hero.getBoundingClientRect().bottom <= 0);
+    const isMobileNav = mobileNavQuery.matches;
+    if (nextIsPastHero !== isPastHero || isMobileNav !== wasMobileNav) {
+      isPastHero = nextIsPastHero;
+      wasMobileNav = isMobileNav;
+      isExpandedPastHero = false;
+      renderCompactNav();
+    }
     navTicking = false;
   };
   const onNavScroll = () => {
@@ -499,8 +586,41 @@ function initNav() {
     window.requestAnimationFrame(updateNav);
   };
   window.addEventListener('scroll', onNavScroll, { passive: true });
+  window.addEventListener('resize', onNavScroll, { passive: true });
   cleanups.push(() => window.removeEventListener('scroll', onNavScroll));
+  cleanups.push(() => window.removeEventListener('resize', onNavScroll));
+  if (compactToggle) {
+    gsap.set(compactToggle, { autoAlpha: 0, x: 18, scale: 0.78 });
+  }
   updateNav();
+
+  if (compactToggle && navInner) {
+    const toggleCompactNav = (event) => {
+      event.stopPropagation();
+      isExpandedPastHero = !isExpandedPastHero;
+      renderCompactNav();
+    };
+    const collapseExpandedNav = (event) => {
+      if (!isPastHero || !isExpandedPastHero || nav.contains(event.target)) return;
+      isExpandedPastHero = false;
+      renderCompactNav();
+    };
+    const collapseOnEscape = (event) => {
+      if (event.key !== 'Escape' || !isPastHero || !isExpandedPastHero) return;
+      isExpandedPastHero = false;
+      renderCompactNav();
+      compactToggle.focus();
+    };
+
+    compactToggle.addEventListener('click', toggleCompactNav);
+    document.addEventListener('click', collapseExpandedNav);
+    document.addEventListener('keydown', collapseOnEscape);
+    cleanups.push(() => {
+      compactToggle.removeEventListener('click', toggleCompactNav);
+      document.removeEventListener('click', collapseExpandedNav);
+      document.removeEventListener('keydown', collapseOnEscape);
+    });
+  }
 
   if (hamburger && navLinks) {
     const toggleMenu = () => {
@@ -547,6 +667,10 @@ function initNav() {
 
   return () => {
     cleanups.forEach((cleanup) => cleanup());
+    gsap.killTweensOf([navInner, compactToggle]);
+    gsap.set(navInner, { clearProps: 'transform,opacity,visibility' });
+    gsap.set(compactToggle, { clearProps: 'transform,opacity,visibility' });
+    nav.classList.remove('compact', 'expanded-past-hero', 'compact-mobile');
     document.body.style.overflow = '';
   };
 }
@@ -1536,7 +1660,6 @@ function initPremiumAnimations() {
   return () => {
     hoverCleanups.forEach((cleanup) => cleanup());
     ctx.revert();
-    ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
   };
 }
 
@@ -1558,7 +1681,7 @@ function Layout({ children, pathname }) {
 }
 
 function App() {
-  const [pathname, setPathname] = useState(window.location.pathname);
+  const [pathname, setPathname] = useState(() => normalizeRoutePath(window.location.pathname));
   const rawPage = pages[pathname] || homeHtml;
   const content = useMemo(() => bodyContent(rawPage), [rawPage]);
 
@@ -1576,7 +1699,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const onPopState = () => setPathname(window.location.pathname);
+    const onPopState = () => setPathname(normalizeRoutePath(window.location.pathname));
     window.addEventListener('popstate', onPopState);
 
     const onClick = (event) => {
@@ -1584,14 +1707,15 @@ function App() {
       if (!anchor) return;
       const url = new URL(anchor.href);
       if (url.origin !== window.location.origin || url.pathname.startsWith('/api')) return;
-      if (!pages[url.pathname]) return;
+      const targetPath = normalizeRoutePath(url.pathname);
+      if (!pages[targetPath]) return;
       event.preventDefault();
-      const isSamePage = url.pathname === window.location.pathname;
+      const isSamePage = targetPath === normalizeRoutePath(window.location.pathname);
       if (!isSamePage) {
-        window.history.pushState({}, '', url.pathname);
-        setPathname(url.pathname);
+        window.history.pushState({}, '', targetPath);
+        setPathname(targetPath);
       }
-      scrollToPageTop({ smooth: isSamePage || url.pathname === '/' });
+      scrollToPageTop({ smooth: isSamePage || targetPath === '/' });
     };
     document.addEventListener('click', onClick);
 
