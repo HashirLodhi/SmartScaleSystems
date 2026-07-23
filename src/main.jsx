@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { createPortal } from 'react-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import './styles/style.css';
 import './styles/carousel.css';
 import navHtml from './components/nav.html?raw';
@@ -1734,6 +1735,7 @@ function App() {
     <Layout pathname={pathname}>
       <main dangerouslySetInnerHTML={{ __html: content }} />
       <ReactSplineMounts contentKey={content} />
+      <SpeedInsights />
     </Layout>
   );
 }
