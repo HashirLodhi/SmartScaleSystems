@@ -25,6 +25,9 @@ import trainingDataHtml from './pages/service-ai-training-data.html?raw';
 import customServiceHtml from './pages/service-custom.html?raw';
 import privacyHtml from './pages/privacy-policy.html?raw';
 import termsHtml from './pages/terms-of-service.html?raw';
+import error403Html from './pages/error-403.html?raw';
+import error404Html from './pages/error-404.html?raw';
+import error500Html from './pages/error-500.html?raw';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -66,6 +69,12 @@ const pages = {
   '/privacy-policy.html': privacyHtml,
   '/terms-of-service': termsHtml,
   '/terms-of-service.html': termsHtml,
+  '/403': error403Html,
+  '/403.html': error403Html,
+  '/404': error404Html,
+  '/404.html': error404Html,
+  '/500': error500Html,
+  '/500.html': error500Html,
 };
 
 function normalizeRoutePath(pathname) {
@@ -110,7 +119,6 @@ function primeSplineLoading(pathname) {
 primeSplineLoading(normalizeRoutePath(window.location.pathname));
 
 const SITE_URL = 'https://smartscalesystems.com';
-const TAB_TITLE = 'Smart Scale Systems';
 const DEFAULT_IMAGE = `${SITE_URL}/logo-main.png`;
 const DEFAULT_DESCRIPTION = 'Smart Scale Systems helps businesses scale smarter with AI model training, automation, computer vision, NLP, LLM solutions, data annotation, and AI training data creation.';
 const DEFAULT_KEYWORDS = 'AI services, AI model training, AI automation, computer vision, NLP, LLMs, data annotation, AI training data, machine learning datasets, RLHF';
@@ -378,10 +386,11 @@ function updateDocumentSeo(rawHtml, pathname) {
   const title = override.title || doc.querySelector('title')?.textContent?.trim() || 'Smart Scale Systems';
   const description = override.description || metaContent(doc, 'meta[name="description"]', DEFAULT_DESCRIPTION);
   const keywords = override.keywords || metaContent(doc, 'meta[name="keywords"]', DEFAULT_KEYWORDS);
+  const robots = metaContent(doc, 'meta[name="robots"]', 'index, follow');
   const url = canonicalUrl(pathname);
   const kind = pageKind(pathname);
 
-  document.title = TAB_TITLE;
+  document.title = title;
   document.head.querySelectorAll(`
     [data-managed-seo],
     meta[name="description"],
@@ -399,7 +408,7 @@ function updateDocumentSeo(rawHtml, pathname) {
   [
     ['meta', { name: 'description', content: description }],
     ['meta', { name: 'keywords', content: keywords }],
-    ['meta', { name: 'robots', content: 'index, follow' }],
+    ['meta', { name: 'robots', content: robots }],
     ['meta', { name: 'author', content: 'Smart Scale Systems' }],
     ['meta', { name: 'theme-color', content: '#0b0b0f' }],
     ['meta', { property: 'og:title', content: title }],
@@ -1682,7 +1691,7 @@ function Layout({ children, pathname }) {
 
 function App() {
   const [pathname, setPathname] = useState(() => normalizeRoutePath(window.location.pathname));
-  const rawPage = pages[pathname] || homeHtml;
+  const rawPage = pages[pathname] || error404Html;
   const content = useMemo(() => bodyContent(rawPage), [rawPage]);
 
   useEffect(() => {
@@ -1708,7 +1717,6 @@ function App() {
       const url = new URL(anchor.href);
       if (url.origin !== window.location.origin || url.pathname.startsWith('/api')) return;
       const targetPath = normalizeRoutePath(url.pathname);
-      if (!pages[targetPath]) return;
       event.preventDefault();
       const isSamePage = targetPath === normalizeRoutePath(window.location.pathname);
       if (!isSamePage) {

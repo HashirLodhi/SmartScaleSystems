@@ -262,6 +262,7 @@ pages.forEach(page => {
 
 // Catch-all fallback
 app.use((req, res) => {
+  res.status(404);
   sendPrecompressed(req, res, reactIndex, () => {
     res.sendFile(reactIndex, err => {
       if (err) res.status(404).send('Page not found');
