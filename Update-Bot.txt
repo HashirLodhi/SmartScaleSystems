@@ -1,0 +1,41 @@
+How to update ScaleBot:
+
+1. Update the verified business facts in:
+
+   scripts/generate-rag-pdf.js
+
+2. Regenerate the polished PDF and rebuild the RAG index:
+
+   npm run refresh:rag
+
+3. This refreshes both bot knowledge artifacts:
+
+   output/pdf/smart-scale-systems-agency-chatbot-guide.pdf
+   content/rag-index.json
+
+4. Run the retrieval regression checks and website build:
+
+   npm test
+   npm run build
+
+5. Run the local website and chat together:
+
+   npm run dev
+
+   This starts both the website and /api/chat. Then ask ScaleBot about
+   services, service selection, the team, pricing, timelines, contact details,
+   careers, privacy, and follow-up questions.
+
+6. To train from a different PDF instead:
+
+   node train-RAG.js "C:\path\to\your-updated-file.pdf"
+
+Important:
+
+- The PDF is the human-readable source used to train the local RAG index.
+- Keep facts specific and verified. Do not add invented client names, prices,
+  credentials, guarantees, locations, or delivery dates.
+- The trainer recognizes "Knowledge unit:" labels and keeps those topics
+  separated for more accurate retrieval.
+- The chat uses GROQ_API_KEY when available and returns a grounded retrieval
+  fallback if the provider is unavailable.

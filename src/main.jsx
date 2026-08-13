@@ -1,0 +1,2080 @@
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import { createPortal } from 'react-dom';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import './styles/style.css';
+import './styles/carousel.css';
+import navHtml from './components/nav.html?raw';
+import footerHtml from './components/footer.html?raw';
+import homeHtml from './pages/index.html?raw';
+import servicesHtml from './pages/services.html?raw';
+import projectsHtml from './pages/projects.html?raw';
+import teamHtml from './pages/team.html?raw';
+import contactHtml from './pages/contact.html?raw';
+import modelTrainingHtml from './pages/service-ai-model-training.html?raw';
+import automationHtml from './pages/service-ai-automation.html?raw';
+import customAiAgentsHtml from './pages/service-custom-ai-agents.html?raw';
+import dataAnalyticsHtml from './pages/service-data-analytics.html?raw';
+import aiIntegrationsHtml from './pages/service-ai-integrations.html?raw';
+import businessAutomationsHtml from './pages/service-business-automations.html?raw';
+import computerVisionHtml from './pages/service-computer-vision.html?raw';
+import nlpHtml from './pages/service-nlp.html?raw';
+import llmHtml from './pages/service-llm.html?raw';
+import dataAnnotationHtml from './pages/service-data-annotation.html?raw';
+import trainingDataHtml from './pages/service-ai-training-data.html?raw';
+import customServiceHtml from './pages/service-custom.html?raw';
+import privacyHtml from './pages/privacy-policy.html?raw';
+import termsHtml from './pages/terms-of-service.html?raw';
+import error403Html from './pages/error-403.html?raw';
+import error404Html from './pages/error-404.html?raw';
+import error500Html from './pages/error-500.html?raw';
+
+gsap.registerPlugin(ScrollTrigger);
+
+const pages = {
+  '/': homeHtml,
+  '/index': homeHtml,
+  '/index.html': homeHtml,
+  '/services': servicesHtml,
+  '/services.html': servicesHtml,
+  '/projects': projectsHtml,
+  '/projects.html': projectsHtml,
+  '/team': teamHtml,
+  '/team.html': teamHtml,
+  '/contact': contactHtml,
+  '/contact.html': contactHtml,
+  '/service-ai-model-training': modelTrainingHtml,
+  '/service-ai-model-training.html': modelTrainingHtml,
+  '/service-ai-automation': automationHtml,
+  '/service-ai-automation.html': automationHtml,
+  '/service-custom-ai-agents': customAiAgentsHtml,
+  '/service-custom-ai-agents.html': customAiAgentsHtml,
+  '/service-data-analytics': dataAnalyticsHtml,
+  '/service-data-analytics.html': dataAnalyticsHtml,
+  '/service-ai-integrations': aiIntegrationsHtml,
+  '/service-ai-integrations.html': aiIntegrationsHtml,
+  '/service-business-automations': businessAutomationsHtml,
+  '/service-business-automations.html': businessAutomationsHtml,
+  '/service-computer-vision': computerVisionHtml,
+  '/service-computer-vision.html': computerVisionHtml,
+  '/service-nlp': nlpHtml,
+  '/service-nlp.html': nlpHtml,
+  '/service-llm': llmHtml,
+  '/service-llm.html': llmHtml,
+  '/service-data-annotation': dataAnnotationHtml,
+  '/service-data-annotation.html': dataAnnotationHtml,
+  '/service-ai-training-data': trainingDataHtml,
+  '/service-ai-training-data.html': trainingDataHtml,
+  '/service-custom': customServiceHtml,
+  '/service-custom.html': customServiceHtml,
+  '/privacy-policy': privacyHtml,
+  '/privacy-policy.html': privacyHtml,
+  '/terms-of-service': termsHtml,
+  '/terms-of-service.html': termsHtml,
+  '/403': error403Html,
+  '/403.html': error403Html,
+  '/404': error404Html,
+  '/404.html': error404Html,
+  '/500': error500Html,
+  '/500.html': error500Html,
+};
+
+function normalizeRoutePath(pathname) {
+  if (!pathname) return '/';
+  const withoutTrailingSlashes = pathname.replace(/\/+$/, '');
+  return withoutTrailingSlashes || '/';
+}
+
+const SPLINE_SCENES = {
+  '/': 'https://prod.spline.design/Zff-nbYm4vXOgRRQ/scene.splinecode',
+  '/index': 'https://prod.spline.design/Zff-nbYm4vXOgRRQ/scene.splinecode',
+  '/index.html': 'https://prod.spline.design/Zff-nbYm4vXOgRRQ/scene.splinecode',
+  '/team': 'https://prod.spline.design/gK4Rs3Br2IqpULHy/scene.splinecode',
+  '/team.html': 'https://prod.spline.design/gK4Rs3Br2IqpULHy/scene.splinecode',
+};
+
+let splineModulePromise;
+
+function loadSplineModule() {
+  if (!splineModulePromise) {
+    splineModulePromise = import('@splinetool/react-spline');
+  }
+  return splineModulePromise;
+}
+
+function primeSplineLoading(pathname) {
+  const scene = SPLINE_SCENES[normalizeRoutePath(pathname)];
+  if (!scene) return;
+
+  if (!document.head.querySelector('link[data-spline-origin]')) {
+    const preconnect = document.createElement('link');
+    preconnect.rel = 'preconnect';
+    preconnect.href = 'https://prod.spline.design';
+    preconnect.crossOrigin = 'anonymous';
+    preconnect.dataset.splineOrigin = 'true';
+    document.head.appendChild(preconnect);
+  }
+
+  loadSplineModule();
+}
+
+primeSplineLoading(normalizeRoutePath(window.location.pathname));
+
+const SITE_URL = 'https://smartscalesystems.tech';
+const LOGO_IMAGE = `${SITE_URL}/logo-main.png`;
+const SOCIAL_IMAGE = `${SITE_URL}/og.png`;
+const DEFAULT_DESCRIPTION = 'Smart Scale Systems helps businesses scale smarter with AI model training, automation, computer vision, NLP, LLM solutions, data annotation, and AI training data creation.';
+const DEFAULT_KEYWORDS = 'AI services, AI model training, AI automation, computer vision, NLP, LLMs, data annotation, AI training data, machine learning datasets, RLHF';
+const GLOBAL_AI_KEYWORDS = 'global AI solutions company, AI development services, AI automation, custom AI agents, AI model training, computer vision, NLP services, LLM solutions, data annotation, AI training data';
+
+const SEO_OVERRIDES = {
+  '/': {
+    title: 'Smart Scale Systems | Global AI Solutions Company',
+    description: 'Smart Scale Systems delivers AI automation, custom agents, model training, computer vision, NLP, LLM solutions, and data services for teams worldwide.',
+    keywords: GLOBAL_AI_KEYWORDS,
+  },
+  '/services': {
+    title: 'AI Services | Automation, Models and Data',
+    description: 'Explore global AI services including model training, automation, custom agents, computer vision, NLP, LLM solutions, data annotation, and AI training data.',
+    keywords: GLOBAL_AI_KEYWORDS,
+  },
+  '/projects': {
+    title: 'AI Projects & Case Studies | Smart Scale Systems',
+    description: 'Explore Smart Scale Systems projects across Agentic RAG, custom chatbots, AI agents, voice calling, automation, model training, video annotation, analytics, and financial risk.',
+    keywords: 'Agentic RAG, custom chatbot, custom AI agent, voice calling agent, AI integrations, AI automation, autonomous data annotation, custom model training, action recognition, customer analytics, fraud detection',
+  },
+  '/team': {
+    title: 'Our Team | AI Engineers and Specialists',
+  },
+  '/contact': {
+    title: 'Contact Us | Start Your AI Project',
+  },
+  '/privacy-policy': {
+    title: 'Privacy Policy | Data Protection and Security',
+  },
+  '/terms-of-service': {
+    title: 'Terms of Service | Website Usage Policies',
+  },
+  '/service-ai-model-training': {
+    title: 'AI Model Training | Custom Machine Learning Models',
+    description: 'Custom AI model training services including fine-tuning, dataset preparation, model evaluation, optimization, and deployment support.',
+    keywords: 'AI model training, machine learning model training, AI fine-tuning, custom AI models, model evaluation',
+  },
+  '/service-ai-automation': {
+    title: 'AI Automation | Business Workflow Automation',
+    description: 'AI automation services for workflows, AI agents, CRM automation, lead generation, operations, and business process automation.',
+    keywords: 'AI automation, AI agents, business process automation, CRM automation, workflow automation',
+  },
+  '/service-custom-ai-agents': {
+    title: 'Custom AI Agents | Support, Knowledge and Task Agents',
+    description: 'Custom AI agents for customer support, knowledge search, task automation, tool use, and multi-step business workflows.',
+    keywords: 'custom AI agents, customer support AI agent, knowledge agent, task automation agent, agentic AI',
+  },
+  '/service-data-analytics': {
+    title: 'Data Analytics | Dashboards, Forecasting and BI',
+    description: 'Data analytics services for dashboards, forecasting, business intelligence, customer analytics, reporting, and decision support.',
+    keywords: 'data analytics, BI dashboards, business intelligence, forecasting services, customer analytics',
+  },
+  '/service-ai-integrations': {
+    title: 'AI Integrations | Add AI to Products and Business Tools',
+    description: 'AI integration services for websites, SaaS products, internal applications, CRMs, APIs, and existing business systems.',
+    keywords: 'AI integrations, AI API integration, website AI integration, SaaS AI features, CRM AI integration',
+  },
+  '/service-business-automations': {
+    title: 'Business Automations | Sales, Support and Operations',
+    description: 'Business automation services for sales, support, operations, lead routing, reporting, document processing, and back-office workflows.',
+    keywords: 'business automation, sales automation, support automation, operations automation, back office automation',
+  },
+  '/service-computer-vision': {
+    title: 'Computer Vision | Image and Video AI',
+    description: 'Computer vision services for object detection, image classification, segmentation, OCR, video analytics, and visual AI systems.',
+    keywords: 'computer vision services, object detection, OCR services, image annotation, video analytics',
+  },
+  '/service-nlp': {
+    title: 'NLP Services | Natural Language Processing',
+    description: 'NLP services for text classification, sentiment analysis, named entity recognition, intent detection, search relevance, and language AI.',
+    keywords: 'NLP services, natural language processing, text classification, sentiment analysis, named entity recognition',
+  },
+  '/service-llm': {
+    title: 'LLM Solutions | Custom AI Assistants',
+    description: 'LLM solutions including prompt engineering, LLM fine-tuning, RLHF, response evaluation, AI assistants, and custom large language model pipelines.',
+    keywords: 'LLM solutions, LLM fine-tuning, prompt engineering, RLHF, AI assistants',
+  },
+  '/service-data-annotation': {
+    title: 'Data Annotation | Training Data Services',
+    description: 'Data annotation services for images, video, text, audio, OCR, bounding boxes, polygons, segmentation masks, and QA review.',
+    keywords: 'data annotation, image annotation, video annotation, text annotation, OCR annotation',
+  },
+  '/service-ai-training-data': {
+    title: 'AI Training Data | Dataset Creation Services',
+    description: 'AI training data services for machine learning, computer vision, NLP, LLMs, automation systems, evaluation datasets, and dataset curation.',
+    keywords: 'AI training data, dataset creation, machine learning datasets, data collection, dataset curation',
+  },
+  '/service-custom': {
+    title: 'Custom AI Solutions | AI Development Services',
+    description: 'Custom AI solutions for businesses that need tailored automation, machine learning, LLM, computer vision, NLP, and data systems.',
+    keywords: 'custom AI solutions, AI consulting, AI development, artificial intelligence company',
+  },
+};
+
+function normalizeSeoPath(pathname) {
+  if (pathname === '/' || pathname === '/index' || pathname === '/index.html') return '/';
+  return pathname.replace(/\.html$/, '');
+}
+
+function canonicalUrl(pathname) {
+  const normalizedPath = normalizeSeoPath(pathname);
+  return `${SITE_URL}${normalizedPath === '/' ? '' : normalizedPath}`;
+}
+
+function pageKind(pathname) {
+  const normalizedPath = normalizeSeoPath(pathname);
+  if (normalizedPath.startsWith('/service-')) return 'service';
+  if (normalizedPath === '/contact') return 'contact';
+  return 'page';
+}
+
+function managedHeadElement(tagName, attributes = {}, textContent = '') {
+  const element = document.createElement(tagName);
+  Object.entries(attributes).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      element.setAttribute(key, value);
+    }
+  });
+  element.setAttribute('data-managed-seo', 'true');
+  if (textContent) element.textContent = textContent;
+  return element;
+}
+
+function metaContent(doc, selector, fallback = '') {
+  return doc.querySelector(selector)?.getAttribute('content') || fallback;
+}
+
+function buildStructuredData({ title, description, url, kind }) {
+  const organization = {
+    '@type': 'Organization',
+    '@id': `${SITE_URL}/#organization`,
+    name: 'Smart Scale Systems',
+    url: SITE_URL,
+    email: 'contact@smartscalesystems.tech',
+    logo: LOGO_IMAGE,
+    description: 'AI services agency delivering model training, automation, computer vision, NLP, LLM solutions, and data annotation at scale.',
+    areaServed: 'Worldwide',
+    knowsAbout: [
+      'AI automation',
+      'AI model training',
+      'Computer vision',
+      'Natural language processing',
+      'Large language models',
+      'Data annotation',
+      'AI training data',
+    ],
+  };
+
+  const graph = [
+    organization,
+    {
+      '@type': 'ProfessionalService',
+      '@id': `${SITE_URL}/#ai-agency`,
+      name: 'Smart Scale Systems',
+      url: SITE_URL,
+      image: LOGO_IMAGE,
+      description: 'Global AI solutions company providing model training, automation, computer vision, NLP, LLM solutions, data annotation, and AI training data services.',
+      email: 'contact@smartscalesystems.tech',
+      areaServed: 'Worldwide',
+      serviceType: [
+        'AI agency',
+        'AI services',
+        'AI automation',
+        'AI model training',
+        'Computer vision',
+        'NLP',
+        'LLM solutions',
+        'Data annotation',
+        'AI training data',
+      ],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: 'Smart Scale Systems',
+      publisher: { '@id': `${SITE_URL}/#organization` },
+    },
+    {
+      '@type': 'WebPage',
+      '@id': `${url}#webpage`,
+      url,
+      name: title,
+      description,
+      isPartOf: { '@id': `${SITE_URL}/#website` },
+      about: { '@id': `${SITE_URL}/#organization` },
+    },
+  ];
+
+  if (kind === 'service') {
+    graph.push({
+      '@type': 'Service',
+      '@id': `${url}#service`,
+      name: title.replace(' | Smart Scale Systems', ''),
+      description,
+      provider: { '@id': `${SITE_URL}/#organization` },
+      areaServed: 'Worldwide',
+      serviceType: title.replace(' | Smart Scale Systems', ''),
+    });
+  }
+
+  if (kind === 'contact') {
+    graph.push({
+      '@type': 'ContactPage',
+      '@id': `${url}#contact`,
+      url,
+      name: title,
+      about: { '@id': `${SITE_URL}/#organization` },
+    });
+  }
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': graph,
+  };
+}
+
+function updateDocumentSeo(rawHtml, pathname) {
+  const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
+  const normalizedPath = normalizeSeoPath(pathname);
+  const override = SEO_OVERRIDES[normalizedPath] || {};
+  const title = override.title || doc.querySelector('title')?.textContent?.trim() || 'Smart Scale Systems';
+  const description = override.description || metaContent(doc, 'meta[name="description"]', DEFAULT_DESCRIPTION);
+  const keywords = override.keywords || metaContent(doc, 'meta[name="keywords"]', DEFAULT_KEYWORDS);
+  const robots = metaContent(doc, 'meta[name="robots"]', 'index, follow');
+  const url = canonicalUrl(pathname);
+  const kind = pageKind(pathname);
+
+  document.title = title;
+  document.head.querySelectorAll(`
+    [data-managed-seo],
+    meta[name="description"],
+    meta[name="keywords"],
+    meta[name="robots"],
+    meta[name="author"],
+    meta[name="theme-color"],
+    meta[property^="og:"],
+    meta[name^="twitter:"],
+    link[rel="canonical"],
+    link[rel="alternate"][hreflang],
+    script[type="application/ld+json"]
+  `).forEach((element) => element.remove());
+
+  [
+    ['meta', { name: 'description', content: description }],
+    ['meta', { name: 'keywords', content: keywords }],
+    ['meta', { name: 'robots', content: robots }],
+    ['meta', { name: 'author', content: 'Smart Scale Systems' }],
+    ['meta', { name: 'theme-color', content: '#0b0b0f' }],
+    ['meta', { property: 'og:title', content: title }],
+    ['meta', { property: 'og:description', content: description }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:url', content: url }],
+    ['meta', { property: 'og:site_name', content: 'Smart Scale Systems' }],
+    ['meta', { property: 'og:image', content: SOCIAL_IMAGE }],
+    ['meta', { property: 'og:image:alt', content: 'Smart Scale Systems — AI systems made for the real world' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: title }],
+    ['meta', { name: 'twitter:description', content: description }],
+    ['meta', { name: 'twitter:image', content: SOCIAL_IMAGE }],
+    ['link', { rel: 'canonical', href: url }],
+    ['link', { rel: 'alternate', hreflang: 'en', href: url }],
+    ['link', { rel: 'alternate', hreflang: 'x-default', href: url }],
+  ].forEach(([tagName, attributes]) => {
+    document.head.appendChild(managedHeadElement(tagName, attributes));
+  });
+
+  document.head.appendChild(managedHeadElement(
+    'script',
+    { type: 'application/ld+json' },
+    JSON.stringify(buildStructuredData({ title, description, url, kind }))
+  ));
+}
+
+function bodyContent(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  doc.querySelectorAll('#nav-placeholder, #footer-placeholder, .noise-overlay').forEach((node) => node.remove());
+  doc.querySelectorAll('spline-viewer').forEach((viewer, index) => {
+    const mount = doc.createElement('div');
+    mount.className = 'react-spline-viewer';
+    mount.dataset.splineUrl = viewer.getAttribute('url') || '';
+    if (viewer.id) mount.id = viewer.id;
+    mount.dataset.splineMount = viewer.id || `spline-mount-${index}`;
+    viewer.replaceWith(mount);
+  });
+  doc.querySelectorAll('.react-spline-viewer').forEach((mount, index) => {
+    if (!mount.dataset.splineMount) {
+      mount.dataset.splineMount = mount.id || `spline-mount-${index}`;
+    }
+  });
+  return doc.body.innerHTML;
+}
+
+function setActiveNav(pathname) {
+  const current = pathname === '/' ? 'home' : pathname.replace(/^\//, '').replace('.html', '');
+  document.querySelectorAll('.nav-link[data-page]').forEach((link) => {
+    link.classList.toggle('active', link.dataset.page === current);
+  });
+
+  const servicesPages = [
+    'services',
+    'service-ai-model-training',
+    'service-ai-automation',
+    'service-custom-ai-agents',
+    'service-data-analytics',
+    'service-ai-integrations',
+    'service-business-automations',
+    'service-computer-vision',
+    'service-nlp',
+    'service-llm',
+    'service-data-annotation',
+    'service-ai-training-data',
+    'service-custom',
+  ];
+  const servicesButton = document.getElementById('servicesDropBtn');
+  if (servicesButton) {
+    servicesButton.classList.toggle('active', servicesPages.includes(current));
+  }
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function scrollToPageTop({ smooth = false } = {}) {
+  window.requestAnimationFrame(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: smooth && !prefersReducedMotion() ? 'smooth' : 'auto',
+    });
+  });
+}
+
+function initNav() {
+  const nav = document.getElementById('nav');
+  const hero = document.querySelector('.hero-section, .page-hero');
+  const navInner = nav?.querySelector('.nav-inner');
+  const compactToggle = document.getElementById('navCompactToggle');
+  const hamburger = document.getElementById('navHamburger');
+  const navLinks = document.getElementById('navLinks');
+  const dropBtn = document.getElementById('servicesDropBtn');
+  const dropdown = document.getElementById('servicesDropdown');
+  if (!nav) return () => {};
+
+  const cleanups = [];
+  const mobileNavQuery = window.matchMedia('(max-width: 768px)');
+  let navTicking = false;
+  let isPastHero = false;
+  let isExpandedPastHero = false;
+  let wasMobileNav = mobileNavQuery.matches;
+
+  const renderCompactNav = (animate = true) => {
+    const isMobileNav = mobileNavQuery.matches;
+    if (isMobileNav) {
+      nav.classList.remove('compact', 'expanded-past-hero');
+      nav.classList.toggle('compact-mobile', isPastHero);
+      gsap.killTweensOf([navInner, compactToggle]);
+      gsap.set(navInner, { x: 0, scale: 1, autoAlpha: 1 });
+      gsap.set(compactToggle, { x: 18, scale: 0.78, autoAlpha: 0 });
+      return;
+    }
+
+    nav.classList.remove('compact-mobile');
+    const shouldCompact = isPastHero && !isExpandedPastHero;
+    const shouldShowToggle = isPastHero;
+    nav.classList.toggle('compact', shouldCompact);
+    nav.classList.toggle('expanded-past-hero', isPastHero && isExpandedPastHero);
+    compactToggle?.setAttribute('aria-expanded', String(isPastHero && isExpandedPastHero));
+    compactToggle?.setAttribute('aria-label', isExpandedPastHero ? 'Collapse navigation' : 'Open navigation');
+
+    const duration = animate && !prefersReducedMotion() ? 0.48 : 0;
+    gsap.killTweensOf([navInner, compactToggle]);
+
+    if (shouldCompact) {
+      gsap.to(navInner, {
+        x: 34,
+        scale: 0.88,
+        autoAlpha: 0,
+        duration: duration * 0.72,
+        ease: 'power3.in',
+        overwrite: 'auto',
+      });
+    } else {
+      gsap.to(navInner, {
+        x: 0,
+        scale: 1,
+        autoAlpha: 1,
+        duration,
+        delay: duration * 0.12,
+        ease: 'expo.out',
+        overwrite: 'auto',
+      });
+    }
+
+    if (shouldShowToggle) {
+      gsap.to(compactToggle, {
+        x: 0,
+        scale: 1,
+        autoAlpha: 1,
+        duration,
+        delay: shouldCompact ? duration * 0.28 : 0,
+        ease: 'back.out(1.7)',
+        overwrite: 'auto',
+      });
+    } else {
+      gsap.to(compactToggle, {
+        x: 18,
+        scale: 0.78,
+        autoAlpha: 0,
+        duration: duration * 0.55,
+        ease: 'power2.in',
+        overwrite: 'auto',
+      });
+    }
+  };
+
+  const updateNav = () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+    const nextIsPastHero = Boolean(hero && hero.getBoundingClientRect().bottom <= 0);
+    const isMobileNav = mobileNavQuery.matches;
+    if (nextIsPastHero !== isPastHero || isMobileNav !== wasMobileNav) {
+      isPastHero = nextIsPastHero;
+      wasMobileNav = isMobileNav;
+      isExpandedPastHero = false;
+      renderCompactNav();
+    }
+    navTicking = false;
+  };
+  const onNavScroll = () => {
+    if (navTicking) return;
+    navTicking = true;
+    window.requestAnimationFrame(updateNav);
+  };
+  window.addEventListener('scroll', onNavScroll, { passive: true });
+  window.addEventListener('resize', onNavScroll, { passive: true });
+  cleanups.push(() => window.removeEventListener('scroll', onNavScroll));
+  cleanups.push(() => window.removeEventListener('resize', onNavScroll));
+  if (compactToggle) {
+    gsap.set(compactToggle, { autoAlpha: 0, x: 18, scale: 0.78 });
+  }
+  updateNav();
+
+  if (compactToggle && navInner) {
+    const toggleCompactNav = (event) => {
+      event.stopPropagation();
+      isExpandedPastHero = !isExpandedPastHero;
+      renderCompactNav();
+    };
+    const collapseExpandedNav = (event) => {
+      if (!isPastHero || !isExpandedPastHero || nav.contains(event.target)) return;
+      isExpandedPastHero = false;
+      renderCompactNav();
+    };
+    const collapseOnEscape = (event) => {
+      if (event.key !== 'Escape' || !isPastHero || !isExpandedPastHero) return;
+      isExpandedPastHero = false;
+      renderCompactNav();
+      compactToggle.focus();
+    };
+
+    compactToggle.addEventListener('click', toggleCompactNav);
+    document.addEventListener('click', collapseExpandedNav);
+    document.addEventListener('keydown', collapseOnEscape);
+    cleanups.push(() => {
+      compactToggle.removeEventListener('click', toggleCompactNav);
+      document.removeEventListener('click', collapseExpandedNav);
+      document.removeEventListener('keydown', collapseOnEscape);
+    });
+  }
+
+  if (hamburger && navLinks) {
+    const toggleMenu = () => {
+      const isOpen = navLinks.classList.toggle('open');
+      hamburger.classList.toggle('open', isOpen);
+      hamburger.setAttribute('aria-expanded', String(isOpen));
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    };
+    hamburger.addEventListener('click', toggleMenu);
+    cleanups.push(() => hamburger.removeEventListener('click', toggleMenu));
+  }
+
+  if (dropBtn && dropdown) {
+    const wrap = dropBtn.closest('.nav-dropdown-wrap');
+    const supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)');
+    let closeTimeout = null;
+    const open = () => {
+      if (!supportsHover.matches) return;
+      clearTimeout(closeTimeout);
+      dropdown.classList.add('open');
+      dropBtn.setAttribute('aria-expanded', 'true');
+    };
+    const close = () => {
+      if (!supportsHover.matches) return;
+      closeTimeout = setTimeout(() => {
+        dropdown.classList.remove('open');
+        dropBtn.setAttribute('aria-expanded', 'false');
+      }, 180);
+    };
+    const toggleDropdown = (event) => {
+      event.stopPropagation();
+      const isOpen = dropdown.classList.toggle('open');
+      dropBtn.setAttribute('aria-expanded', String(isOpen));
+    };
+    wrap.addEventListener('mouseenter', open);
+    wrap.addEventListener('mouseleave', close);
+    dropBtn.addEventListener('click', toggleDropdown);
+    cleanups.push(() => {
+      wrap.removeEventListener('mouseenter', open);
+      wrap.removeEventListener('mouseleave', close);
+      dropBtn.removeEventListener('click', toggleDropdown);
+    });
+  }
+
+  return () => {
+    cleanups.forEach((cleanup) => cleanup());
+    gsap.killTweensOf([navInner, compactToggle]);
+    gsap.set(navInner, { clearProps: 'transform,opacity,visibility' });
+    gsap.set(compactToggle, { clearProps: 'transform,opacity,visibility' });
+    nav.classList.remove('compact', 'expanded-past-hero', 'compact-mobile');
+    document.body.style.overflow = '';
+  };
+}
+
+function initRevealAnimations() {
+  const observers = [];
+  const revealItems = document.querySelectorAll('.reveal-on-scroll, .project-reveal');
+  if (revealItems.length) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          window.setTimeout(() => {
+            entry.target.style.willChange = 'auto';
+          }, 520);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    revealItems.forEach((el, index) => {
+      el.style.willChange = 'transform, opacity';
+      el.style.transitionDelay = `${(index % 5) * 0.045}s`;
+      observer.observe(el);
+    });
+    observers.push(observer);
+  }
+
+  const sectionItems = document.querySelectorAll('[data-section-reveal]');
+  if (sectionItems.length) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('section-revealed');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2, rootMargin: '0px 0px -60px 0px' });
+    sectionItems.forEach((el) => observer.observe(el));
+    observers.push(observer);
+  }
+
+  const teamIntroItems = document.querySelectorAll('.team-cinematic-line, .team-cinematic-sub');
+  if (teamIntroItems.length) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.25, rootMargin: '0px 0px -40px 0px' });
+    teamIntroItems.forEach((el) => observer.observe(el));
+    observers.push(observer);
+  }
+
+  const teamRows = document.querySelectorAll('[data-team-reveal]');
+  if (teamRows.length) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    teamRows.forEach((row) => observer.observe(row));
+    observers.push(observer);
+  }
+
+  return () => observers.forEach((observer) => observer.disconnect());
+}
+
+function initSplineLoader() {
+  const loaders = Array.from(document.querySelectorAll('.spline-loader'));
+  if (!loaders.length) return () => {};
+  const hideLoaders = () => loaders.forEach((loader) => loader.classList.add('hidden'));
+  const timer = window.setTimeout(hideLoaders, 9000);
+  return () => {
+    window.clearTimeout(timer);
+  };
+}
+
+function initCountUpStats() {
+  const stats = Array.from(document.querySelectorAll('[data-count-up]'));
+  if (!stats.length) return () => {};
+
+  const formatValue = (value, decimals) => {
+    if (decimals > 0) return value.toFixed(decimals);
+    return String(Math.round(value));
+  };
+
+  const renderValue = (el, value) => {
+    const decimals = Number(el.dataset.countDecimals || 0);
+    const suffix = el.dataset.countSuffix || '';
+    el.innerHTML = `${formatValue(value, decimals)}<span>${suffix}</span>`;
+  };
+
+  const animateValue = (el) => {
+    if (el.dataset.counted === 'true') return;
+    el.dataset.counted = 'true';
+
+    const target = Number(el.dataset.countValue || 0);
+    const duration = 1400;
+
+    if (prefersReducedMotion()) {
+      renderValue(el, target);
+      return;
+    }
+
+    const start = performance.now();
+    const tick = (now) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      renderValue(el, target * eased);
+      if (progress < 1) window.requestAnimationFrame(tick);
+    };
+
+    renderValue(el, 0);
+    window.requestAnimationFrame(tick);
+  };
+
+  if (!('IntersectionObserver' in window)) {
+    stats.forEach(animateValue);
+    return () => {};
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      animateValue(entry.target);
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.45, rootMargin: '0px 0px -40px 0px' });
+
+  stats.forEach((stat) => observer.observe(stat));
+
+  return () => observer.disconnect();
+}
+
+function ReactSplineMounts({ contentKey }) {
+  const [mounts, setMounts] = useState([]);
+  const [visibleMounts, setVisibleMounts] = useState([]);
+  const [SplineComponent, setSplineComponent] = useState(null);
+
+  useEffect(() => {
+    setMounts(Array.from(document.querySelectorAll('.react-spline-viewer')));
+    setVisibleMounts([]);
+  }, [contentKey]);
+
+  useEffect(() => {
+    const splineMounts = mounts.filter((mount) => mount.dataset.splineUrl);
+    if (!splineMounts.length) return undefined;
+    setVisibleMounts(splineMounts);
+    primeSplineLoading(window.location.pathname);
+    return undefined;
+  }, [mounts]);
+
+  useEffect(() => {
+    if (!visibleMounts.length) return undefined;
+    if (SplineComponent) return undefined;
+
+    let isMounted = true;
+    loadSplineModule().then((module) => {
+      if (isMounted) setSplineComponent(() => module.default);
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [visibleMounts, SplineComponent]);
+
+  if (!SplineComponent) return null;
+
+  return visibleMounts.map((mount) => {
+    const scene = mount.dataset.splineUrl;
+    if (!scene) return null;
+
+    return createPortal(
+      <SplineComponent
+        scene={scene}
+        onLoad={() => {
+          mount
+            .closest('.spline-wrapper, .team-hero-spline-shell')
+            ?.querySelector('.spline-loader')
+            ?.classList.add('hidden');
+        }}
+      />,
+      mount,
+      `${mount.dataset.splineMount}-${scene}`
+    );
+  });
+}
+
+function initAiCanvases() {
+  const canvases = Array.from(document.querySelectorAll('[data-ai-network]'));
+  if (!canvases.length) return () => {};
+
+  const cleanupFns = canvases.map((canvas) => {
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return () => {};
+
+    const variant = canvas.dataset.aiNetwork || 'hero';
+    const reducedMotion = prefersReducedMotion();
+    const pointer = { x: 0, y: 0, active: false };
+    let width = 0;
+    let height = 0;
+    let frame = 0;
+    let animationId = 0;
+    let particles = [];
+
+    const createParticles = () => {
+      const baseCount = variant === 'showcase' ? 128 : 58;
+      const areaFactor = Math.min(Math.max((width * height) / 420000, 0.8), 1.45);
+      const count = Math.round(baseCount * areaFactor);
+      particles = Array.from({ length: count }, (_, index) => {
+        const angle = (index / count) * Math.PI * 2;
+        const radius = Math.min(width, height) * (variant === 'showcase' ? 0.22 + Math.random() * 0.5 : 0.16 + Math.random() * 0.34);
+        const anchorX = width * (variant === 'showcase' ? 0.68 : 0.5);
+        const anchorY = height * 0.5;
+        return {
+          x: anchorX + Math.cos(angle) * radius + (Math.random() - 0.5) * width * (variant === 'showcase' ? 0.44 : 0.22),
+          y: anchorY + Math.sin(angle) * radius * 0.68 + (Math.random() - 0.5) * height * (variant === 'showcase' ? 0.28 : 0.2),
+          vx: (Math.random() - 0.5) * (variant === 'showcase' ? 0.16 : 0.16),
+          vy: (Math.random() - 0.5) * (variant === 'showcase' ? 0.14 : 0.16),
+          size: variant === 'showcase' ? 0.9 + Math.random() * 2.8 : 1.3 + Math.random() * 2.2,
+          pulse: Math.random() * Math.PI * 2,
+          hue: Math.random(),
+        };
+      });
+    };
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      width = Math.max(1, rect.width);
+      height = Math.max(1, rect.height);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      createParticles();
+    };
+
+    const drawCore = (time) => {
+      const centerX = width * (variant === 'showcase' ? 0.64 : 0.5);
+      const centerY = height * 0.5;
+      const coreRadius = Math.min(width, height) * (variant === 'showcase' ? 0.13 : 0.18);
+      const glow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, coreRadius * 2.2);
+      glow.addColorStop(0, variant === 'showcase' ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.9)');
+      glow.addColorStop(0.18, variant === 'showcase' ? 'rgba(212, 196, 138, 0.38)' : 'rgba(160, 160, 160, 0.34)');
+      glow.addColorStop(0.42, variant === 'showcase' ? 'rgba(126, 156, 125, 0.22)' : 'rgba(0, 0, 0, 0)');
+      glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, coreRadius * 2.2, 0, Math.PI * 2);
+      ctx.fill();
+
+      const ringCount = variant === 'showcase' ? 5 : 3;
+      for (let ring = 0; ring < ringCount; ring += 1) {
+        const radius = coreRadius * (1 + ring * 0.36 + Math.sin(time * 0.0014 + ring) * 0.035);
+        ctx.strokeStyle = variant === 'showcase'
+          ? `rgba(${ring % 2 ? '212, 196, 138' : '255, 255, 255'}, ${0.38 - ring * 0.052})`
+          : `rgba(255, 255, 255, ${0.34 - ring * 0.08})`;
+        ctx.lineWidth = 1;
+        ctx.setLineDash([10 + ring * 5, 12 + ring * 4]);
+        ctx.lineDashOffset = -time * (0.018 + ring * 0.006);
+        ctx.beginPath();
+        ctx.ellipse(centerX, centerY, radius * (variant === 'showcase' ? 1.46 : 1), radius * (variant === 'showcase' ? 0.72 : 1), -0.22 + ring * 0.16, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.setLineDash([]);
+
+      if (variant === 'showcase') {
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
+        for (let i = 0; i < 7; i += 1) {
+          const angle = -0.95 + i * 0.32 + Math.sin(time * 0.00045 + i) * 0.06;
+          const length = Math.max(width, height) * 0.56;
+          const gradient = ctx.createLinearGradient(centerX, centerY, centerX + Math.cos(angle) * length, centerY + Math.sin(angle) * length);
+          gradient.addColorStop(0, 'rgba(255, 255, 255, 0.18)');
+          gradient.addColorStop(0.28, 'rgba(212, 196, 138, 0.08)');
+          gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+          ctx.strokeStyle = gradient;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.lineTo(centerX + Math.cos(angle) * length, centerY + Math.sin(angle) * length);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+    };
+
+    const drawShowcaseBackdrop = (time) => {
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+
+      const goldGlow = ctx.createRadialGradient(width * 0.7, height * 0.44, 0, width * 0.7, height * 0.44, Math.max(width, height) * 0.62);
+      goldGlow.addColorStop(0, 'rgba(212, 196, 138, 0.2)');
+      goldGlow.addColorStop(0.36, 'rgba(126, 156, 125, 0.1)');
+      goldGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = goldGlow;
+      ctx.fillRect(0, 0, width, height);
+
+      const leftGlow = ctx.createRadialGradient(width * 0.1, height * 0.15, 0, width * 0.1, height * 0.15, width * 0.55);
+      leftGlow.addColorStop(0, 'rgba(255, 255, 255, 0.08)');
+      leftGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = leftGlow;
+      ctx.fillRect(0, 0, width, height);
+      ctx.restore();
+
+      ctx.save();
+      ctx.globalAlpha = 0.18;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.28)';
+      ctx.lineWidth = 1;
+      const gridGap = 54;
+      const offset = (time * 0.012) % gridGap;
+      for (let x = -gridGap + offset; x < width + gridGap; x += gridGap) {
+        ctx.beginPath();
+        ctx.moveTo(x, height * 0.18);
+        ctx.lineTo(x + width * 0.2, height);
+        ctx.stroke();
+      }
+      for (let y = offset; y < height + gridGap; y += gridGap) {
+        ctx.beginPath();
+        ctx.moveTo(width * 0.42, y);
+        ctx.lineTo(width, y + height * 0.12);
+        ctx.stroke();
+      }
+      ctx.restore();
+    };
+
+    const draw = (time = 0) => {
+      frame += 1;
+      ctx.clearRect(0, 0, width, height);
+
+      const background = ctx.createLinearGradient(0, 0, width, height);
+      if (variant === 'showcase') {
+        background.addColorStop(0, '#050505');
+        background.addColorStop(0.38, '#141611');
+        background.addColorStop(0.72, '#080908');
+        background.addColorStop(1, '#000000');
+      } else {
+        background.addColorStop(0, 'rgba(255,255,255,0)');
+        background.addColorStop(1, 'rgba(0,0,0,0.05)');
+      }
+      ctx.fillStyle = background;
+      ctx.fillRect(0, 0, width, height);
+      if (variant === 'showcase') drawShowcaseBackdrop(time);
+
+      const maxDistance = variant === 'showcase' ? 132 : 122;
+      for (let i = 0; i < particles.length; i += 1) {
+        const a = particles[i];
+        if (!reducedMotion) {
+          const drift = Math.sin(time * 0.0007 + a.pulse) * (variant === 'showcase' ? 0.08 : 0.045);
+          a.x += a.vx + drift;
+          a.y += a.vy + Math.cos(time * 0.0006 + a.pulse) * 0.04;
+
+          if (pointer.active) {
+            const dx = pointer.x - a.x;
+            const dy = pointer.y - a.y;
+            const dist = Math.hypot(dx, dy) || 1;
+            if (dist < 210) {
+              a.x += (dx / dist) * 0.22;
+              a.y += (dy / dist) * 0.22;
+            }
+          }
+
+          if (a.x < -20) a.x = width + 20;
+          if (a.x > width + 20) a.x = -20;
+          if (a.y < -20) a.y = height + 20;
+          if (a.y > height + 20) a.y = -20;
+        }
+
+        for (let j = i + 1; j < particles.length; j += 1) {
+          const b = particles[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const distance = Math.hypot(dx, dy);
+          if (distance > maxDistance) continue;
+          const alpha = (1 - distance / maxDistance) * (variant === 'showcase' ? 0.28 : 0.18);
+          ctx.strokeStyle = variant === 'showcase' && (a.hue + b.hue) > 1.08
+            ? `rgba(212, 196, 138, ${alpha * 0.8})`
+            : `rgba(255, 255, 255, ${alpha})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+
+      drawCore(time);
+
+      particles.forEach((particle) => {
+        const pulse = 0.75 + Math.sin(time * 0.002 + particle.pulse) * 0.25;
+        if (variant === 'showcase') {
+          ctx.fillStyle = particle.hue > 0.7
+            ? `rgba(212, 196, 138, ${0.36 + pulse * 0.34})`
+            : `rgba(255, 255, 255, ${0.34 + pulse * 0.34})`;
+        } else {
+          ctx.fillStyle = `rgba(0, 0, 0, ${0.28 + pulse * 0.22})`;
+        }
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size * pulse, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      if (!reducedMotion) {
+        animationId = window.requestAnimationFrame(draw);
+      }
+    };
+
+    const onPointerMove = (event) => {
+      const rect = canvas.getBoundingClientRect();
+      pointer.x = event.clientX - rect.left;
+      pointer.y = event.clientY - rect.top;
+      pointer.active = true;
+    };
+    const onPointerLeave = () => {
+      pointer.active = false;
+    };
+
+    resize();
+    draw();
+    if (!reducedMotion) animationId = window.requestAnimationFrame(draw);
+    canvas.addEventListener('pointermove', onPointerMove, { passive: true });
+    canvas.addEventListener('pointerleave', onPointerLeave);
+    window.addEventListener('resize', resize, { passive: true });
+
+    return () => {
+      window.cancelAnimationFrame(animationId);
+      canvas.removeEventListener('pointermove', onPointerMove);
+      canvas.removeEventListener('pointerleave', onPointerLeave);
+      window.removeEventListener('resize', resize);
+    };
+  });
+
+  return () => cleanupFns.forEach((cleanup) => cleanup());
+}
+
+function initCarousels() {
+  const cleanups = [];
+  document.querySelectorAll('.carousel-scene').forEach((scene) => {
+    const spinner = scene.querySelector('.carousel-spinner');
+    if (!spinner || scene.querySelector('.carousel-dots')) return;
+
+    const items = Array.from(spinner.children);
+    if (!items.length) return;
+    items.forEach((item) => item.classList.add('carousel-item'));
+
+    const sizeScene = () => {
+      items.forEach((item) => {
+        item.classList.add('carousel-measuring');
+        item.style.width = '340px';
+      });
+      const tallestCard = Math.max(...items.map((item) => item.offsetHeight));
+      items.forEach((item) => {
+        item.classList.remove('carousel-measuring');
+        item.style.width = '';
+      });
+      const verticalGutter = 52;
+      const sceneHeight = Math.min(Math.max(tallestCard + verticalGutter, 240), 440);
+      scene.style.height = `${sceneHeight}px`;
+      spinner.style.height = `${sceneHeight - verticalGutter}px`;
+      spinner.style.marginTop = '12px';
+    };
+
+    let activeIndex = 0;
+    const dotsContainer = document.createElement('div');
+    dotsContainer.className = 'carousel-dots';
+    const dots = items.map((_, index) => {
+      const dot = document.createElement('div');
+      dot.className = 'carousel-dot';
+      dot.addEventListener('click', () => {
+        activeIndex = index;
+        updateCarousel();
+        resetAutoPlay();
+      });
+      dotsContainer.appendChild(dot);
+      return dot;
+    });
+    scene.appendChild(dotsContainer);
+
+    const updateCarousel = () => {
+      items.forEach((item, index) => {
+        let diff = index - activeIndex;
+        const half = Math.floor(items.length / 2);
+        if (diff > half) diff -= items.length;
+        if (diff < -half) diff += items.length;
+
+        if (Math.abs(diff) > 2) {
+          item.style.opacity = '0';
+          item.style.pointerEvents = 'none';
+          item.style.setProperty('--carousel-x', `${Math.sign(diff) * 300}px`);
+          item.style.setProperty('--carousel-scale', '0.5');
+        } else {
+          item.style.opacity = '';
+          item.style.setProperty('--carousel-x', `${diff * 180}px`);
+          item.style.setProperty('--carousel-scale', String(1 - Math.abs(diff) * 0.15));
+          item.classList.toggle('active', diff === 0);
+          item.style.pointerEvents = diff === 0 ? 'auto' : 'none';
+        }
+        item.style.zIndex = String(100 - Math.abs(diff));
+      });
+      dots.forEach((dot, index) => dot.classList.toggle('active', index === activeIndex));
+    };
+
+    let autoPlayInterval = window.setInterval(() => {
+      activeIndex = (activeIndex + 1) % items.length;
+      updateCarousel();
+    }, 4000);
+
+    const resetAutoPlay = () => {
+      window.clearInterval(autoPlayInterval);
+      autoPlayInterval = window.setInterval(() => {
+        activeIndex = (activeIndex + 1) % items.length;
+        updateCarousel();
+      }, 4000);
+    };
+
+    const prev = () => {
+      activeIndex = (activeIndex - 1 + items.length) % items.length;
+      updateCarousel();
+      resetAutoPlay();
+    };
+    const next = () => {
+      activeIndex = (activeIndex + 1) % items.length;
+      updateCarousel();
+      resetAutoPlay();
+    };
+    const prevBtn = scene.querySelector('.carousel-prev');
+    const nextBtn = scene.querySelector('.carousel-next');
+    prevBtn?.addEventListener('click', prev);
+    nextBtn?.addEventListener('click', next);
+
+    let startX = 0;
+    const onTouchStart = (event) => {
+      startX = event.touches[0].clientX;
+    };
+    const onTouchEnd = (event) => {
+      const endX = event.changedTouches[0].clientX;
+      if (startX - endX > 50) next();
+      if (endX - startX > 50) prev();
+    };
+    scene.addEventListener('touchstart', onTouchStart, { passive: true });
+    scene.addEventListener('touchend', onTouchEnd);
+
+    let resizeFrame = null;
+    const onResize = () => {
+      if (resizeFrame) window.cancelAnimationFrame(resizeFrame);
+      resizeFrame = window.requestAnimationFrame(() => {
+        resizeFrame = null;
+        sizeScene();
+        updateCarousel();
+      });
+    };
+    window.addEventListener('resize', onResize);
+    window.requestAnimationFrame(() => {
+      sizeScene();
+      updateCarousel();
+    });
+
+    cleanups.push(() => {
+      window.clearInterval(autoPlayInterval);
+      if (resizeFrame) window.cancelAnimationFrame(resizeFrame);
+      window.removeEventListener('resize', onResize);
+      scene.removeEventListener('touchstart', onTouchStart);
+      scene.removeEventListener('touchend', onTouchEnd);
+      prevBtn?.removeEventListener('click', prev);
+      nextBtn?.removeEventListener('click', next);
+      dotsContainer.remove();
+      items.forEach((item) => item.classList.remove('carousel-item', 'active'));
+    });
+  });
+  return () => cleanups.forEach((cleanup) => cleanup());
+}
+
+function initForms() {
+  const cleanups = [];
+
+  const wireForm = (formId, endpoint, makePayload, sendingLabel, resetLabel) => {
+    const form = document.getElementById(formId);
+    const success = document.getElementById('formSuccess');
+    const error = document.getElementById('formError');
+    const submitBtn = document.getElementById('submitBtn');
+    if (!form || !submitBtn) return;
+
+    const onSubmit = async (event) => {
+      event.preventDefault();
+      const required = form.querySelectorAll('[required]');
+      let valid = true;
+      required.forEach((field) => {
+        field.classList.remove('field-error');
+        if (!field.value.trim()) {
+          field.classList.add('field-error');
+          valid = false;
+        }
+      });
+      if (!valid) return;
+
+      submitBtn.disabled = true;
+      submitBtn.classList.add('loading');
+      submitBtn.innerHTML = `<span class="spinner"></span> ${sendingLabel}`;
+
+      try {
+        const payload = makePayload(form);
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const result = await response.json();
+        if (!response.ok || !result.success) {
+          throw new Error(result.error || 'Failed to send request');
+        }
+        form.style.display = 'none';
+        if (error) error.style.display = 'none';
+        if (success) {
+          success.style.display = 'flex';
+          success.classList.add('show');
+        }
+      } catch (err) {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('loading');
+        submitBtn.innerHTML = resetLabel;
+        if (error) {
+          error.style.display = 'flex';
+          const message = error.querySelector('p');
+          if (message) message.textContent = err.message || 'Something went wrong. Please try again later.';
+        }
+      }
+    };
+
+    form.addEventListener('submit', onSubmit);
+    cleanups.push(() => form.removeEventListener('submit', onSubmit));
+  };
+
+  const consultationOffer = document.getElementById('consultationOffer');
+  const consultationOfferButton = document.getElementById('consultationOfferButton');
+  const hideConsultationOffer = () => {
+    if (consultationOffer) consultationOffer.hidden = true;
+  };
+  if (hasCompletedLeadCapture()) hideConsultationOffer();
+  if (consultationOfferButton) {
+    const openConsultationModal = () => window.dispatchEvent(new CustomEvent('sss:open-lead-capture'));
+    consultationOfferButton.addEventListener('click', openConsultationModal);
+    window.addEventListener('sss:lead-capture-complete', hideConsultationOffer);
+    cleanups.push(() => {
+      consultationOfferButton.removeEventListener('click', openConsultationModal);
+      window.removeEventListener('sss:lead-capture-complete', hideConsultationOffer);
+    });
+  }
+
+  wireForm(
+    'contactForm',
+    '/api/contact',
+    (form) => ({
+      name: form.fullName.value.trim(),
+      email: form.email.value.trim(),
+      subject: form.subject.value.trim(),
+      message: form.message.value.trim(),
+    }),
+    'Sending...',
+    '<span class="btn-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Send Message'
+  );
+
+  wireForm(
+    'customServiceForm',
+    '/api/custom-service',
+    (form) => ({
+      fullName: form.fullName.value.trim(),
+      email: form.email.value.trim(),
+      projectDetails: form.projectDetails.value.trim(),
+    }),
+    'Sending...',
+    '<span class="btn-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Send Request'
+  );
+
+  return () => cleanups.forEach((cleanup) => cleanup());
+}
+
+function splitTextNodes(element, mode) {
+  if (!element || element.dataset.gsapSplit === mode) return;
+
+  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      if (!node.textContent.trim()) return NodeFilter.FILTER_REJECT;
+      if (node.parentElement?.closest('.gsap-word, .gsap-char')) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    },
+  });
+
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+
+  nodes.forEach((node) => {
+    const fragment = document.createDocumentFragment();
+    const pieces = mode === 'chars'
+      ? node.textContent.split('')
+      : node.textContent.split(/(\s+)/);
+
+    pieces.forEach((piece) => {
+      if (!piece) return;
+      if (/^\s+$/.test(piece)) {
+        fragment.appendChild(document.createTextNode(piece));
+        return;
+      }
+
+      if (mode === 'chars') {
+        const char = document.createElement('span');
+        char.className = 'gsap-char';
+        char.textContent = piece;
+        fragment.appendChild(char);
+        return;
+      }
+
+      const word = document.createElement('span');
+      word.className = 'gsap-word';
+      word.textContent = piece;
+      fragment.appendChild(word);
+    });
+
+    node.replaceWith(fragment);
+  });
+
+  element.dataset.gsapSplit = mode;
+}
+
+function initPremiumAnimations() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return () => {};
+  const hoverCleanups = [];
+
+  const ctx = gsap.context(() => {
+    gsap.set('main', { autoAlpha: 1 });
+
+    gsap.fromTo('.nav-logo, .nav-links > *, .nav-cta',
+      { y: -18, autoAlpha: 0 },
+      { y: 0, autoAlpha: 1, duration: 0.72, stagger: 0.045, ease: 'expo.out', delay: 0.08 }
+    );
+
+    const heroTitle = document.querySelector('.hero-title, .page-hero-title');
+    const heroSubtitle = document.querySelector('.hero-subtitle, .page-hero-subtitle');
+    const heroActions = document.querySelector('.hero-actions, .cta-actions');
+    const heroVisual = document.querySelector('.spline-wrapper, .ai-network-shell, .page-hero-orb, .home-ai-showcase .ai-network-canvas');
+
+    if (heroTitle) {
+      gsap.fromTo(heroTitle,
+        { y: 28, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.78, ease: 'power3.out', delay: 0.08 }
+      );
+    }
+
+    if (heroSubtitle) {
+      gsap.fromTo(heroSubtitle,
+        { y: 18, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.68, ease: 'power3.out', delay: 0.22 }
+      );
+    }
+
+    gsap.fromTo([heroActions, heroVisual].filter(Boolean),
+      { y: 34, scale: 0.96, autoAlpha: 0 },
+      { y: 0, scale: 1, autoAlpha: 1, duration: 0.9, stagger: 0.12, ease: 'expo.out', delay: 0.6 }
+    );
+
+    // Keep GSAP on first-viewport elements only. Cards and section content use
+    // lightweight CSS/IntersectionObserver reveals to avoid route-change jank.
+    return;
+
+    document.querySelectorAll('.section-tag').forEach((tag) => {
+      splitTextNodes(tag, 'chars');
+      gsap.fromTo(tag.querySelectorAll('.gsap-char'),
+        { yPercent: 120, autoAlpha: 0, rotateX: -75 },
+        {
+          yPercent: 0,
+          autoAlpha: 1,
+          rotateX: 0,
+          duration: 0.55,
+          stagger: 0.018,
+          ease: 'back.out(1.8)',
+          scrollTrigger: { trigger: tag, start: 'top 88%', once: true },
+        }
+      );
+    });
+
+    document.querySelectorAll(`
+      .section-title,
+      .contact-form-title,
+      .contact-info-title,
+      .service-choice-intro h3,
+      .legal-content h2,
+      .legal-content h3,
+      .team-member-name,
+      .career-card h3,
+      .service-full-card h2,
+      .offering-card h3,
+      .use-case-card h3,
+      .related-card h3,
+      .testimonial-full-card h3,
+      .why-card h3,
+      .industry-card h3
+    `).forEach((title) => {
+      splitTextNodes(title, 'words');
+      gsap.fromTo(title.querySelectorAll('.gsap-word'),
+        { yPercent: 105, autoAlpha: 0, rotateX: -58, filter: 'blur(7px)' },
+        {
+          yPercent: 0,
+          autoAlpha: 1,
+          rotateX: 0,
+          filter: 'blur(0px)',
+          duration: 0.95,
+          stagger: 0.035,
+          ease: 'expo.out',
+          scrollTrigger: { trigger: title, start: 'top 84%', once: true },
+        }
+      );
+    });
+
+    document.querySelectorAll(`
+      .section-body,
+      .service-choice-intro p,
+      .contact-form-subtitle,
+      .legal-content p,
+      .legal-content li,
+      .team-member-role,
+      .team-member-bio,
+      .career-card > p,
+      .service-full-card > p,
+      .offering-card p,
+      .use-case-card p,
+      .related-card p,
+      .testimonial-text,
+      .why-card p,
+      .industry-card p,
+      .footer-desc
+    `).forEach((body) => {
+      splitTextNodes(body, 'words');
+      gsap.fromTo(body.querySelectorAll('.gsap-word'),
+        { y: 18, autoAlpha: 0 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.62,
+          stagger: 0.012,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: body, start: 'top 88%', once: true },
+        }
+      );
+    });
+
+    const cardGroups = [
+      '.offering-grid',
+      '.use-cases-grid',
+      '.related-grid',
+      '.testimonials-full-grid',
+      '.contact-info-cards',
+      '.contact-trust-grid',
+      '.team-grid',
+      '.pillars-grid',
+      '.carousel-spinner',
+      '.service-choice-grid',
+      '.legal-content',
+      '.contact-form',
+      '.footer-top',
+      '.footer-bottom',
+      '.team-members-section',
+    ];
+
+    cardGroups.forEach((selector) => {
+      document.querySelectorAll(selector).forEach((group) => {
+        if (group.classList.contains('carousel-spinner')) return;
+        const cards = group.querySelectorAll(
+          '.offering-card, .use-case-card, .related-card, .testimonial-card, .testimonial-full-card, .contact-info-card, .contact-trust-item, .career-card, .team-card, .pillar-card, .industry-card, .why-card, .service-choice-card, .service-card, .legal-content > *, .form-group, .form-submit-row, .footer-brand, .footer-links-group, .footer-bottom > *, .team-member-row'
+        );
+        if (!cards.length) return;
+
+        gsap.fromTo(cards,
+          { y: 56, autoAlpha: 0, scale: 0.92, rotateX: -8, transformOrigin: '50% 100%' },
+          {
+            y: 0,
+            autoAlpha: 1,
+            scale: 1,
+            rotateX: 0,
+            duration: 0.88,
+            stagger: { each: 0.075, from: 'start' },
+            ease: 'expo.out',
+            scrollTrigger: { trigger: group, start: 'top 82%', once: true },
+          }
+        );
+      });
+    });
+
+    document.querySelectorAll('.team-member-row').forEach((row) => {
+      const photo = row.querySelector('.team-member-photo-wrap');
+      const info = row.querySelector('.team-member-info');
+      const skills = row.querySelectorAll('.team-member-skills span');
+      const reversed = row.classList.contains('reverse');
+
+      gsap.fromTo(photo,
+        { x: reversed ? 42 : -42, rotateY: reversed ? -12 : 12, autoAlpha: 0, scale: 0.92 },
+        {
+          x: 0,
+          rotateY: 0,
+          autoAlpha: 1,
+          scale: 1,
+          duration: 1,
+          ease: 'expo.out',
+          scrollTrigger: { trigger: row, start: 'top 82%', once: true },
+        }
+      );
+
+      gsap.fromTo(info,
+        { x: reversed ? -36 : 36, autoAlpha: 0 },
+        {
+          x: 0,
+          autoAlpha: 1,
+          duration: 0.9,
+          ease: 'expo.out',
+          scrollTrigger: { trigger: row, start: 'top 82%', once: true },
+        }
+      );
+
+      if (skills.length) {
+        gsap.fromTo(skills,
+          { y: 14, autoAlpha: 0, scale: 0.9 },
+          {
+            y: 0,
+            autoAlpha: 1,
+            scale: 1,
+            duration: 0.48,
+            stagger: 0.035,
+            ease: 'back.out(1.8)',
+            scrollTrigger: { trigger: row, start: 'top 78%', once: true },
+          }
+        );
+      }
+    });
+
+    document.querySelectorAll('.contact-form-wrap, .contact-info-wrap, .home-ai-copy, .service-choice-shell').forEach((panel) => {
+      gsap.fromTo(panel,
+        { y: 42, autoAlpha: 0, filter: 'blur(10px)' },
+        {
+          y: 0,
+          autoAlpha: 1,
+          filter: 'blur(0px)',
+          duration: 0.95,
+          ease: 'expo.out',
+          scrollTrigger: { trigger: panel, start: 'top 84%', once: true },
+        }
+      );
+    });
+
+    document.querySelectorAll('.content-section').forEach((section) => {
+      gsap.fromTo(section,
+        { '--section-wash': 0 },
+        {
+          '--section-wash': 1,
+          duration: 1.2,
+          ease: 'power2.out',
+          scrollTrigger: { trigger: section, start: 'top 86%', once: true },
+        }
+      );
+    });
+
+    gsap.fromTo('.btn-primary, .btn-ghost, .form-submit-btn',
+      { y: 16, autoAlpha: 0 },
+      {
+        y: 0,
+        autoAlpha: 1,
+        duration: 0.55,
+        stagger: 0.045,
+        ease: 'back.out(1.7)',
+        scrollTrigger: { trigger: 'main', start: 'top 95%', once: true },
+      }
+    );
+
+    gsap.fromTo('.footer-socials a, .footer-bottom-links a, .footer-cta-btn',
+      { y: 14, autoAlpha: 0 },
+      {
+        y: 0,
+        autoAlpha: 1,
+        duration: 0.5,
+        stagger: 0.04,
+        ease: 'back.out(1.7)',
+        scrollTrigger: { trigger: '.footer', start: 'top 92%', once: true },
+      }
+    );
+
+    const hoverTargets = document.querySelectorAll('.offering-card:not(.carousel-item), .use-case-card:not(.carousel-item), .related-card:not(.carousel-item), .service-full-card:not(.carousel-item), .testimonial-full-card:not(.carousel-item), .contact-info-card:not(.carousel-item), .career-card:not(.carousel-item), .why-card:not(.carousel-item), .industry-card:not(.carousel-item), .footer-socials a, .team-member-photo');
+    hoverTargets.forEach((card) => {
+      const onEnter = () => gsap.to(card, { y: -8, scale: 1.015, duration: 0.32, ease: 'power3.out' });
+      const onLeave = () => gsap.to(card, { y: 0, scale: 1, duration: 0.42, ease: 'elastic.out(1, 0.65)' });
+      card.addEventListener('mouseenter', onEnter);
+      card.addEventListener('mouseleave', onLeave);
+      hoverCleanups.push(() => {
+        card.removeEventListener('mouseenter', onEnter);
+        card.removeEventListener('mouseleave', onLeave);
+      });
+    });
+  });
+
+  ScrollTrigger.refresh();
+
+  return () => {
+    hoverCleanups.forEach((cleanup) => cleanup());
+    ctx.revert();
+  };
+}
+
+const ROUTE_LABELS = {
+  '/': 'Home',
+  '/services': 'Services',
+  '/projects': 'Projects',
+  '/team': 'Team',
+  '/contact': 'Contact',
+};
+
+function routeLabel(pathname) {
+  const normalized = normalizeSeoPath(pathname);
+  if (ROUTE_LABELS[normalized]) return ROUTE_LABELS[normalized];
+  if (normalized.startsWith('/service-')) {
+    return normalized
+      .replace('/service-', '')
+      .split('-')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+  return normalized
+    .replace(/^\//, '')
+    .split('-')
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ') || 'Home';
+}
+
+function PageTransition() {
+  return (
+    <div className="page-transition" aria-hidden="true">
+      <div className="page-transition-panels" aria-hidden="true">
+        <div className="page-transition-panel page-transition-panel-a" />
+        <div className="page-transition-panel page-transition-panel-b" />
+        <div className="page-transition-panel page-transition-panel-c" />
+      </div>
+      <div className="page-transition-content">
+        <div className="page-transition-brand">SMART SCALE / SYSTEMS</div>
+        <div className="page-transition-route">
+          <span className="page-transition-kicker">Entering</span>
+          <strong className="page-transition-label">Projects</strong>
+        </div>
+        <div className="page-transition-count">SSS — 2026</div>
+      </div>
+      <div className="page-transition-progress"><span /></div>
+    </div>
+  );
+}
+
+function Layout({ children, pathname }) {
+  useEffect(() => {
+    const cleanup = initNav();
+    setActiveNav(pathname);
+    return cleanup;
+  }, [pathname]);
+
+  return (
+    <>
+      <div className="noise-overlay" />
+      <div dangerouslySetInnerHTML={{ __html: navHtml }} />
+      {children}
+      <div dangerouslySetInnerHTML={{ __html: footerHtml }} />
+    </>
+  );
+}
+
+const LEAD_CAPTURE_COMPLETE_KEY = 'sssLeadCaptureComplete';
+
+function hasCompletedLeadCapture() {
+  try {
+    return window.localStorage.getItem(LEAD_CAPTURE_COMPLETE_KEY) === 'true';
+  } catch {
+    return false;
+  }
+}
+
+function rememberLeadCaptureCompletion() {
+  try {
+    window.localStorage.setItem(LEAD_CAPTURE_COMPLETE_KEY, 'true');
+  } catch {
+    // Submission still succeeds when browser storage is unavailable.
+  }
+  window.dispatchEvent(new CustomEvent('sss:lead-capture-complete'));
+}
+
+function LeadCaptureModal({ pathname }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [status, setStatus] = useState('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+  const firstFieldRef = useRef(null);
+  const normalizedPath = normalizeSeoPath(pathname);
+  const isEligiblePage = normalizedPath === '/' || normalizedPath === '/services';
+
+  useEffect(() => {
+    if (!isEligiblePage || hasCompletedLeadCapture()) {
+      setIsOpen(false);
+      return undefined;
+    }
+
+    setStatus('idle');
+    setErrorMessage('');
+    const timer = window.setTimeout(() => setIsOpen(true), 900);
+    return () => window.clearTimeout(timer);
+  }, [pathname, isEligiblePage]);
+
+  useEffect(() => {
+    const openLeadCapture = () => {
+      if (hasCompletedLeadCapture()) return;
+      setStatus('idle');
+      setErrorMessage('');
+      setIsOpen(true);
+    };
+    window.addEventListener('sss:open-lead-capture', openLeadCapture);
+    return () => window.removeEventListener('sss:open-lead-capture', openLeadCapture);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.requestAnimationFrame(() => firstFieldRef.current?.focus());
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape' && status !== 'submitting') setIsOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [isOpen, status]);
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (!form.reportValidity()) return;
+
+    setStatus('submitting');
+    setErrorMessage('');
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(formData.entries())),
+      });
+      const result = await response.json();
+      if (!response.ok || !result.success) throw new Error(result.error || 'Unable to send your request.');
+
+      rememberLeadCaptureCompletion();
+      setStatus('success');
+    } catch (error) {
+      setStatus('error');
+      setErrorMessage(error.message || 'Unable to send your request. Please try again.');
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return createPortal(
+    <div className="lead-modal" role="presentation">
+      <div className="lead-modal-panel" role="dialog" aria-modal="true" aria-labelledby="lead-modal-title" aria-describedby="lead-modal-description">
+        <button className="lead-modal-close" type="button" aria-label="Close project form" onClick={() => setIsOpen(false)} disabled={status === 'submitting'}>&times;</button>
+        {status === 'success' ? (
+          <div className="lead-modal-success" role="status">
+            <span aria-hidden="true">&#10003;</span>
+            <h2>Thank You!</h2>
+            <p>Your free AI consultation has been registered. Please check your email for confirmation.</p>
+            <button className="btn-primary lead-modal-success-close" type="button" onClick={() => setIsOpen(false)}>Close</button>
+          </div>
+        ) : (
+          <>
+            <div className="lead-modal-intro">
+              <span className="section-tag">Free AI Consultation</span>
+              <h2 id="lead-modal-title">Claim Your Free AI Consultation Today</h2>
+              <p id="lead-modal-description">Tell us what you&apos;re building or trying to automate. Our AI team will review your requirements and suggest a practical direction for your project.</p>
+            </div>
+            <form className="lead-modal-form" onSubmit={onSubmit}>
+              <div className="lead-modal-row">
+                <label>Full Name<input ref={firstFieldRef} type="text" name="fullName" autoComplete="name" required /></label>
+                <label>Work Email<input type="email" name="workEmail" autoComplete="email" required /></label>
+              </div>
+              <label>Company Name<input type="text" name="companyName" autoComplete="organization" required /></label>
+              <label>What industry are you in?
+                <select name="industry" defaultValue="" required>
+                  <option value="" disabled>Select your industry</option>
+                  <option>Technology &amp; SaaS</option><option>Healthcare</option><option>Finance &amp; Insurance</option><option>Retail &amp; E-commerce</option><option>Manufacturing</option><option>Logistics &amp; Transportation</option><option>Real Estate</option><option>Education</option><option>Legal Services</option><option>Travel &amp; Hospitality</option><option>Professional Services</option><option>Other</option>
+                </select>
+              </label>
+              <label>Tell us about your project<textarea name="projectDetails" rows="4" required /></label>
+              {status === 'error' && <p className="lead-modal-error" role="alert">{errorMessage}</p>}
+              <div className="lead-modal-actions">
+                <button className="btn-primary lead-modal-submit" type="submit" disabled={status === 'submitting'}>{status === 'submitting' ? 'Sending...' : 'Claim My Free Consultation'}</button>
+                <button className="lead-modal-later" type="button" onClick={() => setIsOpen(false)} disabled={status === 'submitting'}>Not now</button>
+              </div>
+            </form>
+          </>
+        )}
+      </div>
+    </div>,
+    document.body
+  );
+}
+
+function App() {
+  const [pathname, setPathname] = useState(() => normalizeRoutePath(window.location.pathname));
+  const currentPathRef = useRef(pathname);
+  const transitionInProgressRef = useRef(false);
+  const queuedNavigationRef = useRef(null);
+  const navigateRef = useRef(null);
+  const rawPage = pages[pathname] || error404Html;
+  const content = useMemo(() => bodyContent(rawPage), [rawPage]);
+
+  useEffect(() => {
+    currentPathRef.current = pathname;
+  }, [pathname]);
+
+  useEffect(() => {
+    updateDocumentSeo(rawPage, pathname);
+  }, [rawPage, pathname]);
+
+  useEffect(() => {
+    if (document.getElementById('robot-mascot-script')) return;
+    const script = document.createElement('script');
+    script.id = 'robot-mascot-script';
+    script.src = '/src/scripts/robot-mascot.js?v=20260726-scalebot-v7-clean-input';
+    script.defer = true;
+    document.body.appendChild(script);
+  }, []);
+
+  navigateRef.current = (targetPath, { historyAction = 'push' } = {}) => {
+    const normalizedTarget = normalizeRoutePath(targetPath);
+    const currentPath = currentPathRef.current;
+
+    if (normalizedTarget === currentPath) {
+      scrollToPageTop({ smooth: true });
+      return;
+    }
+
+    if (transitionInProgressRef.current) {
+      queuedNavigationRef.current = { targetPath: normalizedTarget, historyAction };
+      return;
+    }
+
+    const commitRoute = () => {
+      if (historyAction === 'push') {
+        window.history.pushState({}, '', normalizedTarget);
+      }
+      currentPathRef.current = normalizedTarget;
+      setPathname(normalizedTarget);
+      scrollToPageTop();
+    };
+
+    if (prefersReducedMotion()) {
+      commitRoute();
+      return;
+    }
+
+    const overlay = document.querySelector('.page-transition');
+    const panels = overlay?.querySelectorAll('.page-transition-panel');
+    const label = overlay?.querySelector('.page-transition-label');
+    const contentItems = overlay?.querySelectorAll('.page-transition-brand, .page-transition-route, .page-transition-count');
+    const progress = overlay?.querySelector('.page-transition-progress span');
+    const currentShell = document.querySelector('.route-shell');
+
+    if (!overlay || !panels?.length) {
+      commitRoute();
+      return;
+    }
+
+    transitionInProgressRef.current = true;
+    document.body.classList.add('route-transitioning');
+    overlay.setAttribute('aria-hidden', 'false');
+    if (label) label.textContent = routeLabel(normalizedTarget);
+
+    gsap.killTweensOf([overlay, panels, contentItems, progress, currentShell].filter(Boolean));
+    gsap.set(overlay, { autoAlpha: 1, pointerEvents: 'auto' });
+    gsap.set(panels, { scaleY: 0, transformOrigin: 'bottom center' });
+    gsap.set(contentItems, { y: 26, autoAlpha: 0 });
+    gsap.set(progress, { scaleX: 0, transformOrigin: 'left center' });
+
+    gsap.timeline({
+      defaults: { overwrite: 'auto' },
+      onComplete: () => {
+        commitRoute();
+
+        window.requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => {
+            const nextShell = document.querySelector('.route-shell');
+            gsap.set(panels, { transformOrigin: 'top center' });
+            gsap.set(nextShell, { y: 40, scale: 0.988, autoAlpha: 0, filter: 'blur(12px)' });
+
+            gsap.timeline({
+              defaults: { overwrite: 'auto' },
+              onComplete: () => {
+                gsap.set(overlay, { autoAlpha: 0, pointerEvents: 'none' });
+                gsap.set(nextShell, { clearProps: 'transform,opacity,visibility,filter' });
+                overlay.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('route-transitioning');
+                transitionInProgressRef.current = false;
+
+                const queued = queuedNavigationRef.current;
+                queuedNavigationRef.current = null;
+                if (queued && queued.targetPath !== currentPathRef.current) {
+                  navigateRef.current?.(queued.targetPath, { historyAction: queued.historyAction });
+                }
+              },
+            })
+              .to(contentItems, {
+                y: -22,
+                autoAlpha: 0,
+                duration: 0.32,
+                stagger: 0.025,
+                ease: 'power2.in',
+              }, 0)
+              .to(panels, {
+                scaleY: 0,
+                duration: 0.78,
+                stagger: { each: 0.065, from: 'end' },
+                ease: 'power4.inOut',
+              }, 0.08)
+              .to(progress, {
+                scaleX: 0,
+                transformOrigin: 'right center',
+                duration: 0.55,
+                ease: 'power3.inOut',
+              }, 0.08)
+              .to(nextShell, {
+                y: 0,
+                scale: 1,
+                autoAlpha: 1,
+                filter: 'blur(0px)',
+                duration: 0.82,
+                ease: 'expo.out',
+              }, 0.28);
+          });
+        });
+      },
+    })
+      .to(currentShell, {
+        y: -30,
+        scale: 0.982,
+        autoAlpha: 0.35,
+        filter: 'blur(10px)',
+        duration: 0.56,
+        ease: 'power3.in',
+      }, 0)
+      .to(panels, {
+        scaleY: 1,
+        duration: 0.76,
+        stagger: 0.065,
+        ease: 'power4.inOut',
+      }, 0)
+      .to(contentItems, {
+        y: 0,
+        autoAlpha: 1,
+        duration: 0.58,
+        stagger: 0.055,
+        ease: 'expo.out',
+      }, 0.31)
+      .to(progress, {
+        scaleX: 1,
+        duration: 0.62,
+        ease: 'power3.inOut',
+      }, 0.2);
+  };
+
+  useEffect(() => {
+    const onPopState = () => {
+      navigateRef.current?.(normalizeRoutePath(window.location.pathname), { historyAction: 'none' });
+    };
+    window.addEventListener('popstate', onPopState);
+
+    const onClick = (event) => {
+      const anchor = event.target.closest('a[href]');
+      if (
+        !anchor
+        || event.defaultPrevented
+        || event.button !== 0
+        || event.metaKey
+        || event.ctrlKey
+        || event.shiftKey
+        || event.altKey
+        || anchor.target === '_blank'
+        || anchor.hasAttribute('download')
+      ) return;
+      const url = new URL(anchor.href);
+      if (
+        url.origin !== window.location.origin
+        || !['http:', 'https:'].includes(url.protocol)
+        || url.pathname.startsWith('/api')
+      ) return;
+      const targetPath = normalizeRoutePath(url.pathname);
+      const isSamePage = targetPath === currentPathRef.current;
+      if (isSamePage && url.hash) return;
+
+      event.preventDefault();
+      navigateRef.current?.(targetPath, { historyAction: 'push' });
+    };
+    document.addEventListener('click', onClick);
+
+    return () => {
+      window.removeEventListener('popstate', onPopState);
+      document.removeEventListener('click', onClick);
+    };
+  }, []);
+
+  useEffect(() => {
+    const cleanups = [initRevealAnimations(), initSplineLoader(), initCountUpStats(), initAiCanvases(), initCarousels(), initForms(), initPremiumAnimations()];
+    return () => cleanups.forEach((cleanup) => cleanup && cleanup());
+  }, [content]);
+
+  return (
+    <>
+      <Layout pathname={pathname}>
+        <div className="route-shell" key={pathname}>
+          <main dangerouslySetInnerHTML={{ __html: content }} />
+          <ReactSplineMounts contentKey={content} />
+        </div>
+      </Layout>
+      <LeadCaptureModal pathname={pathname} />
+      <PageTransition />
+    </>
+  );
+}
+
+createRoot(document.getElementById('root')).render(<App />);

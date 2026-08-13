@@ -1,0 +1,114 @@
+<!-- Shared Navigation Component -->
+<nav class="nav" id="nav">
+  <button class="nav-compact-toggle" id="navCompactToggle" type="button" aria-label="Open navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-inner">
+    <!-- Logo -->
+    <a href="/" class="nav-logo">
+      <span class="nav-logo-crop">
+        <img src="/logo-main.png?v=20260708-stable-nav" alt="Smart Scale Systems Logo" class="nav-logo-img" />
+      </span>
+    </a>
+
+    <div class="nav-links" id="navLinks">
+      <a href="/" class="nav-link" data-page="home">Home</a>
+
+      <!-- Services dropdown -->
+      <div class="nav-dropdown-wrap">
+        <button class="nav-link nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true" id="servicesDropBtn">
+          Services
+          <svg class="dropdown-chevron" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 1l5 5 5-5"/></svg>
+        </button>
+        <div class="nav-dropdown" id="servicesDropdown" role="menu">
+          <div class="dropdown-grid">
+            <a href="/service-ai-model-training" class="dropdown-item" role="menuitem">
+              <div>
+                <strong>AI Model Training</strong>
+                <span>Custom models, fine-tuning and evaluation</span>
+              </div>
+            </a>
+            <a href="/service-ai-automation" class="dropdown-item" role="menuitem">
+              <div>
+                <strong>AI Automation</strong>
+                <span>Workflows, agents and business process AI</span>
+              </div>
+            </a>
+            <a href="/service-custom-ai-agents" class="dropdown-item" role="menuitem">
+              <div>
+                <strong>Custom AI Agents</strong>
+                <span>Task automation, support and knowledge agents</span>
+              </div>
+            </a>
+            <a href="/service-data-analytics" class="dropdown-item" role="menuitem">
+              <div>
+                <strong>Data Analytics</strong>
+                <span>Dashboards, forecasting and business insight</span>
+              </div>
+            </a>
+            <a href="/service-ai-integrations" class="dropdown-item" role="menuitem">
+              <div>
+                <strong>AI Integrations</strong>
+                <span>AI inside websites and applications</span>
+              </div>
+            </a>
+            <a href="/service-business-automations" class="dropdown-item" role="menuitem">
+              <div>
+                <strong>Business Automations</strong>
+                <span>Sales, support and operations workflows</span>
+              </div>
+            </a>
+            <a href="/service-computer-vision" class="dropdown-item" role="menuitem">
+              <div>
+                <strong>Computer Vision</strong>
+                <span>Object detection, segmentation and OCR</span>
+              </div>
+            </a>
+            <a href="/service-nlp" class="dropdown-item" role="menuitem">
+              <div>
+                <strong>NLP</strong>
+                <span>Text classification, NER and language AI</span>
+              </div>
+            </a>
+            <a href="/service-llm" class="dropdown-item" role="menuitem">
+              <div>
+                <strong>LLM Solutions</strong>
+                <span>Fine-tuning, RLHF and custom LLM pipelines</span>
+              </div>
+            </a>
+            <a href="/service-data-annotation" class="dropdown-item" role="menuitem">
+              <div>
+                <strong>Data Annotation</strong>
+                <span>Image, video, text and audio annotation</span>
+              </div>
+            </a>
+            <a href="/service-ai-training-data" class="dropdown-item" role="menuitem">
+              <div>
+                <strong>AI Training Data</strong>
+                <span>High-quality datasets for ML and AI systems</span>
+              </div>
+            </a>
+            <a href="/service-custom" class="dropdown-item" role="menuitem">
+              <div>
+                <strong>Custom AI Solutions</strong>
+                <span>Tailored systems for unique requirements</span>
+              </div>
+            </a>
+          </div>
+          <div class="dropdown-footer">
+            <a href="/services">View all services →</a>
+          </div>
+        </div>
+      </div>
+
+      <a href="/projects" class="nav-link" data-page="projects">Projects</a>
+      <a href="/team" class="nav-link" data-page="team">Team</a>
+      <a href="/contact" class="nav-cta">Contact Us</a>
+    </div>
+
+    <!-- Hamburger -->
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>

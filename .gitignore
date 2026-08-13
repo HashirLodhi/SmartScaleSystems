@@ -1,0 +1,7 @@
+node_modules
+dist
+.env
+server-error.log
+server-output.log
+check_all.py
+.vercel

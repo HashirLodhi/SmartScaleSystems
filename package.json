@@ -1,0 +1,51 @@
+{
+  "name": "smart-scale-systems",
+  "version": "1.0.0",
+  "description": "Smart Scale Systems - AI Services, Automation and Training Data",
+  "main": "server.js",
+  "scripts": {
+    "build": "vite build",
+    "api": "node scripts/start-api.js",
+    "start": "node server.js",
+    "generate:knowledge": "node scripts/generate-rag-pdf.js",
+    "logo:remove-bg": "node scripts/remove-bot-logo-bg.js",
+    "dev": "node scripts/dev.js",
+    "dev:web": "vite",
+    "render:knowledge": "node scripts/render-rag-pdf.js",
+    "train:rag": "node train-RAG.js",
+    "refresh:rag": "npm run generate:knowledge && npm run train:rag",
+    "test:chat": "node scripts/test-chat.js",
+    "test:dev": "node scripts/test-dev-stack.js",
+    "test:rag": "node scripts/test-rag.js",
+    "test:seo": "node scripts/test-seo.js",
+    "test:typography": "node scripts/test-typography.js",
+    "test:ui": "node scripts/test-chat-ui.js",
+    "test": "npm run test:rag && npm run test:chat && npm run test:typography && npm run test:ui && npm run test:seo && npm run test:dev"
+  },
+  "keywords": [
+    "AI",
+    "machine learning",
+    "data annotation",
+    "automation",
+    "computer vision",
+    "NLP",
+    "LLM"
+  ],
+  "author": "Smart Scale Systems",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@splinetool/react-spline": "^4.1.0",
+    "@vitejs/plugin-react": "^6.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "gsap": "^3.15.0",
+    "nodemailer": "^9.0.1",
+    "pdf-parse": "^2.4.5",
+    "pdfkit": "^0.19.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "vite": "^8.1.3"
+  }
+}
