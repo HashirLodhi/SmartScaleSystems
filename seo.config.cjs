@@ -100,6 +100,14 @@ const routes = [
 
 const routeMap = Object.fromEntries(routes.map((route) => [route.path, route]));
 
+// Legacy or shorthand URLs with a clear, current equivalent. Keep aliases out
+// of navigation and the sitemap so only canonical destinations are indexable.
+const redirects = {
+  '/about': '/team',
+  '/privacy': '/privacy-policy',
+  '/terms': '/terms-of-service',
+};
+
 module.exports = {
   siteUrl,
   brandName: 'Smart Scale Systems',
@@ -112,4 +120,5 @@ module.exports = {
   ],
   routes,
   routeMap,
+  redirects,
 };

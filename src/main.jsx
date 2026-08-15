@@ -188,27 +188,6 @@ function buildStructuredData({ title, description, url, kind }) {
   const graph = [
     organization,
     {
-      '@type': 'ProfessionalService',
-      '@id': `${SITE_URL}/#ai-agency`,
-      name: 'Smart Scale Systems',
-      url: SITE_URL,
-      image: LOGO_IMAGE,
-      description: 'AI development company providing automation, custom agents, model training, computer vision, NLP, LLM, analytics, integration, and data services worldwide.',
-      email: 'contact@smartscalesystems.tech',
-      areaServed: 'Worldwide',
-      serviceType: [
-        'AI agency',
-        'AI services',
-        'AI automation',
-        'AI model training',
-        'Computer vision',
-        'NLP',
-        'LLM solutions',
-        'Data annotation',
-        'AI training data',
-      ],
-    },
-    {
       '@type': 'WebSite',
       '@id': `${SITE_URL}/#website`,
       url: SITE_URL,
@@ -250,13 +229,22 @@ function buildStructuredData({ title, description, url, kind }) {
   }
 
   if (url !== SITE_URL) {
+    const breadcrumbItems = [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+    ];
+    if (kind === 'service') {
+      breadcrumbItems.push({ '@type': 'ListItem', position: 2, name: 'Services', item: `${SITE_URL}/services` });
+    }
+    breadcrumbItems.push({
+      '@type': 'ListItem',
+      position: breadcrumbItems.length + 1,
+      name: title.split('|')[0].trim(),
+      item: url,
+    });
     graph.push({
       '@type': 'BreadcrumbList',
       '@id': `${url}#breadcrumb`,
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
-        { '@type': 'ListItem', position: 2, name: title.split('|')[0].trim(), item: url },
-      ],
+      itemListElement: breadcrumbItems,
     });
   }
 

@@ -225,7 +225,7 @@ async function main() {
     chunkCount: chunks.length,
     instructions: [
       'Use retrieved context as the latest published agency source of truth.',
-      'Qualify examples, testimonials, accuracy statements, and response windows exactly as the context describes.',
+      'Treat performance targets, timelines, and outcomes as project-specific unless the knowledge source explicitly verifies them.',
       'Do not invent pricing, timelines, team details, client identities, credentials, locations, or guarantees.',
       'When a fact is not published, say so and direct the visitor to the Contact page.',
     ],

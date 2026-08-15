@@ -28,7 +28,7 @@ const sections = [
       {
         heading: 'Primary role',
         paragraphs: [
-          'ScaleBot is the professional business assistant for Smart Scale Systems. It should answer questions about the company, services, team, project fit, delivery approach, contact routes, careers, privacy, and terms using the facts in this document.',
+          'ScaleBot is the professional business assistant for Smart Scale Systems. It should answer questions about the company, services, team, project fit, delivery approach, contact routes, privacy, and terms using the facts in this document.',
           'The assistant should be direct and useful. It may recommend a relevant service when the visitor explains a business problem, but it must not invent project facts, private information, client identities, certifications, prices, delivery dates, or performance guarantees.',
         ],
       },
@@ -47,8 +47,7 @@ const sections = [
       {
         heading: 'Truth and qualification rules',
         paragraphs: [
-          'Capabilities describe work Smart Scale Systems offers. They are not automatic guarantees for every project. Published accuracy figures, response windows, testimonial outcomes, and example benefits must be described as website claims or past examples, not universal promises.',
-          'A response window means the agency plans to reply or provide an initial action plan. It does not mean the complete project will be delivered in that window.',
+          'Capabilities describe work Smart Scale Systems offers. They are not automatic guarantees for every project. Performance targets and delivery expectations must be confirmed during discovery and documented in the applicable agreement.',
         ],
       },
     ],
@@ -330,12 +329,6 @@ const sections = [
           'Quality reports that may include accuracy, rejection rates, and review outcomes.',
         ],
       },
-      {
-        heading: 'Published accuracy statement',
-        paragraphs: [
-          'The Data Annotation page states that Smart Scale Systems maintains 95%+ accuracy across annotation projects through its QA process. Treat this as a published agency statement, not an unconditional guarantee for every dataset. Project-specific targets and acceptance criteria belong in the statement of work.',
-        ],
-      },
     ],
   },
   {
@@ -599,59 +592,6 @@ const sections = [
     ],
   },
   {
-    id: 'testimonials-and-proof',
-    title: 'Testimonials and Published Proof Points',
-    summary: 'How to discuss the anonymized testimonials shown on the website.',
-    route: '/testimonials',
-    blocks: [
-      {
-        heading: 'What the page contains',
-        paragraphs: [
-          'The Testimonials page publishes anonymized client feedback covering annotation quality, LLM fine-tuning, automation, NLP, dataset delivery, computer vision, project communication, and scaling annotation operations.',
-        ],
-      },
-      {
-        heading: 'Examples mentioned on the page',
-        bullets: [
-          'A 50,000-image polygon annotation project described as reaching 97.2% accuracy on the client validation set.',
-          'An automation engagement described as saving more than 20 hours per week.',
-          'An annotation pipeline described as scaling from 5,000 to 500,000 items.',
-          'LLM and NLP work described as exceeding prior benchmarks or vendor performance.',
-        ],
-      },
-      {
-        heading: 'Important qualification',
-        paragraphs: [
-          'The page does not publish client identities beside these statements. ScaleBot may summarize the themes and clearly label them as anonymized website testimonials, but it must not invent names, industries beyond the text, logos, dates, contracts, or guaranteed repeatable outcomes.',
-        ],
-      },
-    ],
-  },
-  {
-    id: 'careers',
-    title: 'Careers',
-    summary: 'Current hiring status and the employment proposition shown on the Careers page.',
-    route: '/careers',
-    blocks: [
-      {
-        heading: 'Current published status',
-        paragraphs: [
-          'The Careers page currently says there are no open roles. Smart Scale Systems invites interested people to check back later or send a CV for possible future opportunities.',
-        ],
-      },
-      {
-        heading: 'Work environment described on the site',
-        bullets: [
-          'Remote-first culture with flexible hours.',
-          'Work on real AI projects with business impact.',
-          'Visible contribution and growth opportunities in a growing agency.',
-          'Learning through courses, conferences, and mentorship.',
-          'Interest in AI engineers, data annotators, automation experts, and data professionals.',
-        ],
-      },
-    ],
-  },
-  {
     id: 'privacy',
     title: 'Privacy Policy Summary',
     summary: 'A factual overview of the policy last updated June 2026.',
@@ -769,8 +709,6 @@ const sections = [
           `Home - ${SITE}/`,
           `Services - ${SITE}/services`,
           `Team - ${SITE}/team`,
-          `Testimonials - ${SITE}/testimonials`,
-          `Careers - ${SITE}/careers`,
           `Contact Us - ${SITE}/contact`,
         ],
       },
@@ -950,7 +888,7 @@ doc
   .fontSize(12.2)
   .fillColor('#E5E5E5')
   .text(
-    'A comprehensive, retrieval-ready source of truth for the Smart Scale Systems website assistant. It covers the company, services, team, project workflow, quality, contact routes, careers, privacy, terms, and answer boundaries.',
+    'A comprehensive, retrieval-ready source of truth for the Smart Scale Systems website assistant. It covers the company, services, team, project workflow, quality, contact routes, privacy, terms, and answer boundaries.',
     76,
     406,
     { width: 438, lineGap: 5 }

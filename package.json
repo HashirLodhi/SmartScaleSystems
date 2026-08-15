@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "build": "vite build && node scripts/build-seo-pages.js",
+    "check:links": "node scripts/check-links.js",
     "api": "node scripts/start-api.js",
     "start": "node server.js",
     "generate:knowledge": "node scripts/generate-rag-pdf.js",
@@ -18,6 +19,7 @@
     "test:dev": "node scripts/test-dev-stack.js",
     "test:rag": "node scripts/test-rag.js",
     "test:seo": "npm run build && node scripts/test-seo.js && node scripts/test-rendered-seo.js",
+    "seo:check": "npm run build && node scripts/seo-check.js",
     "test:typography": "node scripts/test-typography.js",
     "test:ui": "node scripts/test-chat-ui.js",
     "test": "npm run test:rag && npm run test:chat && npm run test:typography && npm run test:ui && npm run test:seo && npm run test:dev"

@@ -35,6 +35,14 @@
       "continue": true
     },
     { "src": "/index(?:\\.html)?/?", "status": 301, "headers": { "Location": "/" } },
+    { "src": "/about/?", "status": 301, "headers": { "Location": "/team" } },
+    { "src": "/privacy/?", "status": 301, "headers": { "Location": "/privacy-policy" } },
+    { "src": "/terms/?", "status": 301, "headers": { "Location": "/terms-of-service" } },
+    {
+      "src": "/(services|projects|team|contact|service-ai-model-training|service-ai-automation|service-custom-ai-agents|service-data-analytics|service-ai-integrations|service-business-automations|service-computer-vision|service-nlp|service-llm|service-data-annotation|service-ai-training-data|service-custom|privacy-policy|terms-of-service)/",
+      "status": 301,
+      "headers": { "Location": "/$1" }
+    },
     {
       "src": "/(services|projects|team|contact|service-ai-model-training|service-ai-automation|service-custom-ai-agents|service-data-analytics|service-ai-integrations|service-business-automations|service-computer-vision|service-nlp|service-llm|service-data-annotation|service-ai-training-data|service-custom|privacy-policy|terms-of-service)\\.html/?",
       "status": 301,

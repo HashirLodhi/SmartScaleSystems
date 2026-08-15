@@ -33,13 +33,22 @@ function stripPageChrome(source) {
 
 function breadcrumbGraph(route, url) {
   if (route.path === '/') return null;
+  const items = [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: seo.siteUrl },
+  ];
+  if (route.type === 'service') {
+    items.push({ '@type': 'ListItem', position: 2, name: 'Services', item: `${seo.siteUrl}/services` });
+  }
+  items.push({
+    '@type': 'ListItem',
+    position: items.length + 1,
+    name: route.title.split('|')[0].trim(),
+    item: url,
+  });
   return {
     '@type': 'BreadcrumbList',
     '@id': `${url}#breadcrumb`,
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: seo.siteUrl },
-      { '@type': 'ListItem', position: 2, name: route.title.split('|')[0].trim(), item: url },
-    ],
+    itemListElement: items,
   };
 }
 
@@ -164,6 +173,10 @@ function buildSitemap() {
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`;
 }
 
+function buildRobots() {
+  return `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /chat\n\nSitemap: ${seo.siteUrl}/sitemap.xml\n`;
+}
+
 const baseHtml = fs.readFileSync(baseHtmlPath, 'utf8');
 seo.routes.forEach((route) => {
   const output = route.path === '/' ? baseHtmlPath : path.join(distDir, `${route.path.slice(1)}.html`);
@@ -171,5 +184,6 @@ seo.routes.forEach((route) => {
 });
 fs.writeFileSync(path.join(distDir, '404.html'), renderNotFound(baseHtml));
 fs.writeFileSync(path.join(distDir, 'sitemap.xml'), buildSitemap());
+fs.writeFileSync(path.join(distDir, 'robots.txt'), buildRobots());
 
-console.log(`Generated ${seo.routes.length} crawlable route documents, sitemap.xml, and 404.html.`);
+console.log(`Generated ${seo.routes.length} crawlable route documents, sitemap.xml, robots.txt, and 404.html.`);

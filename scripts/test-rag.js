@@ -7,7 +7,7 @@ const cases = [
   { query: 'I need polygon labels and bounding boxes.', expected: ['data-annotation'] },
   { query: 'Can you collect and curate a new dataset?', expected: ['ai-training-data'] },
   { query: 'How do you use information from the contact form?', expected: ['privacy'] },
-  { query: 'Are you currently hiring?', expected: ['careers'] },
+  { query: 'Can you integrate AI into my existing CRM?', expected: ['ai-automation'] },
   { query: 'How can I start a project?', expected: ['contact-and-project-start'] },
   { query: 'I want to automate HubSpot follow-ups.', expected: ['ai-automation'] },
   { query: 'Can you detect defects from factory camera images?', expected: ['computer-vision'] },
