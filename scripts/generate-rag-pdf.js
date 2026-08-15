@@ -5,7 +5,7 @@ const PDFDocument = require('pdfkit');
 const OUTPUT_DIR = path.join(__dirname, '..', 'output', 'pdf');
 const OUTPUT_FILE = path.join(OUTPUT_DIR, 'smart-scale-systems-agency-chatbot-guide.pdf');
 
-const SITE = 'https://smartscalesystems.tech';
+const SITE = 'https://www.smartscalesystems.tech';
 const CONTACT_EMAIL = 'contact@smartscalesystems.tech';
 const COLORS = {
   ink: '#0A0A0A',

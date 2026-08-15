@@ -23,7 +23,7 @@ const PINNED_FACTS = [
     id: 'core-contact',
     section: 'contact-and-project-start',
     title: 'Contact and project start',
-    content: 'The official website is https://smartscalesystems.tech. The Contact page is /contact and the public email is contact@smartscalesystems.tech. The website states that inquiries receive a response within one business day with a clear action plan.',
+    content: 'The official website is https://www.smartscalesystems.tech. The Contact page is /contact and the public email is contact@smartscalesystems.tech. The website states that inquiries receive a response within one business day with a clear action plan.',
   },
   {
     id: 'core-pricing-timeline',

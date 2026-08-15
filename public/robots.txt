@@ -19,4 +19,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://smartscalesystems.tech/sitemap.xml
+Sitemap: https://www.smartscalesystems.tech/sitemap.xml
