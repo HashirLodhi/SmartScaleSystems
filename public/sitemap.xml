@@ -26,6 +26,26 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.smartscalesystems.tech/service-custom-ai-agents</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.smartscalesystems.tech/service-data-analytics</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.smartscalesystems.tech/service-ai-integrations</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.smartscalesystems.tech/service-business-automations</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.smartscalesystems.tech/service-computer-vision</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

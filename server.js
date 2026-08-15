@@ -3,8 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
-const nodemailer = require('nodemailer');
 const { createChatReply } = require('./lib/chat-service');
+const seo = require('./seo.config.cjs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -42,21 +42,32 @@ function sendReactIndex(req, res) {
   return sendPrecompressed(req, res, reactIndex, () => res.sendFile(reactIndex));
 }
 
+function sendStaticDocument(req, res, filePath, status = 200) {
+  res.status(status);
+  res.setHeader('Cache-Control', 'no-cache');
+  return sendPrecompressed(req, res, filePath, () => res.sendFile(filePath));
+}
+
+app.disable('x-powered-by');
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  if (req.secure || req.headers['x-forwarded-proto'] === 'https') {
+    res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+  }
+  next();
+});
 app.use(cors());
 app.use(express.json());
 
-// Nodemailer Gmail transport
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: (process.env.GMAIL_APP_PASSWORD || '').replace(/\s/g, '')
-  },
-  tls: {
-    rejectUnauthorized: false
-  }
+const canonicalPaths = new Set(seo.routes.map((route) => route.path));
+app.get(['/index', '/index.html'], (req, res) => res.redirect(301, '/'));
+app.get(/^\/(.+)\.html\/?$/, (req, res, next) => {
+  const canonical = `/${req.params[0]}`;
+  if (!canonicalPaths.has(canonical)) return next();
+  return res.redirect(301, canonical);
 });
 
 app.get(/\.(css|html|js|json|svg|txt|xml)$/, (req, res, next) => {
@@ -66,10 +77,6 @@ app.get(/\.(css|html|js|json|svg|txt|xml)$/, (req, res, next) => {
   return sendPrecompressed(req, res, requestedPath, () => next());
 });
 
-// Serve static files from src directory
-app.use('/src', express.static(path.join(__dirname, 'src'), {
-  maxAge: '7d',
-}));
 app.use(express.static(distDir, {
   maxAge: '1y',
   immutable: true,
@@ -102,94 +109,27 @@ async function handleChat(req, res) {
 app.post('/chat', handleChat);
 app.post('/api/chat', handleChat);
 
-// Contact form email endpoint
-app.post('/api/contact', async (req, res) => {
-  try {
-    const { name, email, subject, message } = req.body;
-
-    if (!name || !email || !subject || !message) {
-      return res.status(400).json({ error: 'All fields are required.' });
-    }
-
-    const htmlBody = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #000000; border-bottom: 2px solid #666666; padding-bottom: 8px;">New Contact Form Submission</h2>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
-          <tr><td style="padding: 8px 0; font-weight: bold; color: #555; width: 140px;">Name</td><td style="padding: 8px 0;">${name}</td></tr>
-          <tr><td style="padding: 8px 0; font-weight: bold; color: #555;">Email</td><td style="padding: 8px 0;"><a href="mailto:${email}">${email}</a></td></tr>
-          <tr><td style="padding: 8px 0; font-weight: bold; color: #555;">Subject</td><td style="padding: 8px 0;">${subject}</td></tr>
-        </table>
-        <div style="margin-top: 20px; padding: 16px; background: #f9f9f9; border-radius: 8px; border-left: 4px solid #666666;">
-          <p style="margin: 0 0 8px 0; font-weight: bold; color: #555;">Message</p>
-          <p style="margin: 0; color: #333; line-height: 1.6;">${message.replace(/\n/g, '<br/>')}</p>
-        </div>
-        <p style="margin-top: 20px; font-size: 12px; color: #999;">Sent from Smart Scale Systems Contact Form</p>
-      </div>
-    `;
-
-    await transporter.sendMail({
-      from: `"Smart Scale Systems" <${process.env.GMAIL_USER}>`,
-      to: process.env.GMAIL_USER,
-      replyTo: `"${name}" <${email}>`,
-      subject: `Contact: ${subject}`,
-      text: `Name: ${name}\nEmail: ${email}\nSubject: ${subject}\n\n${message}`,
-      html: htmlBody
-    });
-
-    res.json({ success: true });
-  } catch (error) {
-    console.error('Contact form error:', error);
-    res.status(500).json({ error: 'Failed to send message. Please try again later.' });
-  }
-});
-
+// Reuse the validated production handlers in the standalone server.
+app.post('/api/contact', (req, res) => require('./api/contact')(req, res));
+app.post('/api/custom-service', (req, res) => require('./api/custom-service')(req, res));
 app.post('/api/lead', async (req, res) => {
   const leadHandler = require('./api/lead');
   return leadHandler(req, res);
 });
 
-// Root route
-app.get('/', (req, res) => {
-  sendReactIndex(req, res);
-});
+// Canonical static documents are generated at build time for crawler-safe HTML.
+app.get('/', (req, res) => sendReactIndex(req, res));
 
-// Page routes
-const pages = [
-  'index',
-  'services',
-  'team',
-  'contact',
-  'service-ai-model-training',
-  'service-ai-automation',
-  'service-computer-vision',
-  'service-nlp',
-  'service-llm',
-  'service-data-annotation',
-  'service-ai-training-data',
-  'service-custom-ai-agents',
-  'service-data-analytics',
-  'service-ai-integrations',
-  'service-business-automations',
-  'service-custom'
-];
-
-pages.forEach(page => {
-  app.get(`/${page}`, (req, res) => {
-    sendReactIndex(req, res);
-  });
-  app.get(`/${page}.html`, (req, res) => {
-    sendReactIndex(req, res);
-  });
+seo.routes.filter((route) => route.path !== '/').forEach((route) => {
+  const output = path.join(distDir, `${route.path.slice(1)}.html`);
+  app.get(route.path, (req, res) => sendStaticDocument(req, res, output));
 });
 
 // Catch-all fallback
 app.use((req, res) => {
-  res.status(404);
-  sendPrecompressed(req, res, reactIndex, () => {
-    res.sendFile(reactIndex, err => {
-      if (err) res.status(404).send('Page not found');
-    });
-  });
+  const notFound = path.join(distDir, '404.html');
+  if (fs.existsSync(notFound)) return sendStaticDocument(req, res, notFound, 404);
+  return res.status(404).send('Page not found');
 });
 
 app.listen(PORT, () => {

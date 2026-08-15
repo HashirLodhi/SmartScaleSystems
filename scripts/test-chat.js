@@ -35,8 +35,8 @@ async function main() {
     [/ai automation/, /hubspot/, /pricing is custom/, /contact us/]
   );
   await check('careers answer', 'Are you hiring?', [
-    /no open roles/,
-    /careers/,
+    /does not currently publish/,
+    /hiring or careers page/,
   ]);
 
   if (process.exitCode) {

@@ -29,6 +29,7 @@ import termsHtml from './pages/terms-of-service.html?raw';
 import error403Html from './pages/error-403.html?raw';
 import error404Html from './pages/error-404.html?raw';
 import error500Html from './pages/error-500.html?raw';
+import seoConfig from '../seo.config.cjs';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -121,103 +122,14 @@ function primeSplineLoading(pathname) {
 
 primeSplineLoading(normalizeRoutePath(window.location.pathname));
 
-const SITE_URL = 'https://www.smartscalesystems.tech';
+const SITE_URL = seoConfig.siteUrl;
 const LOGO_IMAGE = `${SITE_URL}/logo-main.png`;
 const SOCIAL_IMAGE = `${SITE_URL}/og.png`;
 const DEFAULT_DESCRIPTION = 'Smart Scale Systems helps businesses scale smarter with AI model training, automation, computer vision, NLP, LLM solutions, data annotation, and AI training data creation.';
-const DEFAULT_KEYWORDS = 'AI services, AI model training, AI automation, computer vision, NLP, LLMs, data annotation, AI training data, machine learning datasets, RLHF';
-const GLOBAL_AI_KEYWORDS = 'global AI solutions company, AI development services, AI automation, custom AI agents, AI model training, computer vision, NLP services, LLM solutions, data annotation, AI training data';
-
-const SEO_OVERRIDES = {
-  '/': {
-    title: 'Smart Scale Systems | Global AI Solutions Company',
-    description: 'Smart Scale Systems delivers AI automation, custom agents, model training, computer vision, NLP, LLM solutions, and data services for teams worldwide.',
-    keywords: GLOBAL_AI_KEYWORDS,
-  },
-  '/services': {
-    title: 'AI Services | Automation, Models and Data',
-    description: 'Explore global AI services including model training, automation, custom agents, computer vision, NLP, LLM solutions, data annotation, and AI training data.',
-    keywords: GLOBAL_AI_KEYWORDS,
-  },
-  '/projects': {
-    title: 'AI Projects & Case Studies | Smart Scale Systems',
-    description: 'Explore Smart Scale Systems projects across Agentic RAG, custom chatbots, AI agents, voice calling, automation, model training, video annotation, analytics, and financial risk.',
-    keywords: 'Agentic RAG, custom chatbot, custom AI agent, voice calling agent, AI integrations, AI automation, autonomous data annotation, custom model training, action recognition, customer analytics, fraud detection',
-  },
-  '/team': {
-    title: 'Our Team | AI Engineers and Specialists',
-  },
-  '/contact': {
-    title: 'Contact Us | Start Your AI Project',
-  },
-  '/privacy-policy': {
-    title: 'Privacy Policy | Data Protection and Security',
-  },
-  '/terms-of-service': {
-    title: 'Terms of Service | Website Usage Policies',
-  },
-  '/service-ai-model-training': {
-    title: 'AI Model Training | Custom Machine Learning Models',
-    description: 'Custom AI model training services including fine-tuning, dataset preparation, model evaluation, optimization, and deployment support.',
-    keywords: 'AI model training, machine learning model training, AI fine-tuning, custom AI models, model evaluation',
-  },
-  '/service-ai-automation': {
-    title: 'AI Automation | Business Workflow Automation',
-    description: 'AI automation services for workflows, AI agents, CRM automation, lead generation, operations, and business process automation.',
-    keywords: 'AI automation, AI agents, business process automation, CRM automation, workflow automation',
-  },
-  '/service-custom-ai-agents': {
-    title: 'Custom AI Agents | Support, Knowledge and Task Agents',
-    description: 'Custom AI agents for customer support, knowledge search, task automation, tool use, and multi-step business workflows.',
-    keywords: 'custom AI agents, customer support AI agent, knowledge agent, task automation agent, agentic AI',
-  },
-  '/service-data-analytics': {
-    title: 'Data Analytics | Dashboards, Forecasting and BI',
-    description: 'Data analytics services for dashboards, forecasting, business intelligence, customer analytics, reporting, and decision support.',
-    keywords: 'data analytics, BI dashboards, business intelligence, forecasting services, customer analytics',
-  },
-  '/service-ai-integrations': {
-    title: 'AI Integrations | Add AI to Products and Business Tools',
-    description: 'AI integration services for websites, SaaS products, internal applications, CRMs, APIs, and existing business systems.',
-    keywords: 'AI integrations, AI API integration, website AI integration, SaaS AI features, CRM AI integration',
-  },
-  '/service-business-automations': {
-    title: 'Business Automations | Sales, Support and Operations',
-    description: 'Business automation services for sales, support, operations, lead routing, reporting, document processing, and back-office workflows.',
-    keywords: 'business automation, sales automation, support automation, operations automation, back office automation',
-  },
-  '/service-computer-vision': {
-    title: 'Computer Vision | Image and Video AI',
-    description: 'Computer vision services for object detection, image classification, segmentation, OCR, video analytics, and visual AI systems.',
-    keywords: 'computer vision services, object detection, OCR services, image annotation, video analytics',
-  },
-  '/service-nlp': {
-    title: 'NLP Services | Natural Language Processing',
-    description: 'NLP services for text classification, sentiment analysis, named entity recognition, intent detection, search relevance, and language AI.',
-    keywords: 'NLP services, natural language processing, text classification, sentiment analysis, named entity recognition',
-  },
-  '/service-llm': {
-    title: 'LLM Solutions | Custom AI Assistants',
-    description: 'LLM solutions including prompt engineering, LLM fine-tuning, RLHF, response evaluation, AI assistants, and custom large language model pipelines.',
-    keywords: 'LLM solutions, LLM fine-tuning, prompt engineering, RLHF, AI assistants',
-  },
-  '/service-data-annotation': {
-    title: 'Data Annotation | Training Data Services',
-    description: 'Data annotation services for images, video, text, audio, OCR, bounding boxes, polygons, segmentation masks, and QA review.',
-    keywords: 'data annotation, image annotation, video annotation, text annotation, OCR annotation',
-  },
-  '/service-ai-training-data': {
-    title: 'AI Training Data | Dataset Creation Services',
-    description: 'AI training data services for machine learning, computer vision, NLP, LLMs, automation systems, evaluation datasets, and dataset curation.',
-    keywords: 'AI training data, dataset creation, machine learning datasets, data collection, dataset curation',
-  },
-  '/service-custom': {
-    title: 'Custom AI Solutions | AI Development Services',
-    description: 'Custom AI solutions for businesses that need tailored automation, machine learning, LLM, computer vision, NLP, and data systems.',
-    keywords: 'custom AI solutions, AI consulting, AI development, artificial intelligence company',
-  },
-};
-
+const SEO_OVERRIDES = Object.fromEntries(seoConfig.routes.map((route) => [
+  route.path,
+  { title: route.title, description: route.description },
+]));
 function normalizeSeoPath(pathname) {
   if (pathname === '/' || pathname === '/index' || pathname === '/index.html') return '/';
   return pathname.replace(/\.html$/, '');
@@ -259,8 +171,9 @@ function buildStructuredData({ title, description, url, kind }) {
     url: SITE_URL,
     email: 'contact@smartscalesystems.tech',
     logo: LOGO_IMAGE,
-    description: 'AI services agency delivering model training, automation, computer vision, NLP, LLM solutions, and data annotation at scale.',
+    description: 'AI development company delivering automation, custom agents, model training, computer vision, NLP, LLM, analytics, integration, and data services worldwide.',
     areaServed: 'Worldwide',
+    sameAs: seoConfig.sameAs,
     knowsAbout: [
       'AI automation',
       'AI model training',
@@ -280,7 +193,7 @@ function buildStructuredData({ title, description, url, kind }) {
       name: 'Smart Scale Systems',
       url: SITE_URL,
       image: LOGO_IMAGE,
-      description: 'Global AI solutions company providing model training, automation, computer vision, NLP, LLM solutions, data annotation, and AI training data services.',
+      description: 'AI development company providing automation, custom agents, model training, computer vision, NLP, LLM, analytics, integration, and data services worldwide.',
       email: 'contact@smartscalesystems.tech',
       areaServed: 'Worldwide',
       serviceType: [
@@ -322,6 +235,7 @@ function buildStructuredData({ title, description, url, kind }) {
       provider: { '@id': `${SITE_URL}/#organization` },
       areaServed: 'Worldwide',
       serviceType: title.replace(' | Smart Scale Systems', ''),
+      url,
     });
   }
 
@@ -335,6 +249,17 @@ function buildStructuredData({ title, description, url, kind }) {
     });
   }
 
+  if (url !== SITE_URL) {
+    graph.push({
+      '@type': 'BreadcrumbList',
+      '@id': `${url}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+        { '@type': 'ListItem', position: 2, name: title.split('|')[0].trim(), item: url },
+      ],
+    });
+  }
+
   return {
     '@context': 'https://schema.org',
     '@graph': graph,
@@ -345,10 +270,12 @@ function updateDocumentSeo(rawHtml, pathname) {
   const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
   const normalizedPath = normalizeSeoPath(pathname);
   const override = SEO_OVERRIDES[normalizedPath] || {};
+  const isIndexableRoute = Boolean(SEO_OVERRIDES[normalizedPath]);
   const title = override.title || doc.querySelector('title')?.textContent?.trim() || 'Smart Scale Systems';
   const description = override.description || metaContent(doc, 'meta[name="description"]', DEFAULT_DESCRIPTION);
-  const keywords = override.keywords || metaContent(doc, 'meta[name="keywords"]', DEFAULT_KEYWORDS);
-  const robots = metaContent(doc, 'meta[name="robots"]', 'index, follow');
+  const robots = isIndexableRoute
+    ? metaContent(doc, 'meta[name="robots"]', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1')
+    : 'noindex, follow';
   const url = canonicalUrl(pathname);
   const kind = pageKind(pathname);
 
@@ -356,7 +283,6 @@ function updateDocumentSeo(rawHtml, pathname) {
   document.head.querySelectorAll(`
     [data-managed-seo],
     meta[name="description"],
-    meta[name="keywords"],
     meta[name="robots"],
     meta[name="author"],
     meta[name="theme-color"],
@@ -369,7 +295,6 @@ function updateDocumentSeo(rawHtml, pathname) {
 
   [
     ['meta', { name: 'description', content: description }],
-    ['meta', { name: 'keywords', content: keywords }],
     ['meta', { name: 'robots', content: robots }],
     ['meta', { name: 'author', content: 'Smart Scale Systems' }],
     ['meta', { name: 'theme-color', content: '#0b0b0f' }],
@@ -385,8 +310,6 @@ function updateDocumentSeo(rawHtml, pathname) {
     ['meta', { name: 'twitter:description', content: description }],
     ['meta', { name: 'twitter:image', content: SOCIAL_IMAGE }],
     ['link', { rel: 'canonical', href: url }],
-    ['link', { rel: 'alternate', hreflang: 'en', href: url }],
-    ['link', { rel: 'alternate', hreflang: 'x-default', href: url }],
   ].forEach(([tagName, attributes]) => {
     document.head.appendChild(managedHeadElement(tagName, attributes));
   });
@@ -396,6 +319,11 @@ function updateDocumentSeo(rawHtml, pathname) {
     { type: 'application/ld+json' },
     JSON.stringify(buildStructuredData({ title, description, url, kind }))
   ));
+
+  if (!isIndexableRoute) {
+    document.head.querySelector('link[rel="canonical"]')?.remove();
+    document.head.querySelector('script[type="application/ld+json"]')?.remove();
+  }
 }
 
 function bodyContent(html) {
@@ -1233,16 +1161,18 @@ function initForms() {
 
     const onSubmit = async (event) => {
       event.preventDefault();
-      const required = form.querySelectorAll('[required]');
-      let valid = true;
+      const required = Array.from(form.querySelectorAll('[required]'));
       required.forEach((field) => {
-        field.classList.remove('field-error');
-        if (!field.value.trim()) {
-          field.classList.add('field-error');
-          valid = false;
-        }
+        const invalid = !field.checkValidity();
+        field.classList.toggle('field-error', invalid);
+        field.setAttribute('aria-invalid', String(invalid));
       });
-      if (!valid) return;
+      const firstInvalid = required.find((field) => !field.checkValidity());
+      if (firstInvalid) {
+        firstInvalid.focus();
+        firstInvalid.reportValidity();
+        return;
+      }
 
       submitBtn.disabled = true;
       submitBtn.classList.add('loading');
@@ -1264,6 +1194,7 @@ function initForms() {
         if (success) {
           success.style.display = 'flex';
           success.classList.add('show');
+          success.focus();
         }
       } catch (err) {
         submitBtn.disabled = false;
@@ -1709,7 +1640,7 @@ function Layout({ children, pathname }) {
   return (
     <>
       <div className="noise-overlay" />
-      <div dangerouslySetInnerHTML={{ __html: navHtml }} />
+      <header dangerouslySetInnerHTML={{ __html: navHtml }} />
       {children}
       <div dangerouslySetInnerHTML={{ __html: footerHtml }} />
     </>
@@ -1774,6 +1705,19 @@ function LeadCaptureModal({ pathname }) {
 
     const onKeyDown = (event) => {
       if (event.key === 'Escape' && status !== 'submitting') setIsOpen(false);
+      if (event.key !== 'Tab') return;
+      const panel = document.querySelector('.lead-modal-panel');
+      const focusable = Array.from(panel?.querySelectorAll('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href]') || []);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener('keydown', onKeyDown);
     return () => {
@@ -1830,17 +1774,17 @@ function LeadCaptureModal({ pathname }) {
             </div>
             <form className="lead-modal-form" onSubmit={onSubmit}>
               <div className="lead-modal-row">
-                <label>Full Name<input ref={firstFieldRef} type="text" name="fullName" autoComplete="name" required /></label>
-                <label>Work Email<input type="email" name="workEmail" autoComplete="email" required /></label>
+                <label>Full Name<input ref={firstFieldRef} type="text" name="fullName" autoComplete="name" maxLength={120} required /></label>
+                <label>Work Email<input type="email" name="workEmail" autoComplete="email" maxLength={254} required /></label>
               </div>
-              <label>Company Name<input type="text" name="companyName" autoComplete="organization" required /></label>
+              <label>Company Name<input type="text" name="companyName" autoComplete="organization" maxLength={160} required /></label>
               <label>What industry are you in?
                 <select name="industry" defaultValue="" required>
                   <option value="" disabled>Select your industry</option>
                   <option>Technology &amp; SaaS</option><option>Healthcare</option><option>Finance &amp; Insurance</option><option>Retail &amp; E-commerce</option><option>Manufacturing</option><option>Logistics &amp; Transportation</option><option>Real Estate</option><option>Education</option><option>Legal Services</option><option>Travel &amp; Hospitality</option><option>Professional Services</option><option>Other</option>
                 </select>
               </label>
-              <label>Tell us about your project<textarea name="projectDetails" rows="4" required /></label>
+              <label>Tell us about your project<textarea name="projectDetails" rows="4" maxLength={5000} required /></label>
               {status === 'error' && <p className="lead-modal-error" role="alert">{errorMessage}</p>}
               <div className="lead-modal-actions">
                 <button className="btn-primary lead-modal-submit" type="submit" disabled={status === 'submitting'}>{status === 'submitting' ? 'Sending...' : 'Claim My Free Consultation'}</button>
@@ -1876,7 +1820,7 @@ function App() {
     if (document.getElementById('robot-mascot-script')) return;
     const script = document.createElement('script');
     script.id = 'robot-mascot-script';
-    script.src = '/src/scripts/robot-mascot.js?v=20260726-scalebot-v7-clean-input';
+    script.src = new URL('./scripts/robot-mascot.js', import.meta.url).href;
     script.defer = true;
     document.body.appendChild(script);
   }, []);

@@ -4,7 +4,7 @@
   "description": "Smart Scale Systems - AI Services, Automation and Training Data",
   "main": "server.js",
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && node scripts/build-seo-pages.js",
     "api": "node scripts/start-api.js",
     "start": "node server.js",
     "generate:knowledge": "node scripts/generate-rag-pdf.js",
@@ -17,7 +17,7 @@
     "test:chat": "node scripts/test-chat.js",
     "test:dev": "node scripts/test-dev-stack.js",
     "test:rag": "node scripts/test-rag.js",
-    "test:seo": "node scripts/test-seo.js",
+    "test:seo": "npm run build && node scripts/test-seo.js && node scripts/test-rendered-seo.js",
     "test:typography": "node scripts/test-typography.js",
     "test:ui": "node scripts/test-chat-ui.js",
     "test": "npm run test:rag && npm run test:chat && npm run test:typography && npm run test:ui && npm run test:seo && npm run test:dev"

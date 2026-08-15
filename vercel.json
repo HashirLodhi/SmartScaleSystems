@@ -11,10 +11,6 @@
       "config": {
         "distDir": "dist"
       }
-    },
-    {
-      "src": "src/**",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -22,12 +18,33 @@
     { "src": "/api/custom-service", "dest": "/api/custom-service.js" },
     { "src": "/api/lead", "dest": "/api/lead.js" },
     { "src": "/api/chat", "dest": "/api/chat.js" },
-    { "src": "/src/(.*)", "dest": "/src/$1" },
-    { "src": "/assets/(.*)", "dest": "/assets/$1" },
-    { "src": "/favicon-48x48.png", "dest": "/favicon-48x48.png" },
-    { "src": "/logo-main.png", "dest": "/logo-main.png" },
-    { "src": "/robots.txt", "dest": "/robots.txt" },
-    { "src": "/sitemap.xml", "dest": "/sitemap.xml" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    {
+      "src": "/(.*)",
+      "headers": {
+        "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+        "X-Frame-Options": "SAMEORIGIN"
+      },
+      "continue": true
+    },
+    {
+      "src": "/(assets|project-images)/(.*)",
+      "headers": { "Cache-Control": "public, max-age=31536000, immutable" },
+      "continue": true
+    },
+    { "src": "/index(?:\\.html)?/?", "status": 301, "headers": { "Location": "/" } },
+    {
+      "src": "/(services|projects|team|contact|service-ai-model-training|service-ai-automation|service-custom-ai-agents|service-data-analytics|service-ai-integrations|service-business-automations|service-computer-vision|service-nlp|service-llm|service-data-annotation|service-ai-training-data|service-custom|privacy-policy|terms-of-service)\\.html/?",
+      "status": 301,
+      "headers": { "Location": "/$1" }
+    },
+    {
+      "src": "/(services|projects|team|contact|service-ai-model-training|service-ai-automation|service-custom-ai-agents|service-data-analytics|service-ai-integrations|service-business-automations|service-computer-vision|service-nlp|service-llm|service-data-annotation|service-ai-training-data|service-custom|privacy-policy|terms-of-service)/?",
+      "dest": "/$1.html"
+    },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/404.html", "status": 404 }
   ]
 }
