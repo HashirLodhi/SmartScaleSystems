@@ -62,21 +62,28 @@ function structuredData(route) {
     url: seo.siteUrl,
     logo: seo.logoUrl,
     email: 'contact@smartscalesystems.tech',
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'sales and project inquiries',
+      email: 'contact@smartscalesystems.tech',
+      url: `${seo.siteUrl}/contact`,
+      availableLanguage: 'English',
+      areaServed: 'Worldwide',
+    },
     description: 'AI development company delivering automation, custom agents, model training, computer vision, NLP, LLM, analytics, integration, and data services worldwide.',
     areaServed: 'Worldwide',
     sameAs: seo.sameAs,
   };
   const graph = [organization];
 
-  if (route.path === '/') {
-    graph.push({
-      '@type': 'WebSite',
-      '@id': `${seo.siteUrl}/#website`,
-      url: seo.siteUrl,
-      name: seo.brandName,
-      publisher: { '@id': `${seo.siteUrl}/#organization` },
-    });
-  }
+  graph.push({
+    '@type': 'WebSite',
+    '@id': `${seo.siteUrl}/#website`,
+    url: seo.siteUrl,
+    name: seo.brandName,
+    inLanguage: 'en',
+    publisher: { '@id': `${seo.siteUrl}/#organization` },
+  });
 
   const pageType = route.type === 'contact' ? 'ContactPage' : route.type === 'collection' || route.type === 'projects' ? 'CollectionPage' : 'WebPage';
   graph.push({
@@ -88,6 +95,8 @@ function structuredData(route) {
     isPartOf: { '@id': `${seo.siteUrl}/#website` },
     about: { '@id': `${seo.siteUrl}/#organization` },
     dateModified: seo.lastmod,
+    inLanguage: 'en',
+    primaryImageOfPage: { '@type': 'ImageObject', url: seo.socialImageUrl, width: 1536, height: 1024 },
   });
 
   if (route.type === 'service') {
@@ -103,10 +112,11 @@ function structuredData(route) {
   }
 
   if (route.path === '/team') {
-    ['Muhammad Hashir Lodhi', 'Muhammad Nouman Qadeer', 'Muhammad Mudassir', 'Muhammad Shahryar'].forEach((name) => {
+    seo.team.forEach(({ name, jobTitle }) => {
       graph.push({
         '@type': 'Person',
         name,
+        jobTitle,
         url,
         worksFor: { '@id': `${seo.siteUrl}/#organization` },
       });
@@ -152,6 +162,9 @@ function renderRoute(baseHtml, route) {
   html = replaceMeta(html, 'property', 'og:description', `<meta property="og:description" content="${escapeHtml(route.description)}" />`);
   html = replaceMeta(html, 'property', 'og:type', '<meta property="og:type" content="website" />');
   html = replaceMeta(html, 'property', 'og:url', `<meta property="og:url" content="${url}" />`);
+  html = replaceMeta(html, 'property', 'og:image:width', '<meta property="og:image:width" content="1536" />');
+  html = replaceMeta(html, 'property', 'og:image:height', '<meta property="og:image:height" content="1024" />');
+  html = replaceMeta(html, 'property', 'og:image:type', '<meta property="og:image:type" content="image/png" />');
   html = replaceMeta(html, 'name', 'twitter:title', `<meta name="twitter:title" content="${escapeHtml(route.title)}" />`);
   html = replaceMeta(html, 'name', 'twitter:description', `<meta name="twitter:description" content="${escapeHtml(route.description)}" />`);
   html = html.replace(/<script\s+type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/i,

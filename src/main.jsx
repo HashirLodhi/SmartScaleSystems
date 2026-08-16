@@ -170,6 +170,14 @@ function buildStructuredData({ title, description, url, kind }) {
     name: 'Smart Scale Systems',
     url: SITE_URL,
     email: 'contact@smartscalesystems.tech',
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'sales and project inquiries',
+      email: 'contact@smartscalesystems.tech',
+      url: `${SITE_URL}/contact`,
+      availableLanguage: 'English',
+      areaServed: 'Worldwide',
+    },
     logo: LOGO_IMAGE,
     description: 'AI development company delivering automation, custom agents, model training, computer vision, NLP, LLM, analytics, integration, and data services worldwide.',
     areaServed: 'Worldwide',
@@ -193,6 +201,7 @@ function buildStructuredData({ title, description, url, kind }) {
       url: SITE_URL,
       name: 'Smart Scale Systems',
       publisher: { '@id': `${SITE_URL}/#organization` },
+      inLanguage: 'en',
     },
     {
       '@type': 'WebPage',
@@ -203,6 +212,8 @@ function buildStructuredData({ title, description, url, kind }) {
       isPartOf: { '@id': `${SITE_URL}/#website` },
       about: { '@id': `${SITE_URL}/#organization` },
       dateModified: seoConfig.lastmod,
+      inLanguage: 'en',
+      primaryImageOfPage: { '@type': 'ImageObject', url: SOCIAL_IMAGE, width: 1536, height: 1024 },
     },
   ];
 
@@ -230,10 +241,11 @@ function buildStructuredData({ title, description, url, kind }) {
   }
 
   if (kind === 'team') {
-    ['Muhammad Hashir Lodhi', 'Muhammad Nouman Qadeer', 'Muhammad Mudassir', 'Muhammad Shahryar'].forEach((name) => {
+    seoConfig.team.forEach(({ name, jobTitle }) => {
       graph.push({
         '@type': 'Person',
         name,
+        jobTitle,
         url,
         worksFor: { '@id': `${SITE_URL}/#organization` },
       });
@@ -307,6 +319,9 @@ function updateDocumentSeo(rawHtml, pathname) {
     ['meta', { property: 'og:url', content: url }],
     ['meta', { property: 'og:site_name', content: 'Smart Scale Systems' }],
     ['meta', { property: 'og:image', content: SOCIAL_IMAGE }],
+    ['meta', { property: 'og:image:width', content: '1536' }],
+    ['meta', { property: 'og:image:height', content: '1024' }],
+    ['meta', { property: 'og:image:type', content: 'image/png' }],
     ['meta', { property: 'og:image:alt', content: 'Smart Scale Systems — AI systems made for the real world' }],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ['meta', { name: 'twitter:title', content: title }],
@@ -1652,6 +1667,7 @@ function Layout({ children, pathname }) {
 }
 
 const LEAD_CAPTURE_COMPLETE_KEY = 'sssLeadCaptureComplete';
+const LEAD_CAPTURE_DISMISSED_KEY = 'sssLeadCaptureDismissed';
 
 function hasCompletedLeadCapture() {
   try {
@@ -1670,11 +1686,30 @@ function rememberLeadCaptureCompletion() {
   window.dispatchEvent(new CustomEvent('sss:lead-capture-complete'));
 }
 
+function hasDismissedLeadCapture() {
+  try {
+    return window.sessionStorage.getItem(LEAD_CAPTURE_DISMISSED_KEY) === 'true';
+  } catch {
+    return false;
+  }
+}
+
+function rememberLeadCaptureDismissal() {
+  try {
+    window.sessionStorage.setItem(LEAD_CAPTURE_DISMISSED_KEY, 'true');
+  } catch {
+    // Dismissal still works when session storage is unavailable.
+  }
+}
+
 function LeadCaptureModal({ pathname }) {
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const firstFieldRef = useRef(null);
+  const previousFocusRef = useRef(null);
+  const statusRef = useRef(status);
+  statusRef.current = status;
   const normalizedPath = normalizeSeoPath(pathname);
   const isEligiblePage = normalizedPath === '/' || normalizedPath === '/services';
 
@@ -1683,12 +1718,34 @@ function LeadCaptureModal({ pathname }) {
       setIsOpen(false);
       return undefined;
     }
+    if (isOpen || hasDismissedLeadCapture()) return undefined;
 
     setStatus('idle');
     setErrorMessage('');
-    const timer = window.setTimeout(() => setIsOpen(true), 900);
-    return () => window.clearTimeout(timer);
-  }, [pathname, isEligiblePage]);
+    let triggered = false;
+    const openAutomatically = () => {
+      if (triggered || hasCompletedLeadCapture() || hasDismissedLeadCapture()) return;
+      triggered = true;
+      setIsOpen(true);
+    };
+    const timer = window.setTimeout(openAutomatically, 12000);
+    const onScroll = () => {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollable > 0 && window.scrollY / scrollable >= 0.55) openAutomatically();
+    };
+    const onExitIntent = (event) => {
+      if (event.clientY <= 0 && !event.relatedTarget && window.matchMedia('(pointer: fine)').matches) {
+        openAutomatically();
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    document.addEventListener('mouseout', onExitIntent);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener('scroll', onScroll);
+      document.removeEventListener('mouseout', onExitIntent);
+    };
+  }, [pathname, isEligiblePage, isOpen]);
 
   useEffect(() => {
     const openLeadCapture = () => {
@@ -1703,12 +1760,16 @@ function LeadCaptureModal({ pathname }) {
 
   useEffect(() => {
     if (!isOpen) return undefined;
+    previousFocusRef.current = document.activeElement;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     window.requestAnimationFrame(() => firstFieldRef.current?.focus());
 
     const onKeyDown = (event) => {
-      if (event.key === 'Escape' && status !== 'submitting') setIsOpen(false);
+      if (event.key === 'Escape' && statusRef.current !== 'submitting') {
+        rememberLeadCaptureDismissal();
+        setIsOpen(false);
+      }
       if (event.key !== 'Tab') return;
       const panel = document.querySelector('.lead-modal-panel');
       const focusable = Array.from(panel?.querySelectorAll('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href]') || []);
@@ -1727,8 +1788,16 @@ function LeadCaptureModal({ pathname }) {
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', onKeyDown);
+      previousFocusRef.current?.focus?.();
+      previousFocusRef.current = null;
     };
-  }, [isOpen, status]);
+  }, [isOpen]);
+
+  const closeModal = () => {
+    if (statusRef.current === 'submitting') return;
+    rememberLeadCaptureDismissal();
+    setIsOpen(false);
+  };
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -1759,24 +1828,25 @@ function LeadCaptureModal({ pathname }) {
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="lead-modal" role="presentation">
+    <div className="lead-modal" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) closeModal(); }}>
       <div className="lead-modal-panel" role="dialog" aria-modal="true" aria-labelledby="lead-modal-title" aria-describedby="lead-modal-description">
-        <button className="lead-modal-close" type="button" aria-label="Close project form" onClick={() => setIsOpen(false)} disabled={status === 'submitting'}>&times;</button>
+        <button className="lead-modal-close" type="button" aria-label="Close project form" onClick={closeModal} disabled={status === 'submitting'}>&times;</button>
         {status === 'success' ? (
           <div className="lead-modal-success" role="status">
             <span aria-hidden="true">&#10003;</span>
-            <h2>Thank You!</h2>
-            <p>Your free AI consultation has been registered. Please check your email for confirmation.</p>
-            <button className="btn-primary lead-modal-success-close" type="button" onClick={() => setIsOpen(false)}>Close</button>
+            <h2 id="lead-modal-title">Thank You!</h2>
+            <p id="lead-modal-description">Your free AI consultation has been registered. Please check your email for confirmation.</p>
+            <button className="btn-primary lead-modal-success-close" type="button" onClick={closeModal}>Close</button>
           </div>
         ) : (
           <>
             <div className="lead-modal-intro">
               <span className="section-tag">Free AI Consultation</span>
-              <h2 id="lead-modal-title">Claim Your Free AI Consultation Today</h2>
+              <h2 id="lead-modal-title">Get a Free AI Project Assessment</h2>
               <p id="lead-modal-description">Tell us what you&apos;re building or trying to automate. Our AI team will review your requirements and suggest a practical direction for your project.</p>
             </div>
             <form className="lead-modal-form" onSubmit={onSubmit}>
+              <div className="form-honeypot" aria-hidden="true"><label>Website<input type="text" name="website" tabIndex="-1" autoComplete="off" /></label></div>
               <div className="lead-modal-row">
                 <label>Full Name<input ref={firstFieldRef} type="text" name="fullName" autoComplete="name" maxLength={120} required /></label>
                 <label>Work Email<input type="email" name="workEmail" autoComplete="email" maxLength={254} required /></label>
@@ -1791,8 +1861,8 @@ function LeadCaptureModal({ pathname }) {
               <label>Tell us about your project<textarea name="projectDetails" rows="4" maxLength={5000} required /></label>
               {status === 'error' && <p className="lead-modal-error" role="alert">{errorMessage}</p>}
               <div className="lead-modal-actions">
-                <button className="btn-primary lead-modal-submit" type="submit" disabled={status === 'submitting'}>{status === 'submitting' ? 'Sending...' : 'Claim My Free Consultation'}</button>
-                <button className="lead-modal-later" type="button" onClick={() => setIsOpen(false)} disabled={status === 'submitting'}>Not now</button>
+                <button className="btn-primary lead-modal-submit" type="submit" disabled={status === 'submitting'}>{status === 'submitting' ? 'Sending...' : 'Request My Free Assessment'}</button>
+                <button className="lead-modal-later" type="button" onClick={closeModal} disabled={status === 'submitting'}>Not now</button>
               </div>
             </form>
           </>

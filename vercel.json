@@ -34,6 +34,16 @@
       "headers": { "Cache-Control": "public, max-age=31536000, immutable" },
       "continue": true
     },
+    {
+      "src": "/(og\\.png|logo-main\\.png|favicon-48x48\\.png)",
+      "headers": { "Cache-Control": "public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400" },
+      "continue": true
+    },
+    {
+      "src": "/(robots\\.txt|sitemap\\.xml|llms\\.txt)",
+      "headers": { "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400" },
+      "continue": true
+    },
     { "src": "/index(?:\\.html)?/?", "status": 301, "headers": { "Location": "/" } },
     { "src": "/about/?", "status": 301, "headers": { "Location": "/team" } },
     { "src": "/privacy/?", "status": 301, "headers": { "Location": "/privacy-policy" } },

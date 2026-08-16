@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const { cleanText, escapeHtml, validEmail } = require('../lib/form-utils');
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
@@ -11,15 +12,6 @@ const transporter = nodemailer.createTransport({
   tls: { rejectUnauthorized: false },
 });
 
-function escapeHtml(value) {
-  return String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -29,11 +21,19 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const { fullName, workEmail, companyName, industry, projectDetails } = req.body || {};
+    const fullName = cleanText(req.body?.fullName, 120);
+    const workEmail = cleanText(req.body?.workEmail, 254);
+    const companyName = cleanText(req.body?.companyName, 160);
+    const industry = cleanText(req.body?.industry, 100);
+    const projectDetails = cleanText(req.body?.projectDetails, 5000);
+    const website = cleanText(req.body?.website, 200);
+
+    // Silently accept bot-filled honeypot submissions without sending email.
+    if (website) return res.status(200).json({ success: true });
     if (!fullName || !workEmail || !companyName || !industry || !projectDetails) {
       return res.status(400).json({ error: 'All fields are required.' });
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(workEmail)) {
+    if (!validEmail(workEmail)) {
       return res.status(400).json({ error: 'Enter a valid work email.' });
     }
 

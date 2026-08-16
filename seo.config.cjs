@@ -1,11 +1,17 @@
 const siteUrl = 'https://www.smartscalesystems.tech';
 const lastmod = '2026-08-16';
+const team = [
+  { name: 'Muhammad Hashir Lodhi', jobTitle: 'Founder' },
+  { name: 'Muhammad Nouman Qadeer', jobTitle: 'AI Engineer' },
+  { name: 'Muhammad Mudassir', jobTitle: 'AI Data Annotator & Labeling Expert' },
+  { name: 'Muhammad Shahryar', jobTitle: 'Marketing Expert' },
+];
 
 const routes = [
   {
     path: '/', source: 'index.html', type: 'home', priority: '1.0', changefreq: 'weekly',
     title: 'Smart Scale Systems | AI Development & Automation Company',
-    description: 'Smart Scale Systems builds custom AI agents, automation, machine learning, computer vision, and AI data solutions for teams worldwide.',
+    description: 'Smart Scale Systems builds custom AI agents, automation, machine learning, computer vision, and AI data solutions worldwide. Discuss your project.',
   },
   {
     path: '/services', source: 'services.html', type: 'collection', priority: '0.9', changefreq: 'weekly',
@@ -15,7 +21,7 @@ const routes = [
   {
     path: '/projects', source: 'projects.html', type: 'projects', priority: '0.85', changefreq: 'monthly',
     title: 'AI Projects & Case Studies | Smart Scale Systems',
-    description: 'Explore Smart Scale Systems projects across Agentic RAG, custom AI agents, chatbots, automation, model training, computer vision, analytics, and anomaly detection.',
+    description: 'Explore Smart Scale Systems projects in Agentic RAG, custom AI agents, chatbots, automation, model training, computer vision, analytics, and risk detection.',
   },
   {
     path: '/team', source: 'team.html', type: 'page', priority: '0.6', changefreq: 'monthly',
@@ -25,7 +31,7 @@ const routes = [
   {
     path: '/contact', source: 'contact.html', type: 'contact', priority: '0.7', changefreq: 'monthly',
     title: 'Contact Smart Scale Systems | Start Your AI Project',
-    description: 'Contact Smart Scale Systems to discuss custom AI development, automation, model training, computer vision, NLP, LLM, analytics, integration, or data requirements.',
+    description: 'Contact Smart Scale Systems about custom AI development, automation, model training, computer vision, NLP, LLM, analytics, integrations, or data needs.',
   },
   {
     path: '/service-ai-model-training', source: 'service-ai-model-training.html', type: 'service', priority: '0.8', changefreq: 'monthly',
@@ -35,7 +41,7 @@ const routes = [
   {
     path: '/service-ai-automation', source: 'service-ai-automation.html', type: 'service', priority: '0.8', changefreq: 'monthly',
     title: 'AI Automation Services | Smart Scale Systems',
-    description: 'Automate workflows, CRM operations, lead handling, support, reporting, document processing, and business processes with practical AI systems.',
+    description: 'Automate workflows, CRM operations, lead handling, support, reporting, document processing, and business processes with practical AI systems. Explore options.',
   },
   {
     path: '/service-custom-ai-agents', source: 'service-custom-ai-agents.html', type: 'service', priority: '0.8', changefreq: 'monthly',
@@ -45,7 +51,7 @@ const routes = [
   {
     path: '/service-data-analytics', source: 'service-data-analytics.html', type: 'service', priority: '0.8', changefreq: 'monthly',
     title: 'Data Analytics & AI Insights | Smart Scale Systems',
-    description: 'Turn business data into trusted dashboards, forecasting, customer analytics, automated reporting, governed metrics, and actionable AI insights.',
+    description: 'Turn business data into trusted dashboards, forecasting, customer analytics, automated reporting, governed metrics, and actionable AI insights. See what fits.',
   },
   {
     path: '/service-ai-integrations', source: 'service-ai-integrations.html', type: 'service', priority: '0.8', changefreq: 'monthly',
@@ -70,7 +76,7 @@ const routes = [
   {
     path: '/service-llm', source: 'service-llm.html', type: 'service', priority: '0.8', changefreq: 'monthly',
     title: 'LLM Development & AI Assistant Services | Smart Scale Systems',
-    description: 'Build LLM solutions with prompt engineering, RAG, fine-tuning, RLHF, response evaluation, safety testing, tool use, and custom AI assistants.',
+    description: 'Build LLM solutions with prompt engineering, RAG, fine-tuning, RLHF, response evaluation, safety testing, tool use, and custom AI assistants. Start planning.',
   },
   {
     path: '/service-data-annotation', source: 'service-data-annotation.html', type: 'service', priority: '0.8', changefreq: 'monthly',
@@ -90,12 +96,12 @@ const routes = [
   {
     path: '/privacy-policy', source: 'privacy-policy.html', type: 'page', priority: '0.3', changefreq: 'yearly',
     title: 'Privacy Policy | Smart Scale Systems',
-    description: 'Read the Smart Scale Systems privacy policy covering information collection, use, security, cookies, data rights, and contact information.',
+    description: 'Read the Smart Scale Systems privacy policy covering information collection, use, security, cookies, data rights, and contact information. Review your rights.',
   },
   {
     path: '/terms-of-service', source: 'terms-of-service.html', type: 'page', priority: '0.3', changefreq: 'yearly',
     title: 'Terms of Service | Smart Scale Systems',
-    description: 'Read the Smart Scale Systems terms governing website use, AI services, client projects, intellectual property, acceptable use, and limitations.',
+    description: 'Read the Smart Scale Systems terms governing website use, AI services, client projects, intellectual property, acceptable use, and limitations. Read the terms.',
   },
 ];
 
@@ -112,6 +118,7 @@ const redirects = {
 module.exports = {
   siteUrl,
   lastmod,
+  team,
   brandName: 'Smart Scale Systems',
   logoUrl: `${siteUrl}/logo-main.png`,
   socialImageUrl: `${siteUrl}/og.png`,

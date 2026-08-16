@@ -4,6 +4,7 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const app = fs.readFileSync(path.join(root, 'src', 'main.jsx'), 'utf8');
+const leadApi = fs.readFileSync(path.join(root, 'api', 'lead.js'), 'utf8');
 const favicon = fs.readFileSync(path.join(root, 'public', 'favicon-48x48.png'));
 const vercelConfig = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
 const seo = require(path.join(root, 'seo.config.cjs'));
@@ -48,5 +49,23 @@ check(
     app.includes('updateDocumentSeo(rawPage, pathname);'),
   'client navigation updates the browser tab title'
 );
+check(
+  app.includes('window.setTimeout(openAutomatically, 12000)')
+    && app.includes('window.scrollY / scrollable >= 0.55')
+    && app.includes('LEAD_CAPTURE_DISMISSED_KEY'),
+  'lead modal waits for meaningful engagement and remembers dismissal'
+);
+check(
+  app.includes('previousFocusRef.current?.focus?.()')
+    && app.includes("event.key === 'Escape'")
+    && app.includes("event.key !== 'Tab'"),
+  'lead modal restores focus and supports Escape and trapped Tab navigation'
+);
+check(
+  leadApi.includes("require('../lib/form-utils')")
+    && leadApi.includes('if (website)')
+    && leadApi.includes('validEmail(workEmail)'),
+  'lead API sanitizes bounded input and rejects bot submissions'
+);
 
-console.log(`SEO and favicon behavior passed 8 checks across ${expectedTitles.length} indexable routes.`);
+console.log(`SEO, conversion, and favicon behavior passed 11 checks across ${expectedTitles.length} indexable routes.`);

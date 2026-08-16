@@ -36,13 +36,18 @@ for (const route of seo.routes) {
   check(canonical === expectedCanonical, `${route.path} has a self-referencing canonical`);
   check(h1Count === 1, `${route.path} has exactly one H1`);
   check(html.includes(`property="og:url" content="${expectedCanonical}"`), `${route.path} has its route-specific Open Graph URL`);
+  check(html.includes('property="og:image:width" content="1536"') && html.includes('property="og:image:height" content="1024"'), `${route.path} declares social image dimensions`);
   check(html.includes('application/ld+json'), `${route.path} has JSON-LD`);
   const jsonLd = html.match(/<script\s+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/i)?.[1] || '';
   check(Boolean(JSON.parse(jsonLd)['@graph']), `${route.path} has valid JSON-LD serialization`);
+  const schemaGraph = JSON.parse(jsonLd)['@graph'];
+  check(schemaGraph.some((node) => node['@type'] === 'Organization' && node.contactPoint), `${route.path} schema has an organization contact point`);
+  check(schemaGraph.some((node) => node['@type'] === 'WebSite'), `${route.path} schema includes the parent website`);
   check(JSON.parse(jsonLd)['@graph'].some((node) => node.dateModified === seo.lastmod), `${route.path} schema has a freshness signal`);
   check(!/noindex/i.test(attr(html, /<meta\s+[^>]*name=["']robots["'][^>]*>/i, 'content')), `${route.path} is indexable`);
   check(!seenTitles.has(title), `${route.path} has a unique title`);
   check(!seenDescriptions.has(description), `${route.path} has a unique description`);
+  check(description.length >= 120 && description.length <= 165, `${route.path} description has a search-friendly length`);
   check(!/vercel\.app|localhost|127\.0\.0\.1/.test(html), `${route.path} contains no staging URLs`);
 
   const imageTags = html.match(/<img\b[^>]*>/gi) || [];
