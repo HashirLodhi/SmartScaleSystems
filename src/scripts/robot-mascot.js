@@ -652,7 +652,7 @@
       <header class="chat-header">
         <div class="chat-brand">
           <div class="chat-brand-mark" aria-hidden="true">
-            <img src="/assets/chatbot/scalebot-logo-transparent.png?v=20260726" alt="">
+            <img src="/assets/chatbot/scalebot-logo-transparent.png?v=20260726" alt="ScaleBot, the Smart Scale Systems AI assistant">
           </div>
           <div class="chat-brand-copy">
             <span class="chat-title" id="chat-title">ScaleBot</span>

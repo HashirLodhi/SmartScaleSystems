@@ -202,6 +202,7 @@ function buildStructuredData({ title, description, url, kind }) {
       description,
       isPartOf: { '@id': `${SITE_URL}/#website` },
       about: { '@id': `${SITE_URL}/#organization` },
+      dateModified: seoConfig.lastmod,
     },
   ];
 

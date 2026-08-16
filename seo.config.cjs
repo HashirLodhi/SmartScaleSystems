@@ -5,7 +5,7 @@ const routes = [
   {
     path: '/', source: 'index.html', type: 'home', priority: '1.0', changefreq: 'weekly',
     title: 'Smart Scale Systems | AI Development & Automation Company',
-    description: 'Smart Scale Systems builds custom AI agents, automation systems, machine learning models, computer vision solutions, and production-ready AI data workflows for teams worldwide.',
+    description: 'Smart Scale Systems builds custom AI agents, automation, machine learning, computer vision, and AI data solutions for teams worldwide.',
   },
   {
     path: '/services', source: 'services.html', type: 'collection', priority: '0.9', changefreq: 'weekly',

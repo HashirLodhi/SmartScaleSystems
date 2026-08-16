@@ -4,6 +4,7 @@ Smart Scale Systems is an AI services agency helping businesses build practical 
 
 Website: https://www.smartscalesystems.tech
 Contact: contact@smartscalesystems.tech
+Last updated: 2026-08-16
 
 ## Services
 
@@ -19,6 +20,8 @@ Contact: contact@smartscalesystems.tech
 
 - Home: https://www.smartscalesystems.tech/
 - AI Services: https://www.smartscalesystems.tech/services
+- AI Projects: https://www.smartscalesystems.tech/projects
+- AI Development Team: https://www.smartscalesystems.tech/team
 - Contact: https://www.smartscalesystems.tech/contact
 
 ## Entity Summary

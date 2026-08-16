@@ -19,7 +19,7 @@ const checks = [
   ['renderer validates links before creating anchors', /if \(isSafeHref\(match\[3\]\)\)/],
   ['chat inherits the Cabin website font token', /font-family:\s*var\(--font-body,\s*'Cabin'/],
   ['header uses the website solid black palette', /\.chat-header\s*\{[\s\S]*?background:\s*#000000/],
-  ['header uses the transparent ScaleBot logo', /<img src="\/assets\/chatbot\/scalebot-logo-transparent\.png\?v=20260726" alt="">/],
+  ['header uses the transparent ScaleBot logo', /<img src="\/assets\/chatbot\/scalebot-logo-transparent\.png\?v=20260726" alt="ScaleBot, the Smart Scale Systems AI assistant">/],
   ['header logo fits cleanly inside its badge', /\.chat-brand-mark img\s*\{[\s\S]*?object-fit:\s*contain;[\s\S]*?padding:\s*3px/],
   ['header logo asset exists', () => fs.existsSync(logoFile) && fs.statSync(logoFile).size > 0],
   ['chat contains no violet design values', content => !/(#5959ff|#5757ff|#7777ff|#3e3ee7|#a5a5ff|89,\s*89,\s*255|113,\s*113,\s*255)/i.test(content)],

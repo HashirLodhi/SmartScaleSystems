@@ -25,6 +25,11 @@ for (const route of seo.routes) {
   const canonical = attr(html, /<link\s+[^>]*rel=["']canonical["'][^>]*>/i, 'href');
   const expectedCanonical = `${seo.siteUrl}${route.path === '/' ? '' : route.path}`;
   const h1Count = (html.match(/<h1\b/gi) || []).length;
+  const plainText = html
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&[a-z0-9#]+;/gi, ' ');
 
   check(title.includes(route.title.replace('&', '&amp;')) || title === route.title, `${route.path} has its configured title`);
   check(description === route.description.replace(/&/g, '&amp;').replace(/"/g, '&quot;'), `${route.path} has its configured description`);
@@ -34,6 +39,7 @@ for (const route of seo.routes) {
   check(html.includes('application/ld+json'), `${route.path} has JSON-LD`);
   const jsonLd = html.match(/<script\s+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/i)?.[1] || '';
   check(Boolean(JSON.parse(jsonLd)['@graph']), `${route.path} has valid JSON-LD serialization`);
+  check(JSON.parse(jsonLd)['@graph'].some((node) => node.dateModified === seo.lastmod), `${route.path} schema has a freshness signal`);
   check(!/noindex/i.test(attr(html, /<meta\s+[^>]*name=["']robots["'][^>]*>/i, 'content')), `${route.path} is indexable`);
   check(!seenTitles.has(title), `${route.path} has a unique title`);
   check(!seenDescriptions.has(description), `${route.path} has a unique description`);
@@ -52,6 +58,12 @@ for (const route of seo.routes) {
   });
   seenTitles.add(title);
   seenDescriptions.add(description);
+
+  if (route.path === '/') {
+    check(description.length >= 120 && description.length <= 160, 'homepage description is within the recommended length');
+    check((plainText.match(/\b[\w'-]+\b/g) || []).length >= 500, 'homepage has at least 500 words of indexable text');
+    check(!/<img\b[^>]*alt=["']{2}/i.test(html), 'homepage contains no empty image alternatives');
+  }
 }
 
 const sitemap = fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8');

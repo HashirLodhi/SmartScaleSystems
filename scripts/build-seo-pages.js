@@ -87,6 +87,7 @@ function structuredData(route) {
     description: route.description,
     isPartOf: { '@id': `${seo.siteUrl}/#website` },
     about: { '@id': `${seo.siteUrl}/#organization` },
+    dateModified: seo.lastmod,
   });
 
   if (route.type === 'service') {
