@@ -67,5 +67,10 @@ check(
     && leadApi.includes('validEmail(workEmail)'),
   'lead API sanitizes bounded input and rejects bot submissions'
 );
+check(
+  app.includes("window.requestIdleCallback(loadSpline, { timeout: 1500 })")
+    && app.includes("window.setTimeout(loadSpline, 500)"),
+  'heavy Spline runtime waits for browser idle time'
+);
 
-console.log(`SEO, conversion, and favicon behavior passed 11 checks across ${expectedTitles.length} indexable routes.`);
+console.log(`SEO, conversion, performance, and favicon behavior passed 12 checks across ${expectedTitles.length} indexable routes.`);

@@ -752,12 +752,19 @@ function ReactSplineMounts({ contentKey }) {
     if (SplineComponent) return undefined;
 
     let isMounted = true;
-    loadSplineModule().then((module) => {
-      if (isMounted) setSplineComponent(() => module.default);
-    });
+    const loadSpline = () => {
+      loadSplineModule().then((module) => {
+        if (isMounted) setSplineComponent(() => module.default);
+      });
+    };
+    const idleId = 'requestIdleCallback' in window
+      ? window.requestIdleCallback(loadSpline, { timeout: 1500 })
+      : window.setTimeout(loadSpline, 500);
 
     return () => {
       isMounted = false;
+      if ('cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
+      else window.clearTimeout(idleId);
     };
   }, [visibleMounts, SplineComponent]);
 
