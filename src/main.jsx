@@ -1856,9 +1856,9 @@ function LeadCaptureModal({ pathname }) {
               <div className="form-honeypot" aria-hidden="true"><label>Website<input type="text" name="website" tabIndex="-1" autoComplete="off" /></label></div>
               <div className="lead-modal-row">
                 <label>Full Name<input ref={firstFieldRef} type="text" name="fullName" autoComplete="name" maxLength={120} required /></label>
-                <label>Work Email<input type="email" name="workEmail" autoComplete="email" maxLength={254} required /></label>
+                <label>Email Address<input type="email" name="workEmail" autoComplete="email" inputMode="email" maxLength={254} required /></label>
               </div>
-              <label>Company Name<input type="text" name="companyName" autoComplete="organization" maxLength={160} required /></label>
+              <label>Company Name <span aria-hidden="true">(optional)</span><input type="text" name="companyName" autoComplete="organization" maxLength={160} /></label>
               <label>What industry are you in?
                 <select name="industry" defaultValue="" required>
                   <option value="" disabled>Select your industry</option>

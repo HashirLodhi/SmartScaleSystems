@@ -30,8 +30,8 @@ module.exports = async function handler(req, res) {
 
     // Silently accept bot-filled honeypot submissions without sending email.
     if (website) return res.status(200).json({ success: true });
-    if (!fullName || !workEmail || !companyName || !industry || !projectDetails) {
-      return res.status(400).json({ error: 'All fields are required.' });
+    if (!fullName || !workEmail || !industry || !projectDetails) {
+      return res.status(400).json({ error: 'Name, email, industry, and project details are required.' });
     }
     if (!validEmail(workEmail)) {
       return res.status(400).json({ error: 'Enter a valid work email.' });
@@ -40,7 +40,7 @@ module.exports = async function handler(req, res) {
     const safe = {
       fullName: escapeHtml(fullName),
       workEmail: escapeHtml(workEmail),
-      companyName: escapeHtml(companyName),
+      companyName: escapeHtml(companyName || 'Not provided'),
       industry: escapeHtml(industry),
       projectDetails: escapeHtml(projectDetails).replace(/\n/g, '<br/>'),
     };
@@ -49,13 +49,13 @@ module.exports = async function handler(req, res) {
       from: `"Smart Scale Systems" <${process.env.GMAIL_USER}>`,
       to: process.env.GMAIL_USER,
       replyTo: `"${fullName}" <${workEmail}>`,
-      subject: `New Website Lead: ${companyName} - ${industry}`,
-      text: `Full Name: ${fullName}\nWork Email: ${workEmail}\nCompany: ${companyName}\nIndustry: ${industry}\n\nProject Details:\n${projectDetails}`,
+      subject: `New Website Lead: ${companyName || fullName} - ${industry}`,
+      text: `Full Name: ${fullName}\nEmail: ${workEmail}\nCompany: ${companyName || 'Not provided'}\nIndustry: ${industry}\n\nProject Details:\n${projectDetails}`,
       html: `<div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;color:#111">
         <h2 style="border-bottom:2px solid #111;padding-bottom:12px">New Website Project Lead</h2>
         <table style="width:100%;border-collapse:collapse">
           <tr><td style="padding:8px 0;font-weight:bold;width:160px">Full Name</td><td>${safe.fullName}</td></tr>
-          <tr><td style="padding:8px 0;font-weight:bold">Work Email</td><td><a href="mailto:${safe.workEmail}">${safe.workEmail}</a></td></tr>
+          <tr><td style="padding:8px 0;font-weight:bold">Email</td><td><a href="mailto:${safe.workEmail}">${safe.workEmail}</a></td></tr>
           <tr><td style="padding:8px 0;font-weight:bold">Company</td><td>${safe.companyName}</td></tr>
           <tr><td style="padding:8px 0;font-weight:bold">Industry</td><td>${safe.industry}</td></tr>
         </table>
@@ -67,7 +67,7 @@ module.exports = async function handler(req, res) {
       from: `"Smart Scale Systems" <${process.env.GMAIL_USER}>`,
       to: workEmail,
       subject: 'Your Free AI Consultation Is Registered',
-      text: `Hi ${fullName},\n\nThank you for registering for a free AI consultation with Smart Scale Systems. We have received your project details and our team will contact you shortly.\n\nCompany: ${companyName}\nIndustry: ${industry}\n\nSmart Scale Systems`,
+      text: `Hi ${fullName},\n\nThank you for registering for a free AI consultation with Smart Scale Systems. We have received your project details and our team will contact you shortly.\n\nCompany: ${companyName || 'Not provided'}\nIndustry: ${industry}\n\nSmart Scale Systems`,
       html: `<div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;color:#111">
         <h2 style="border-bottom:2px solid #111;padding-bottom:12px">Your AI consultation is registered</h2>
         <p>Hi ${safe.fullName},</p>

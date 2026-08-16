@@ -66,7 +66,7 @@ for (const route of seo.routes) {
 
   if (route.path === '/') {
     check(description.length >= 120 && description.length <= 160, 'homepage description is within the recommended length');
-    check((plainText.match(/\b[\w'-]+\b/g) || []).length >= 500, 'homepage has at least 500 words of indexable text');
+    check((plainText.match(/\b[\w'-]+\b/g) || []).length >= 640, 'homepage has at least 640 words of indexable text');
     check(!/<img\b[^>]*alt=["']{2}/i.test(html), 'homepage contains no empty image alternatives');
   }
 }

@@ -68,9 +68,15 @@ check(
   'lead API sanitizes bounded input and rejects bot submissions'
 );
 check(
+  app.includes('Email Address<input type="email"')
+    && app.includes('Company Name <span aria-hidden="true">(optional)</span>')
+    && !app.includes('name="companyName" autoComplete="organization" maxLength={160} required'),
+  'lead form uses an inclusive email label and keeps company optional'
+);
+check(
   app.includes("window.requestIdleCallback(loadSpline, { timeout: 1500 })")
     && app.includes("window.setTimeout(loadSpline, 500)"),
   'heavy Spline runtime waits for browser idle time'
 );
 
-console.log(`SEO, conversion, performance, and favicon behavior passed 12 checks across ${expectedTitles.length} indexable routes.`);
+console.log(`SEO, conversion, performance, and favicon behavior passed 13 checks across ${expectedTitles.length} indexable routes.`);
