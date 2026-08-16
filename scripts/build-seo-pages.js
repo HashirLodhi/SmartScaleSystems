@@ -39,6 +39,7 @@ function breadcrumbGraph(route, url) {
   if (route.type === 'service') {
     items.push({ '@type': 'ListItem', position: 2, name: 'Services', item: `${seo.siteUrl}/services` });
   }
+
   items.push({
     '@type': 'ListItem',
     position: items.length + 1,
@@ -97,6 +98,17 @@ function structuredData(route) {
       url,
       provider: { '@id': `${seo.siteUrl}/#organization` },
       areaServed: 'Worldwide',
+    });
+  }
+
+  if (route.path === '/team') {
+    ['Muhammad Hashir Lodhi', 'Muhammad Nouman Qadeer', 'Muhammad Mudassir', 'Muhammad Shahryar'].forEach((name) => {
+      graph.push({
+        '@type': 'Person',
+        name,
+        url,
+        worksFor: { '@id': `${seo.siteUrl}/#organization` },
+      });
     });
   }
 
@@ -166,6 +178,7 @@ function buildSitemap() {
   const entries = seo.routes.map((route) => [
     '  <url>',
     `    <loc>${canonicalUrl(route.path)}</loc>`,
+    `    <lastmod>${seo.lastmod}</lastmod>`,
     `    <changefreq>${route.changefreq}</changefreq>`,
     `    <priority>${route.priority}</priority>`,
     '  </url>',
@@ -183,6 +196,10 @@ seo.routes.forEach((route) => {
   fs.writeFileSync(output, renderRoute(baseHtml, route));
 });
 fs.writeFileSync(path.join(distDir, '404.html'), renderNotFound(baseHtml));
+fs.writeFileSync(path.join(distDir, '410.html'), renderNotFound(baseHtml).replace(
+  '<title>Page Not Found | Smart Scale Systems</title>',
+  '<title>Content Removed | Smart Scale Systems</title>'
+));
 fs.writeFileSync(path.join(distDir, 'sitemap.xml'), buildSitemap());
 fs.writeFileSync(path.join(distDir, 'robots.txt'), buildRobots());
 

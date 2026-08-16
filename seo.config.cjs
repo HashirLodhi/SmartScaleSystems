@@ -1,4 +1,5 @@
 const siteUrl = 'https://www.smartscalesystems.tech';
+const lastmod = '2026-08-16';
 
 const routes = [
   {
@@ -110,6 +111,7 @@ const redirects = {
 
 module.exports = {
   siteUrl,
+  lastmod,
   brandName: 'Smart Scale Systems',
   logoUrl: `${siteUrl}/logo-main.png`,
   socialImageUrl: `${siteUrl}/og.png`,
@@ -121,4 +123,5 @@ module.exports = {
   routes,
   routeMap,
   redirects,
+  gone: ['/testimonials'],
 };

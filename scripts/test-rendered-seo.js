@@ -32,6 +32,8 @@ for (const route of seo.routes) {
   check(h1Count === 1, `${route.path} has exactly one H1`);
   check(html.includes(`property="og:url" content="${expectedCanonical}"`), `${route.path} has its route-specific Open Graph URL`);
   check(html.includes('application/ld+json'), `${route.path} has JSON-LD`);
+  const jsonLd = html.match(/<script\s+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/i)?.[1] || '';
+  check(Boolean(JSON.parse(jsonLd)['@graph']), `${route.path} has valid JSON-LD serialization`);
   check(!/noindex/i.test(attr(html, /<meta\s+[^>]*name=["']robots["'][^>]*>/i, 'content')), `${route.path} is indexable`);
   check(!seenTitles.has(title), `${route.path} has a unique title`);
   check(!seenDescriptions.has(description), `${route.path} has a unique description`);
@@ -54,7 +56,9 @@ for (const route of seo.routes) {
 
 const sitemap = fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8');
 check((sitemap.match(/<loc>/g) || []).length === seo.routes.length, 'sitemap contains every canonical route');
+check((sitemap.match(/<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/g) || []).length === seo.routes.length, 'sitemap has valid lastmod values');
 check(!/\.html<\/loc>|\/404<\/loc>|\/api\//.test(sitemap), 'sitemap excludes redirects, errors, and APIs');
+check(!/testimonials/i.test(sitemap), 'sitemap excludes removed testimonials URL');
 
 const notFound = fs.readFileSync(path.join(dist, '404.html'), 'utf8');
 check(/name="robots" content="noindex, follow"/.test(notFound), '404 document is noindex');

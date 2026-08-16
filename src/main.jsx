@@ -117,7 +117,6 @@ function primeSplineLoading(pathname) {
     document.head.appendChild(preconnect);
   }
 
-  loadSplineModule();
 }
 
 primeSplineLoading(normalizeRoutePath(window.location.pathname));
@@ -144,6 +143,7 @@ function pageKind(pathname) {
   const normalizedPath = normalizeSeoPath(pathname);
   if (normalizedPath.startsWith('/service-')) return 'service';
   if (normalizedPath === '/contact') return 'contact';
+  if (normalizedPath === '/team') return 'team';
   return 'page';
 }
 
@@ -228,6 +228,17 @@ function buildStructuredData({ title, description, url, kind }) {
     });
   }
 
+  if (kind === 'team') {
+    ['Muhammad Hashir Lodhi', 'Muhammad Nouman Qadeer', 'Muhammad Mudassir', 'Muhammad Shahryar'].forEach((name) => {
+      graph.push({
+        '@type': 'Person',
+        name,
+        url,
+        worksFor: { '@id': `${SITE_URL}/#organization` },
+      });
+    });
+  }
+
   if (url !== SITE_URL) {
     const breadcrumbItems = [
       { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
@@ -261,7 +272,10 @@ function updateDocumentSeo(rawHtml, pathname) {
   const isIndexableRoute = Boolean(SEO_OVERRIDES[normalizedPath]);
   const title = override.title || doc.querySelector('title')?.textContent?.trim() || 'Smart Scale Systems';
   const description = override.description || metaContent(doc, 'meta[name="description"]', DEFAULT_DESCRIPTION);
-  const robots = isIndexableRoute
+  const isPreviewHost = !['www.smartscalesystems.tech', 'smartscalesystems.tech'].includes(window.location.hostname);
+  const robots = isPreviewHost
+    ? 'noindex, nofollow'
+    : isIndexableRoute
     ? metaContent(doc, 'meta[name="robots"]', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1')
     : 'noindex, follow';
   const url = canonicalUrl(pathname);
@@ -1224,6 +1238,7 @@ function initForms() {
       email: form.email.value.trim(),
       subject: form.subject.value.trim(),
       message: form.message.value.trim(),
+      website: form.website?.value || '',
     }),
     'Sending...',
     '<span class="btn-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Send Message'
@@ -1806,11 +1821,23 @@ function App() {
 
   useEffect(() => {
     if (document.getElementById('robot-mascot-script')) return;
-    const script = document.createElement('script');
-    script.id = 'robot-mascot-script';
-    script.src = new URL('./scripts/robot-mascot.js', import.meta.url).href;
-    script.defer = true;
-    document.body.appendChild(script);
+    let script;
+    const loadMascot = () => {
+      if (document.getElementById('robot-mascot-script')) return;
+      script = document.createElement('script');
+      script.id = 'robot-mascot-script';
+      script.src = new URL('./scripts/robot-mascot.js', import.meta.url).href;
+      script.defer = true;
+      document.body.appendChild(script);
+    };
+    const idleId = 'requestIdleCallback' in window
+      ? window.requestIdleCallback(loadMascot, { timeout: 2500 })
+      : window.setTimeout(loadMascot, 1500);
+    return () => {
+      if ('cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
+      else window.clearTimeout(idleId);
+      script?.remove();
+    };
   }, []);
 
   navigateRef.current = (targetPath, { historyAction = 'push' } = {}) => {

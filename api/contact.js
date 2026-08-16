@@ -30,6 +30,10 @@ module.exports = async function handler(req, res) {
     const email = cleanText(req.body?.email, 254);
     const subject = cleanText(req.body?.subject, 160);
     const message = cleanText(req.body?.message, 5000);
+    const website = cleanText(req.body?.website, 200);
+
+    // Honeypot: accept the request without sending mail so bots cannot probe it.
+    if (website) return res.status(200).json({ success: true });
 
     if (!name || !email || !subject || !message) {
       return res.status(400).json({ error: 'All fields are required.' });

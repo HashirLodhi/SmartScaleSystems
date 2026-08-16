@@ -32,9 +32,15 @@ async function checkRoute(route) {
     || value(html, /<link\s+[^>]*href=["']([^"']+)["'][^>]*rel=["']canonical["'][^>]*>/i);
   const robots = value(html, /<meta\s+[^>]*name=["']robots["'][^>]*content=["']([^"']+)["'][^>]*>/i);
   const h1s = (html.match(/<h1\b/gi) || []).length;
+  const jsonLd = value(html, /<script\s+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/i);
   const valid = response.status === 200 && title === route.title.replace(/&/g, '&amp;')
     && canonical === expectedCanonical && h1s === 1 && !/noindex/i.test(robots);
   if (!valid) throw new Error(`FAIL ${route.path} status=${response.status} title=${Boolean(title)} canonical=${canonical} h1=${h1s} robots=${robots}`);
+  JSON.parse(jsonLd);
+  if (/vercel\.app|localhost|127\.0\.0\.1/i.test(html)) throw new Error(`FAIL ${route.path} contains a non-production metadata URL`);
+  if (/pakistan/i.test(`${title} ${value(html, /<meta\s+[^>]*name=["']description["'][^>]*content=["']([^"']*)/i)}`)) {
+    throw new Error(`FAIL ${route.path} contains Pakistan wording in global metadata`);
+  }
   console.log(`PASS ${route.path}`);
 }
 
@@ -53,7 +59,16 @@ async function run() {
   await checkRedirect('/services/', '/services');
   await checkRedirect('/services.html', '/services');
 
-  for (const missing of ['/this-page-does-not-exist-test', '/projects/this-project-does-not-exist', '/testimonials', '/careers', '/ai-agency-pakistan']) {
+  const gone = await fetch(`${origin}/testimonials`, { redirect: 'manual' });
+  const goneHtml = await gone.text();
+  if (gone.status !== 410 || !/noindex, follow/i.test(goneHtml)) throw new Error('FAIL /testimonials is not a noindex 410');
+  console.log('PASS /testimonials (410 Gone)');
+
+  const preview = await fetch(origin, { headers: { 'X-Forwarded-Host': 'preview.vercel.app' }, redirect: 'manual' });
+  if (preview.headers.get('x-robots-tag') !== 'noindex, nofollow') throw new Error('FAIL preview hostname lacks X-Robots-Tag');
+  console.log('PASS preview hostname is noindex');
+
+  for (const missing of ['/this-page-does-not-exist-test', '/projects/this-project-does-not-exist', '/careers', '/ai-agency-pakistan']) {
     const response = await fetch(`${origin}${missing}`, { redirect: 'manual' });
     const html = await response.text();
     if (response.status !== 404 || !/noindex, follow/i.test(html)) throw new Error(`FAIL ${missing} is not a true noindex 404`);

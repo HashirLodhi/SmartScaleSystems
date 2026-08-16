@@ -54,6 +54,12 @@ app.use((req, res, next) => {
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  const hostname = String(req.headers['x-forwarded-host'] || req.headers.host || req.hostname || '')
+    .split(':')[0]
+    .toLowerCase();
+  if (!['www.smartscalesystems.tech', 'smartscalesystems.tech', '127.0.0.1', 'localhost'].includes(hostname)) {
+    res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+  }
   if (req.secure || req.headers['x-forwarded-proto'] === 'https') {
     res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
   }
@@ -66,6 +72,12 @@ const canonicalPaths = new Set(seo.routes.map((route) => route.path));
 app.get(['/index', '/index.html'], (req, res) => res.redirect(301, '/'));
 Object.entries(seo.redirects).forEach(([from, to]) => {
   app.get([from, `${from}/`], (req, res) => res.redirect(301, to));
+});
+seo.gone.forEach((route) => {
+  app.get([route, `${route}/`], (req, res) => {
+    const gone = path.join(distDir, '410.html');
+    return sendStaticDocument(req, res, gone, 410);
+  });
 });
 app.get(/^\/(.+)\/$/, (req, res, next) => {
   const canonical = `/${req.params[0]}`;
