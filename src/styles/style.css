@@ -1106,6 +1106,20 @@ textarea:focus-visible,
   margin-bottom: 56px;
 }
 
+.section-body a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, currentColor 32%, transparent);
+  text-underline-offset: 0.18em;
+  transition: text-decoration-color 180ms ease;
+}
+
+.section-body a:hover,
+.section-body a:focus-visible {
+  text-decoration-color: currentColor;
+}
+
 .section-inner > .section-body {
   text-align: center;
   margin-left: auto;
