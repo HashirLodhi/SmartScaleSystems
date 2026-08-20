@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createPortal } from 'react-dom';
 import { gsap } from 'gsap';
@@ -1620,9 +1620,9 @@ function routeLabel(pathname) {
     .join(' ') || 'Home';
 }
 
-function PageTransition() {
+function PageTransition({ initialActive = false, label = 'Home' }) {
   return (
-    <div className="page-transition" aria-hidden="true">
+    <div className={`page-transition${initialActive ? ' page-transition-initial' : ''}`} aria-hidden={!initialActive}>
       <div className="page-transition-panels" aria-hidden="true">
         <div className="page-transition-panel page-transition-panel-a" />
         <div className="page-transition-panel page-transition-panel-b" />
@@ -1632,7 +1632,7 @@ function PageTransition() {
         <div className="page-transition-brand">SMART SCALE / SYSTEMS</div>
         <div className="page-transition-route">
           <span className="page-transition-kicker">Entering</span>
-          <strong className="page-transition-label">Projects</strong>
+          <strong className="page-transition-label">{label}</strong>
         </div>
         <div className="page-transition-count">SSS — 2026</div>
       </div>
@@ -1867,6 +1867,7 @@ function LeadCaptureModal({ pathname }) {
 
 function App() {
   const [pathname, setPathname] = useState(() => normalizeRoutePath(window.location.pathname));
+  const [isInitialTransitionActive, setIsInitialTransitionActive] = useState(() => !prefersReducedMotion());
   const currentPathRef = useRef(pathname);
   const transitionInProgressRef = useRef(false);
   const queuedNavigationRef = useRef(null);
@@ -1881,6 +1882,75 @@ function App() {
   useEffect(() => {
     updateDocumentSeo(rawPage, pathname);
   }, [rawPage, pathname]);
+
+  useLayoutEffect(() => {
+    if (!isInitialTransitionActive) return undefined;
+
+    const overlay = document.querySelector('.page-transition');
+    const panels = overlay?.querySelectorAll('.page-transition-panel');
+    const contentItems = overlay?.querySelectorAll('.page-transition-brand, .page-transition-route, .page-transition-count');
+    const progress = overlay?.querySelector('.page-transition-progress span');
+    const routeShell = document.querySelector('.route-shell');
+
+    if (!overlay || !panels?.length) {
+      setIsInitialTransitionActive(false);
+      return undefined;
+    }
+
+    document.body.classList.add('route-transitioning');
+    gsap.killTweensOf([overlay, panels, contentItems, progress, routeShell].filter(Boolean));
+    gsap.set(overlay, { autoAlpha: 1, pointerEvents: 'auto' });
+    gsap.set(panels, { scaleY: 1, transformOrigin: 'top center' });
+    gsap.set(contentItems, { y: 0, autoAlpha: 1 });
+    gsap.set(progress, { scaleX: 0.45, transformOrigin: 'left center' });
+    if (routeShell) gsap.set(routeShell, { y: 34, scale: 0.99, autoAlpha: 0, filter: 'blur(12px)' });
+
+    const timeline = gsap.timeline({
+      defaults: { overwrite: 'auto' },
+      delay: 0.42,
+      onComplete: () => {
+        gsap.set(overlay, { autoAlpha: 0, pointerEvents: 'none' });
+        if (routeShell) gsap.set(routeShell, { clearProps: 'transform,opacity,visibility,filter' });
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('route-transitioning');
+        setIsInitialTransitionActive(false);
+      },
+    });
+
+    timeline
+      .to(contentItems, {
+        y: -22,
+        autoAlpha: 0,
+        duration: 0.34,
+        stagger: 0.025,
+        ease: 'power2.in',
+      }, 0)
+      .to(panels, {
+        scaleY: 0,
+        duration: 0.82,
+        stagger: { each: 0.065, from: 'end' },
+        ease: 'power4.inOut',
+      }, 0.1)
+      .to(progress, {
+        scaleX: 0,
+        transformOrigin: 'right center',
+        duration: 0.58,
+        ease: 'power3.inOut',
+      }, 0.1)
+      .to(routeShell, {
+        y: 0,
+        scale: 1,
+        autoAlpha: 1,
+        filter: 'blur(0px)',
+        duration: 0.86,
+        ease: 'expo.out',
+      }, 0.28);
+
+    return () => {
+      timeline.kill();
+      document.body.classList.remove('route-transitioning');
+    };
+  }, [isInitialTransitionActive]);
 
   useEffect(() => {
     if (document.getElementById('robot-mascot-script')) return;
@@ -2094,7 +2164,7 @@ function App() {
         </div>
       </Layout>
       <LeadCaptureModal pathname={pathname} />
-      <PageTransition />
+      <PageTransition initialActive={isInitialTransitionActive} label={routeLabel(pathname)} />
     </>
   );
 }
