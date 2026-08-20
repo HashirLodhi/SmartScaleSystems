@@ -49,19 +49,43 @@
     { "src": "/privacy/?", "status": 301, "headers": { "Location": "/privacy-policy" } },
     { "src": "/terms/?", "status": 301, "headers": { "Location": "/terms-of-service" } },
     { "src": "/ai-services-pakistan/?", "status": 301, "headers": { "Location": "/services" } },
+    {
+      "src": "/service-(ai-model-training|ai-automation|custom-ai-agents|data-analytics|ai-integrations|business-automations|computer-vision|nlp|llm|data-annotation|ai-training-data|custom)\\.html/?",
+      "status": 301,
+      "headers": { "Location": "/services/$1" }
+    },
+    {
+      "src": "/service-(ai-model-training|ai-automation|custom-ai-agents|data-analytics|ai-integrations|business-automations|computer-vision|nlp|llm|data-annotation|ai-training-data|custom)/?",
+      "status": 301,
+      "headers": { "Location": "/services/$1" }
+    },
     { "src": "/testimonials/?", "dest": "/410.html", "status": 410 },
     {
-      "src": "/(services|projects|team|contact|service-ai-model-training|service-ai-automation|service-custom-ai-agents|service-data-analytics|service-ai-integrations|service-business-automations|service-computer-vision|service-nlp|service-llm|service-data-annotation|service-ai-training-data|service-custom|privacy-policy|terms-of-service)/",
+      "src": "/(services|projects|team|contact|privacy-policy|terms-of-service)/",
       "status": 301,
       "headers": { "Location": "/$1" }
     },
     {
-      "src": "/(services|projects|team|contact|service-ai-model-training|service-ai-automation|service-custom-ai-agents|service-data-analytics|service-ai-integrations|service-business-automations|service-computer-vision|service-nlp|service-llm|service-data-annotation|service-ai-training-data|service-custom|privacy-policy|terms-of-service)\\.html/?",
+      "src": "/services/(ai-model-training|ai-automation|custom-ai-agents|data-analytics|ai-integrations|business-automations|computer-vision|nlp|llm|data-annotation|ai-training-data|custom)/",
+      "status": 301,
+      "headers": { "Location": "/services/$1" }
+    },
+    {
+      "src": "/services/(ai-model-training|ai-automation|custom-ai-agents|data-analytics|ai-integrations|business-automations|computer-vision|nlp|llm|data-annotation|ai-training-data|custom)\\.html/?",
+      "status": 301,
+      "headers": { "Location": "/services/$1" }
+    },
+    {
+      "src": "/(services|projects|team|contact|privacy-policy|terms-of-service)\\.html/?",
       "status": 301,
       "headers": { "Location": "/$1" }
     },
     {
-      "src": "/(services|projects|team|contact|service-ai-model-training|service-ai-automation|service-custom-ai-agents|service-data-analytics|service-ai-integrations|service-business-automations|service-computer-vision|service-nlp|service-llm|service-data-annotation|service-ai-training-data|service-custom|privacy-policy|terms-of-service)/?",
+      "src": "/services/(ai-model-training|ai-automation|custom-ai-agents|data-analytics|ai-integrations|business-automations|computer-vision|nlp|llm|data-annotation|ai-training-data|custom)/?",
+      "dest": "/services/$1.html"
+    },
+    {
+      "src": "/(services|projects|team|contact|privacy-policy|terms-of-service)/?",
       "dest": "/$1.html"
     },
     { "handle": "filesystem" },

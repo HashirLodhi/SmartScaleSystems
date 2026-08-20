@@ -45,30 +45,30 @@ const pages = {
   '/team.html': teamHtml,
   '/contact': contactHtml,
   '/contact.html': contactHtml,
-  '/service-ai-model-training': modelTrainingHtml,
-  '/service-ai-model-training.html': modelTrainingHtml,
-  '/service-ai-automation': automationHtml,
-  '/service-ai-automation.html': automationHtml,
-  '/service-custom-ai-agents': customAiAgentsHtml,
-  '/service-custom-ai-agents.html': customAiAgentsHtml,
-  '/service-data-analytics': dataAnalyticsHtml,
-  '/service-data-analytics.html': dataAnalyticsHtml,
-  '/service-ai-integrations': aiIntegrationsHtml,
-  '/service-ai-integrations.html': aiIntegrationsHtml,
-  '/service-business-automations': businessAutomationsHtml,
-  '/service-business-automations.html': businessAutomationsHtml,
-  '/service-computer-vision': computerVisionHtml,
-  '/service-computer-vision.html': computerVisionHtml,
-  '/service-nlp': nlpHtml,
-  '/service-nlp.html': nlpHtml,
-  '/service-llm': llmHtml,
-  '/service-llm.html': llmHtml,
-  '/service-data-annotation': dataAnnotationHtml,
-  '/service-data-annotation.html': dataAnnotationHtml,
-  '/service-ai-training-data': trainingDataHtml,
-  '/service-ai-training-data.html': trainingDataHtml,
-  '/service-custom': customServiceHtml,
-  '/service-custom.html': customServiceHtml,
+  '/services/ai-model-training': modelTrainingHtml,
+  '/services/ai-model-training.html': modelTrainingHtml,
+  '/services/ai-automation': automationHtml,
+  '/services/ai-automation.html': automationHtml,
+  '/services/custom-ai-agents': customAiAgentsHtml,
+  '/services/custom-ai-agents.html': customAiAgentsHtml,
+  '/services/data-analytics': dataAnalyticsHtml,
+  '/services/data-analytics.html': dataAnalyticsHtml,
+  '/services/ai-integrations': aiIntegrationsHtml,
+  '/services/ai-integrations.html': aiIntegrationsHtml,
+  '/services/business-automations': businessAutomationsHtml,
+  '/services/business-automations.html': businessAutomationsHtml,
+  '/services/computer-vision': computerVisionHtml,
+  '/services/computer-vision.html': computerVisionHtml,
+  '/services/nlp': nlpHtml,
+  '/services/nlp.html': nlpHtml,
+  '/services/llm': llmHtml,
+  '/services/llm.html': llmHtml,
+  '/services/data-annotation': dataAnnotationHtml,
+  '/services/data-annotation.html': dataAnnotationHtml,
+  '/services/ai-training-data': trainingDataHtml,
+  '/services/ai-training-data.html': trainingDataHtml,
+  '/services/custom': customServiceHtml,
+  '/services/custom.html': customServiceHtml,
   '/privacy-policy': privacyHtml,
   '/privacy-policy.html': privacyHtml,
   '/terms-of-service': termsHtml,
@@ -141,7 +141,7 @@ function canonicalUrl(pathname) {
 
 function pageKind(pathname) {
   const normalizedPath = normalizeSeoPath(pathname);
-  if (normalizedPath.startsWith('/service-')) return 'service';
+  if (normalizedPath.startsWith('/services/')) return 'service';
   if (normalizedPath === '/contact') return 'contact';
   if (normalizedPath === '/team') return 'team';
   return 'page';
@@ -369,24 +369,9 @@ function setActiveNav(pathname) {
     link.classList.toggle('active', link.dataset.page === current);
   });
 
-  const servicesPages = [
-    'services',
-    'service-ai-model-training',
-    'service-ai-automation',
-    'service-custom-ai-agents',
-    'service-data-analytics',
-    'service-ai-integrations',
-    'service-business-automations',
-    'service-computer-vision',
-    'service-nlp',
-    'service-llm',
-    'service-data-annotation',
-    'service-ai-training-data',
-    'service-custom',
-  ];
   const servicesButton = document.getElementById('servicesDropBtn');
   if (servicesButton) {
-    servicesButton.classList.toggle('active', servicesPages.includes(current));
+    servicesButton.classList.toggle('active', current === 'services' || current.startsWith('services/'));
   }
 }
 
@@ -1620,9 +1605,9 @@ const ROUTE_LABELS = {
 function routeLabel(pathname) {
   const normalized = normalizeSeoPath(pathname);
   if (ROUTE_LABELS[normalized]) return ROUTE_LABELS[normalized];
-  if (normalized.startsWith('/service-')) {
+  if (normalized.startsWith('/services/')) {
     return normalized
-      .replace('/service-', '')
+      .replace('/services/', '')
       .split('-')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');

@@ -126,7 +126,7 @@ const sections = [
     id: 'ai-model-training',
     title: 'AI Model Training',
     summary: 'Custom model development, fine-tuning, evaluation, and production preparation.',
-    route: '/service-ai-model-training',
+    route: '/services/ai-model-training',
     blocks: [
       {
         heading: 'What is offered',
@@ -162,7 +162,7 @@ const sections = [
     id: 'ai-automation',
     title: 'AI Automation',
     summary: 'Agents, workflow automation, CRM systems, integrations, and operational efficiency.',
-    route: '/service-ai-automation',
+    route: '/services/ai-automation',
     blocks: [
       {
         heading: 'What is offered',
@@ -198,7 +198,7 @@ const sections = [
     id: 'computer-vision',
     title: 'Computer Vision',
     summary: 'Production visual AI for images, video, OCR, detection, segmentation, and tracking.',
-    route: '/service-computer-vision',
+    route: '/services/computer-vision',
     blocks: [
       {
         heading: 'What is offered',
@@ -234,7 +234,7 @@ const sections = [
     id: 'nlp',
     title: 'Natural Language Processing',
     summary: 'Language systems for classification, extraction, intent, search, and text intelligence.',
-    route: '/service-nlp',
+    route: '/services/nlp',
     blocks: [
       {
         heading: 'What is offered',
@@ -270,7 +270,7 @@ const sections = [
     id: 'llm-solutions',
     title: 'LLM Solutions',
     summary: 'Fine-tuning, RAG, evaluation, alignment, AI assistants, and generative systems.',
-    route: '/service-llm',
+    route: '/services/llm',
     blocks: [
       {
         heading: 'What is offered',
@@ -306,7 +306,7 @@ const sections = [
     id: 'data-annotation',
     title: 'Data Annotation',
     summary: 'Multi-modal labeling with structured guidelines, review, calibration, and reporting.',
-    route: '/service-data-annotation',
+    route: '/services/data-annotation',
     blocks: [
       {
         heading: 'Supported modalities and tasks',
@@ -335,7 +335,7 @@ const sections = [
     id: 'ai-training-data',
     title: 'AI Training Data Creation',
     summary: 'Dataset strategy, collection, generation, annotation, curation, and evaluation sets.',
-    route: '/service-ai-training-data',
+    route: '/services/ai-training-data',
     blocks: [
       {
         heading: 'What is offered',
@@ -371,7 +371,7 @@ const sections = [
     id: 'custom-ai-solutions',
     title: 'Custom AI Solutions',
     summary: 'Tailored systems for unique requirements and multi-discipline projects.',
-    route: '/service-custom',
+    route: '/services/custom',
     blocks: [
       {
         heading: 'When to recommend custom work',
@@ -544,7 +544,7 @@ const sections = [
           `Contact page: ${SITE}/contact`,
           `Email: ${CONTACT_EMAIL}`,
           `Services: ${SITE}/services`,
-          `Custom project request: ${SITE}/service-custom`,
+          `Custom project request: ${SITE}/services/custom`,
         ],
       },
       {
@@ -715,14 +715,14 @@ const sections = [
       {
         heading: 'Service pages',
         bullets: [
-          `AI Model Training - ${SITE}/service-ai-model-training`,
-          `AI Automation - ${SITE}/service-ai-automation`,
-          `Computer Vision - ${SITE}/service-computer-vision`,
-          `NLP - ${SITE}/service-nlp`,
-          `LLM Solutions - ${SITE}/service-llm`,
-          `Data Annotation - ${SITE}/service-data-annotation`,
-          `AI Training Data - ${SITE}/service-ai-training-data`,
-          `Custom AI Solutions - ${SITE}/service-custom`,
+          `AI Model Training - ${SITE}/services/ai-model-training`,
+          `AI Automation - ${SITE}/services/ai-automation`,
+          `Computer Vision - ${SITE}/services/computer-vision`,
+          `NLP - ${SITE}/services/nlp`,
+          `LLM Solutions - ${SITE}/services/llm`,
+          `Data Annotation - ${SITE}/services/data-annotation`,
+          `AI Training Data - ${SITE}/services/ai-training-data`,
+          `Custom AI Solutions - ${SITE}/services/custom`,
         ],
       },
       {

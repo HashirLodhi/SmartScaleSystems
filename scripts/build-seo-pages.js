@@ -207,6 +207,7 @@ function buildRobots() {
 const baseHtml = fs.readFileSync(baseHtmlPath, 'utf8');
 seo.routes.forEach((route) => {
   const output = route.path === '/' ? baseHtmlPath : path.join(distDir, `${route.path.slice(1)}.html`);
+  fs.mkdirSync(path.dirname(output), { recursive: true });
   fs.writeFileSync(output, renderRoute(baseHtml, route));
 });
 fs.writeFileSync(path.join(distDir, '404.html'), renderNotFound(baseHtml));

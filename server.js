@@ -71,7 +71,7 @@ app.use(express.json());
 const canonicalPaths = new Set(seo.routes.map((route) => route.path));
 app.get(['/index', '/index.html'], (req, res) => res.redirect(301, '/'));
 Object.entries(seo.redirects).forEach(([from, to]) => {
-  app.get([from, `${from}/`], (req, res) => res.redirect(301, to));
+  app.get([from, `${from}/`, `${from}.html`, `${from}.html/`], (req, res) => res.redirect(301, to));
 });
 seo.gone.forEach((route) => {
   app.get([route, `${route}/`], (req, res) => {
