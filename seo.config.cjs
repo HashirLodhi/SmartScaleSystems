@@ -20,8 +20,8 @@ const routes = [
   },
   {
     path: '/projects', source: 'projects.html', type: 'projects', priority: '0.85', changefreq: 'monthly',
-    title: 'AI Projects & Case Studies | Smart Scale Systems',
-    description: 'Explore Smart Scale Systems projects in Agentic RAG, custom AI agents, chatbots, automation, model training, computer vision, analytics, and risk detection.',
+    title: 'AI Projects & Technical Prototypes | Smart Scale Systems',
+    description: 'Explore independent Smart Scale Systems technical prototypes in document RAG, legal AI, tool-assisted planning, automation, computer vision, and analytics.',
   },
   {
     path: '/team', source: 'team.html', type: 'page', priority: '0.6', changefreq: 'monthly',
