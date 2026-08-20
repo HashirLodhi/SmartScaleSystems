@@ -6617,6 +6617,28 @@ body,
   color: #080a0b !important;
 }
 
+/* Homepage section copy: preserve the centered design while using more of
+   the available horizontal space to avoid tall, cramped paragraphs. */
+#why-us .section-body,
+#industries .section-body,
+#cta .section-body {
+  width: 100%;
+  max-width: 1100px;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
+  line-height: 1.65;
+}
+
+@media (max-width: 900px) {
+  #why-us .section-body,
+  #industries .section-body,
+  #cta .section-body {
+    max-width: 100%;
+    line-height: 1.7;
+  }
+}
+
 #industries,
 #industries > .section-inner {
   color: #ffffff;
