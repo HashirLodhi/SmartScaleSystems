@@ -6617,43 +6617,6 @@ body,
   color: #080a0b !important;
 }
 
-/* Let section-level copy read horizontally instead of stacking into narrow,
-   centered columns. Compact card and interface copy keeps its own layout. */
-.content-section .section-inner > .section-body {
-  width: 100%;
-  max-width: 1100px;
-  margin-right: auto;
-  margin-left: 0;
-  text-align: left;
-  line-height: 1.65;
-}
-
-.content-section .section-inner.center {
-  max-width: min(1100px, calc(100% - 40px));
-}
-
-.page-hero-content {
-  width: 100%;
-  max-width: 1100px;
-}
-
-.page-hero-content .page-hero-subtitle {
-  width: 100%;
-  max-width: 1100px;
-  margin-right: auto;
-  margin-left: 0;
-  text-align: left;
-  line-height: 1.65;
-}
-
-@media (max-width: 900px) {
-  .content-section .section-inner > .section-body,
-  .page-hero-content .page-hero-subtitle {
-    max-width: 100%;
-    line-height: 1.7;
-  }
-}
-
 #industries,
 #industries > .section-inner {
   color: #ffffff;
