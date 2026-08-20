@@ -4903,12 +4903,6 @@ body.route-transitioning {
   isolation: isolate;
 }
 
-.page-transition-initial {
-  visibility: visible;
-  opacity: 1;
-  pointer-events: auto;
-}
-
 .page-transition-panels {
   position: absolute;
   inset: 0;
@@ -4922,10 +4916,6 @@ body.route-transitioning {
   height: 100%;
   transform: scaleY(0);
   will-change: transform;
-}
-
-.page-transition-initial .page-transition-panel {
-  transform: scaleY(1);
 }
 
 .page-transition-panel-a,
@@ -5010,10 +5000,6 @@ body.route-transitioning {
   height: 100%;
   background: #ffffff;
   transform: scaleX(0);
-}
-
-.page-transition-initial .page-transition-progress span {
-  transform: scaleX(0.45);
 }
 
 /* ============================================================
