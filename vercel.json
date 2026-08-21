@@ -88,6 +88,7 @@
       "src": "/(services|projects|team|contact|privacy-policy|terms-of-service)/?",
       "dest": "/$1.html"
     },
+    { "src": "/projects/custom-ai-agent", "status": 301, "headers": { "Location": "/services/custom-ai-agents" } },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/404.html", "status": 404 }
   ]
