@@ -1,8 +1,11 @@
+const { getZohoAuthUrl, getZohoTokenUrl } = require('../lib/zoho-config');
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
   const { code } = req.query;
   if (!code) return res.status(400).send('No code received');
+  const redirectUri = process.env.ZOHO_REDIRECT_URI || 'http://localhost:3000/auth/callback';
 
   try {
     const params = new URLSearchParams({
@@ -11,10 +14,10 @@ module.exports = async function handler(req, res) {
       client_secret: process.env.ZOHO_CLIENT_SECRET,
       code,
       access_type: 'offline',
-      redirect_uri: process.env.ZOHO_REDIRECT_URI
+      redirect_uri: redirectUri
     });
 
-    const tokenRes = await fetch(`https://accounts.zoho.com/oauth/v2/token?${params}`, { method: 'POST' });
+    const tokenRes = await fetch(`${getZohoTokenUrl()}?${params}`, { method: 'POST' });
     const data = await tokenRes.json();
 
     if (data.access_token) {
@@ -25,7 +28,7 @@ module.exports = async function handler(req, res) {
             <p>Zoho returned an access token but <strong>no refresh token</strong>.</p>
             <p>This happens if you authorized this app before. Try these steps:</p>
             <ol style="text-align:left;max-width:500px;margin:20px auto">
-              <li>Go to <a href="https://accounts.zoho.com/oauth/v2/auth?scope=ZohoMail.messages.CREATE,ZohoMail.accounts.READ,offline_access&client_id=${process.env.ZOHO_CLIENT_ID}&response_type=code&access_type=offline&redirect_uri=${encodeURIComponent(process.env.ZOHO_REDIRECT_URI)}&prompt=consent">re-authorize with forced consent</a></li>
+              <li>Go to <a href="${getZohoAuthUrl()}?scope=ZohoMail.messages.CREATE,ZohoMail.accounts.READ,offline_access&client_id=${process.env.ZOHO_CLIENT_ID}&response_type=code&access_type=offline&redirect_uri=${encodeURIComponent(redirectUri)}&prompt=consent">re-authorize with forced consent</a></li>
               <li>Approve the app again</li>
               <li>The refresh token should appear this time</li>
             </ol>

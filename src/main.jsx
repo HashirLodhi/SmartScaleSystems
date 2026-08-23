@@ -169,11 +169,11 @@ function buildStructuredData({ title, description, url, kind }) {
     '@id': `${SITE_URL}/#organization`,
     name: 'Smart Scale Systems',
     url: SITE_URL,
-    email: 'contact@smartscalesystems.tech',
+    email: 'info@smartscalesystems.tech',
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'sales and project inquiries',
-      email: 'contact@smartscalesystems.tech',
+      email: 'info@smartscalesystems.tech',
       url: `${SITE_URL}/contact`,
       availableLanguage: 'English',
       areaServed: 'Worldwide',

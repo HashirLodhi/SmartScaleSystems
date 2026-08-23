@@ -1,6 +1,8 @@
 const { sendZohoEmail } = require('../lib/zoho-mail');
 const { cleanText, escapeHtml, validEmail } = require('../lib/form-utils');
 
+const PUBLIC_CONTACT_EMAIL = process.env.PUBLIC_CONTACT_EMAIL || 'info@smartscalesystems.tech';
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -49,7 +51,8 @@ module.exports = async function handler(req, res) {
         <div style="margin-top:20px;padding:18px;background:#f5f5f5;border-left:4px solid #111"><strong>Project Details</strong><p style="line-height:1.6">${safe.projectDetails}</p></div>
       </div>`,
       text: `Full Name: ${fullName}\nEmail: ${workEmail}\nCompany: ${companyName || 'Not provided'}\nIndustry: ${industry}\n\nProject Details:\n${projectDetails}`,
-      replyTo: `"${fullName}" <${workEmail}>`
+      replyTo: `"${fullName}" <${workEmail}>`,
+      ccAddress: PUBLIC_CONTACT_EMAIL,
     });
 
     // Email #2: Auto-reply to lead

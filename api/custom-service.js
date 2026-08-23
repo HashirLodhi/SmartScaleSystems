@@ -1,6 +1,8 @@
 const { sendZohoEmail } = require('../lib/zoho-mail');
 const { cleanText, escapeHtml, validEmail } = require('../lib/form-utils');
 
+const PUBLIC_CONTACT_EMAIL = process.env.PUBLIC_CONTACT_EMAIL || 'info@smartscalesystems.tech';
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -52,7 +54,8 @@ module.exports = async function handler(req, res) {
       subject: `Custom Service Request: ${fullName}`,
       html: htmlBody,
       text: `Full Name: ${fullName}\nEmail: ${email}\n\nProject Details:\n${projectDetails}`,
-      replyTo: `"${fullName}" <${email}>`
+      replyTo: `"${fullName}" <${email}>`,
+      ccAddress: PUBLIC_CONTACT_EMAIL,
     });
 
     return res.status(200).json({ success: true });
