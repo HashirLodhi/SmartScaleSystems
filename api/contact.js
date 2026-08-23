@@ -1,7 +1,7 @@
 const { sendZohoEmail } = require('../lib/zoho-mail');
 const { cleanText, escapeHtml, validEmail } = require('../lib/form-utils');
 
-const PUBLIC_CONTACT_EMAIL = process.env.PUBLIC_CONTACT_EMAIL || 'info@smartscalesystems.tech';
+const PUBLIC_CONTACT_EMAIL = process.env.PUBLIC_CONTACT_EMAIL || 'shahryar@smartscalesystems.tech';
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
