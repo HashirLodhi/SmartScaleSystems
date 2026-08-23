@@ -141,7 +141,7 @@ app.post('/api/lead', async (req, res) => {
 
 // ── Zoho OAuth routes ─────────────────────────────────────────────────────────
 app.get('/auth/zoho', (req, res) => {
-  const redirectUri = process.env.ZOHO_REDIRECT_URI || 'http://localhost:3000/auth/callback';
+  const redirectUri = process.env.ZOHO_REDIRECT_URI || 'https://www.smartscalesystems.tech/auth/callback';
   // access_type=offline + prompt=consent forces Zoho to always return a refresh_token
   const url = `https://accounts.zoho.com/oauth/v2/auth?scope=ZohoMail.messages.CREATE,ZohoMail.accounts.READ&client_id=${process.env.ZOHO_CLIENT_ID}&response_type=code&access_type=offline&prompt=consent&redirect_uri=${encodeURIComponent(redirectUri)}`;
   res.redirect(url);
@@ -158,7 +158,7 @@ app.get('/auth/callback', async (req, res) => {
       client_secret: process.env.ZOHO_CLIENT_SECRET,
       code,
       access_type: 'offline',
-      redirect_uri: process.env.ZOHO_REDIRECT_URI || 'http://localhost:3000/auth/callback',
+      redirect_uri: process.env.ZOHO_REDIRECT_URI || 'https://www.smartscalesystems.tech/auth/callback',
     });
 
     const tokenRes = await fetch(`https://accounts.zoho.com/oauth/v2/token?${params}`, { method: 'POST' });
@@ -187,7 +187,7 @@ app.get('/auth/callback', async (req, res) => {
       `);
     } else if (data.access_token) {
       // Got access token but no refresh token — prompt user to re-authorize
-      const redirectUri = process.env.ZOHO_REDIRECT_URI || 'http://localhost:3000/auth/callback';
+      const redirectUri = process.env.ZOHO_REDIRECT_URI || 'https://www.smartscalesystems.tech/auth/callback';
       const reAuthUrl = `https://accounts.zoho.com/oauth/v2/auth?scope=ZohoMail.messages.CREATE,ZohoMail.accounts.READ&client_id=${process.env.ZOHO_CLIENT_ID}&response_type=code&access_type=offline&prompt=consent&redirect_uri=${encodeURIComponent(redirectUri)}`;
       res.send(`
         <html><body style="font-family:sans-serif;padding:40px;text-align:center">

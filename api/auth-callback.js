@@ -5,7 +5,7 @@ module.exports = async function handler(req, res) {
 
   const { code } = req.query;
   if (!code) return res.status(400).send('No code received');
-  const redirectUri = process.env.ZOHO_REDIRECT_URI || 'http://localhost:3000/auth/callback';
+  const redirectUri = process.env.ZOHO_REDIRECT_URI || 'https://www.smartscalesystems.tech/auth/callback';
 
   try {
     const params = new URLSearchParams({
