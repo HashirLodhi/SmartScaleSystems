@@ -58,6 +58,25 @@ module.exports = async function handler(req, res) {
       ccAddress: PUBLIC_CONTACT_EMAIL,
     });
 
+    // Auto-reply to the user who submitted the custom service request
+    await sendZohoEmail({
+      to: email,
+      subject: 'Your custom service request is received — Smart Scale Systems',
+      html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#111">
+        <h2 style="border-bottom:2px solid #111;padding-bottom:12px">We have received your request</h2>
+        <p>Hi ${safe.fullName},</p>
+        <p style="line-height:1.6">Thank you for your interest in a custom AI solution from Smart Scale Systems. Our team has reviewed your project details and will contact you shortly to discuss the best approach.</p>
+        <div style="margin-top:20px;padding:18px;background:#f5f5f5;border-left:4px solid #111">
+          <strong>What happens next?</strong>
+          <p style="margin-bottom:0;line-height:1.6">1. Our team reviews your project requirements<br/>2. We schedule a brief consultation call<br/>3. You receive a tailored proposal</p>
+        </div>
+        <p style="margin-top:24px;line-height:1.6">If you have additional details to share, simply reply to this email.</p>
+        <p style="margin-top:24px;color:#666;font-size:13px">Smart Scale Systems — AI Solutions & Automation</p>
+      </div>`,
+      text: `Hi ${fullName},\n\nThank you for your interest in a custom AI solution from Smart Scale Systems. Our team has reviewed your project details and will contact you shortly to discuss the best approach.\n\nWhat happens next?\n1. Our team reviews your project requirements\n2. We schedule a brief consultation call\n3. You receive a tailored proposal\n\nIf you have additional details to share, simply reply to this email.\n\nSmart Scale Systems — AI Solutions & Automation`,
+      replyTo: `"Smart Scale Systems" <${process.env.ZOHO_FROM_EMAIL}>`,
+    });
+
     return res.status(200).json({ success: true });
   } catch (error) {
     console.error('Custom service form error:', error);

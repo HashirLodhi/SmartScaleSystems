@@ -67,6 +67,25 @@ module.exports = async function handler(req, res) {
       ccAddress: PUBLIC_CONTACT_EMAIL,
     });
 
+    // Auto-reply to the user who submitted the contact form
+    await sendZohoEmail({
+      to: email,
+      subject: 'We received your message — Smart Scale Systems',
+      html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#111">
+        <h2 style="border-bottom:2px solid #111;padding-bottom:12px">We have received your message</h2>
+        <p>Hi ${safe.name},</p>
+        <p style="line-height:1.6">Thank you for reaching out to Smart Scale Systems. We have received your inquiry and our team will get back to you within 1 business day.</p>
+        <div style="margin-top:20px;padding:18px;background:#f5f5f5;border-left:4px solid #111">
+          <strong>Your submission details</strong>
+          <p style="margin-bottom:0;line-height:1.6">Subject: ${safe.subject}</p>
+        </div>
+        <p style="margin-top:24px;line-height:1.6">If your matter is urgent, you can reach us directly at <a href="mailto:info@smartscalesystems.tech">info@smartscalesystems.tech</a>.</p>
+        <p style="margin-top:24px;color:#666;font-size:13px">Smart Scale Systems — AI Solutions & Automation</p>
+      </div>`,
+      text: `Hi ${name},\n\nThank you for reaching out to Smart Scale Systems. We have received your inquiry and our team will get back to you within 1 business day.\n\nYour submission details:\nSubject: ${subject}\n\nIf your matter is urgent, you can reach us directly at info@smartscalesystems.tech.\n\nSmart Scale Systems — AI Solutions & Automation`,
+      replyTo: `"Smart Scale Systems" <${process.env.ZOHO_FROM_EMAIL}>`,
+    });
+
     return res.status(200).json({ success: true });
   } catch (error) {
     console.error('Contact form error:', error);
