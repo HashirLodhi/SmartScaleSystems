@@ -1,16 +1,5 @@
-const nodemailer = require('nodemailer');
+const { sendZohoEmail } = require('../lib/zoho-mail');
 const { cleanText, escapeHtml, validEmail } = require('../lib/form-utils');
-
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: (process.env.GMAIL_APP_PASSWORD || '').replace(/\s/g, ''),
-  },
-  tls: { rejectUnauthorized: false },
-});
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -45,12 +34,10 @@ module.exports = async function handler(req, res) {
       projectDetails: escapeHtml(projectDetails).replace(/\n/g, '<br/>'),
     };
 
-    await transporter.sendMail({
-      from: `"Smart Scale Systems" <${process.env.GMAIL_USER}>`,
-      to: process.env.GMAIL_USER,
-      replyTo: `"${fullName}" <${workEmail}>`,
+    // Email #1: Internal notification
+    await sendZohoEmail({
+      to: process.env.ZOHO_TO_EMAIL,
       subject: `New Website Lead: ${companyName || fullName} - ${industry}`,
-      text: `Full Name: ${fullName}\nEmail: ${workEmail}\nCompany: ${companyName || 'Not provided'}\nIndustry: ${industry}\n\nProject Details:\n${projectDetails}`,
       html: `<div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;color:#111">
         <h2 style="border-bottom:2px solid #111;padding-bottom:12px">New Website Project Lead</h2>
         <table style="width:100%;border-collapse:collapse">
@@ -61,13 +48,14 @@ module.exports = async function handler(req, res) {
         </table>
         <div style="margin-top:20px;padding:18px;background:#f5f5f5;border-left:4px solid #111"><strong>Project Details</strong><p style="line-height:1.6">${safe.projectDetails}</p></div>
       </div>`,
+      text: `Full Name: ${fullName}\nEmail: ${workEmail}\nCompany: ${companyName || 'Not provided'}\nIndustry: ${industry}\n\nProject Details:\n${projectDetails}`,
+      replyTo: `"${fullName}" <${workEmail}>`
     });
 
-    await transporter.sendMail({
-      from: `"Smart Scale Systems" <${process.env.GMAIL_USER}>`,
+    // Email #2: Auto-reply to lead
+    await sendZohoEmail({
       to: workEmail,
       subject: 'Your Free AI Consultation Is Registered',
-      text: `Hi ${fullName},\n\nThank you for registering for a free AI consultation with Smart Scale Systems. We have received your project details and our team will contact you shortly.\n\nCompany: ${companyName || 'Not provided'}\nIndustry: ${industry}\n\nSmart Scale Systems`,
       html: `<div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;color:#111">
         <h2 style="border-bottom:2px solid #111;padding-bottom:12px">Your AI consultation is registered</h2>
         <p>Hi ${safe.fullName},</p>
@@ -77,6 +65,7 @@ module.exports = async function handler(req, res) {
           <p style="margin-bottom:0;line-height:1.6">Company: ${safe.companyName}<br/>Industry: ${safe.industry}</p>
         </div>
       </div>`,
+      text: `Hi ${fullName},\n\nThank you for registering for a free AI consultation with Smart Scale Systems. We have received your project details and our team will contact you shortly.\n\nCompany: ${companyName || 'Not provided'}\nIndustry: ${industry}\n\nSmart Scale Systems`
     });
 
     return res.status(200).json({ success: true });

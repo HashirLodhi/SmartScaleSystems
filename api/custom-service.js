@@ -1,16 +1,5 @@
-const nodemailer = require('nodemailer');
+const { sendZohoEmail } = require('../lib/zoho-mail');
 const { cleanText, escapeHtml, validEmail } = require('../lib/form-utils');
-
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: (process.env.GMAIL_APP_PASSWORD || '').replace(/\s/g, '')
-  },
-  tls: { rejectUnauthorized: false }
-});
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -58,13 +47,12 @@ module.exports = async function handler(req, res) {
       </div>
     `;
 
-    await transporter.sendMail({
-      from: `"Smart Scale Systems" <${process.env.GMAIL_USER}>`,
-      to: process.env.GMAIL_USER,
-      replyTo: `"${fullName}" <${email}>`,
+    await sendZohoEmail({
+      to: process.env.ZOHO_TO_EMAIL,
       subject: `Custom Service Request: ${fullName}`,
+      html: htmlBody,
       text: `Full Name: ${fullName}\nEmail: ${email}\n\nProject Details:\n${projectDetails}`,
-      html: htmlBody
+      replyTo: `"${fullName}" <${email}>`
     });
 
     return res.status(200).json({ success: true });

@@ -18,6 +18,8 @@
     { "src": "/api/custom-service", "dest": "/api/custom-service.js" },
     { "src": "/api/lead", "dest": "/api/lead.js" },
     { "src": "/api/chat", "dest": "/api/chat.js" },
+    { "src": "/auth/zoho", "dest": "/api/auth-zoho.js" },
+    { "src": "/auth/callback", "dest": "/api/auth-callback.js" },
     {
       "src": "/(.*)",
       "headers": {
