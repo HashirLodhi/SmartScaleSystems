@@ -44,6 +44,7 @@ module.exports = defineConfig({
     proxy: {
       '/api': process.env.API_ORIGIN || 'http://127.0.0.1:3001',
       '/chat': process.env.API_ORIGIN || 'http://127.0.0.1:3001',
+      '/auth': process.env.API_ORIGIN || 'http://127.0.0.1:3001',
     },
   },
   build: {

@@ -29,7 +29,7 @@ import termsHtml from './pages/terms-of-service.html?raw';
 import error403Html from './pages/error-403.html?raw';
 import error404Html from './pages/error-404.html?raw';
 import error500Html from './pages/error-500.html?raw';
-import seoConfig from '../seo.config.cjs';
+import seoConfig from './seo.config.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
