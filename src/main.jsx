@@ -1161,13 +1161,15 @@ function initCarousels() {
 
 function initForms() {
   const cleanups = [];
-
   const wireForm = (formId, endpoint, makePayload, sendingLabel, resetLabel) => {
     const form = document.getElementById(formId);
-    const success = document.getElementById('formSuccess');
-    const error = document.getElementById('formError');
-    const submitBtn = document.getElementById('submitBtn');
-    if (!form || !submitBtn) return;
+    if (!form) return;
+
+    const container = form.parentNode;
+    const success = container.querySelector('.form-success') || document.getElementById('formSuccess');
+    const error = container.querySelector('.form-error') || document.getElementById('formError');
+    const submitBtn = form.querySelector('.form-submit-btn') || form.querySelector('#submitBtn');
+    if (!submitBtn) return;
 
     const onSubmit = async (event) => {
       event.preventDefault();
@@ -1220,6 +1222,25 @@ function initForms() {
 
     form.addEventListener('submit', onSubmit);
     cleanups.push(() => form.removeEventListener('submit', onSubmit));
+
+    if (success) {
+      const sendAnotherBtn = success.querySelector('#sendAnotherBtn') || success.querySelector('.btn-ghost');
+      if (sendAnotherBtn) {
+        const onReset = (e) => {
+          e.preventDefault();
+          form.reset();
+          form.style.display = '';
+          success.style.display = 'none';
+          success.classList.remove('show');
+          if (error) error.style.display = 'none';
+          submitBtn.disabled = false;
+          submitBtn.classList.remove('loading');
+          submitBtn.innerHTML = resetLabel;
+        };
+        sendAnotherBtn.addEventListener('click', onReset);
+        cleanups.push(() => sendAnotherBtn.removeEventListener('click', onReset));
+      }
+    }
   };
 
   const consultationOffer = document.getElementById('consultationOffer');
@@ -1246,7 +1267,7 @@ function initForms() {
       email: form.email.value.trim(),
       subject: form.subject.value.trim(),
       message: form.message.value.trim(),
-      website: form.website?.value || '',
+      website: form.b_website?.value || '',
     }),
     'Sending...',
     '<span class="btn-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Send Message'
@@ -1799,12 +1820,15 @@ function LeadCaptureModal({ pathname }) {
     setStatus('submitting');
     setErrorMessage('');
     const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    data.website = data.b_website || '';
+    delete data.b_website;
 
     try {
       const response = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(Object.fromEntries(formData.entries())),
+        body: JSON.stringify(data),
       });
       const result = await response.json();
       if (!response.ok || !result.success) throw new Error(result.error || 'Unable to send your request.');
@@ -1838,7 +1862,7 @@ function LeadCaptureModal({ pathname }) {
               <p id="lead-modal-description">Tell us what you&apos;re building or trying to automate. Our AI team will review your requirements and suggest a practical direction for your project.</p>
             </div>
             <form className="lead-modal-form" onSubmit={onSubmit}>
-              <div className="form-honeypot" aria-hidden="true"><label>Website<input type="text" name="website" tabIndex="-1" autoComplete="off" /></label></div>
+              <div className="form-honeypot" aria-hidden="true"><label>Website<input type="text" name="b_website" tabIndex="-1" autoComplete="off" /></label></div>
               <div className="lead-modal-row">
                 <label>Full Name<input ref={firstFieldRef} type="text" name="fullName" autoComplete="name" maxLength={120} required /></label>
                 <label>Email Address<input type="email" name="workEmail" autoComplete="email" inputMode="email" maxLength={254} required /></label>

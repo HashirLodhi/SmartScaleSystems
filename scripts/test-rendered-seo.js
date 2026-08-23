@@ -58,7 +58,7 @@ for (const route of seo.routes) {
 
   const internalLinks = [...html.matchAll(/href=["'](\/[^"'#?]*)/gi)].map((match) => match[1]);
   internalLinks.forEach((href) => {
-    const isAsset = /^\/(?:assets|project-images|favicon-48x48\.png|logo-main\.png|og\.png)/.test(href);
+    const isAsset = /^\/(?:assets|project-images|favicon-48x48\.png|favicon\.ico|logo-main\.png|og\.png)/.test(href);
     check(canonicalPaths.has(href) || isAsset, `${route.path} links only to canonical routes or public assets (${href})`);
   });
   seenTitles.add(title);

@@ -1,0 +1,18 @@
+◇ injected env (7) from .env // tip: ⌘ override existing { override: true }
+Server running at http://localhost:3000
+First time? Visit http://localhost:3000/auth/zoho to authorize
+Zoho API response: {
+  "status": {
+    "code": 200,
+    "description": "success"
+  },
+  "data": {
+    "subject": "support",
+    "messageId": "1787463395889155100",
+    "fromAddress": "info@smartscalesystems.tech",
+    "mailFormat": "html",
+    "mailId": "<1a02d1ee9f8.580b8d7c463726.1358112658725361586@smartscalesystems.tech>",
+    "toAddress": "info@smartscalesystems.tech",
+    "content": "\n        <h2>New Form Submission</h2>\n        <p><strong>Name:</strong> Muhammad Hashir Lodhi</p>\n        <p><strong>Email:</strong> hashirlodhi145@gmail.com</p>\n        <p><strong>Phone:</strong> 03147510440</p>\n        <p><strong>Subject:</strong> support</p>\n        <p><strong>Message:</strong></p>\n        <p>Support manual testing</p>\n      "
+  }
+}

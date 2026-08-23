@@ -1,7 +1,7 @@
 {
   "version": 2,
   "agency": "Smart Scale Systems",
-  "createdAt": "2026-08-15T12:24:15.720Z",
+  "createdAt": "2026-08-23T20:58:22.565Z",
   "sourcePdf": "output/pdf/smart-scale-systems-agency-chatbot-guide.pdf",
   "knowledgeUnitCount": 21,
   "chunkCount": 45,
@@ -867,7 +867,7 @@
         "preparation.",
         "page",
         "https",
-        "//www.smartscalesystems.tech/service",
+        "//www.smartscalesystems.tech/services/ai",
         "offered",
         "architecture",
         "selection",
@@ -955,7 +955,7 @@
         "discovery",
         "details"
       ],
-      "tokenCount": 133
+      "tokenCount": 132
     },
     {
       "id": "agency-ai-model-training-02",
@@ -1015,7 +1015,7 @@
         "efficiency.",
         "page",
         "https",
-        "//www.smartscalesystems.tech/service",
+        "//www.smartscalesystems.tech/services/ai",
         "offered",
         "research",
         "lead",
@@ -1104,7 +1104,7 @@
         "important",
         "describes"
       ],
-      "tokenCount": 133
+      "tokenCount": 132
     },
     {
       "id": "agency-ai-automation-02",
@@ -1179,7 +1179,7 @@
         "tracking.",
         "page",
         "https",
-        "//www.smartscalesystems.tech/service",
+        "//www.smartscalesystems.tech/services/computer",
         "offered",
         "object",
         "using",
@@ -1266,7 +1266,7 @@
         "imagery",
         "soil"
       ],
-      "tokenCount": 137
+      "tokenCount": 136
     },
     {
       "id": "agency-computer-vision-02",
@@ -1332,8 +1332,7 @@
         "intelligence.",
         "page",
         "https",
-        "//www.smartscalesystems.tech/service",
-        "nlp",
+        "//www.smartscalesystems.tech/services/nlp",
         "offered",
         "multi",
         "class",
@@ -1407,6 +1406,7 @@
         "classical",
         "transformer",
         "based",
+        "nlp",
         "states",
         "large",
         "volumes.",
@@ -1420,7 +1420,7 @@
         "vocabulary",
         "quality"
       ],
-      "tokenCount": 127
+      "tokenCount": 126
     },
     {
       "id": "agency-nlp-02",
@@ -1473,7 +1473,7 @@
         "systems.",
         "page",
         "https",
-        "//www.smartscalesystems.tech/service",
+        "//www.smartscalesystems.tech/services/llm",
         "offered",
         "supervised",
         "open",
@@ -1560,7 +1560,7 @@
         "extraction",
         "unstructured"
       ],
-      "tokenCount": 136
+      "tokenCount": 135
     },
     {
       "id": "agency-llm-solutions-02",
@@ -1626,7 +1626,7 @@
         "reporting.",
         "page",
         "https",
-        "//www.smartscalesystems.tech/service",
+        "//www.smartscalesystems.tech/services/data",
         "supported",
         "modalities",
         "tasks",
@@ -1706,7 +1706,7 @@
         "rates",
         "outcomes."
       ],
-      "tokenCount": 108
+      "tokenCount": 107
     },
     {
       "id": "agency-ai-training-data-01",
@@ -1730,7 +1730,7 @@
         "sets.",
         "page",
         "https",
-        "//www.smartscalesystems.tech/service",
+        "//www.smartscalesystems.tech/services/ai",
         "offered",
         "design",
         "class",
@@ -1816,7 +1816,7 @@
         "fit",
         "client"
       ],
-      "tokenCount": 131
+      "tokenCount": 130
     },
     {
       "id": "agency-ai-training-data-02",
@@ -1879,7 +1879,7 @@
         "projects.",
         "page",
         "https",
-        "//www.smartscalesystems.tech/service",
+        "//www.smartscalesystems.tech/services/custom",
         "recommend",
         "work",
         "requirement",
@@ -1960,7 +1960,7 @@
         "require",
         "discovery."
       ],
-      "tokenCount": 116
+      "tokenCount": 115
     },
     {
       "id": "agency-industries-01",
@@ -2532,7 +2532,7 @@
         "//www.smartscalesystems.tech/services",
         "custom",
         "request",
-        "//www.smartscalesystems.tech/service",
+        "//www.smartscalesystems.tech/services/custom",
         "published",
         "expectation",
         "main",
@@ -2600,7 +2600,7 @@
         "review",
         "requirements."
       ],
-      "tokenCount": 113
+      "tokenCount": 112
     },
     {
       "id": "agency-pricing-timelines-01",
@@ -3184,14 +3184,7 @@
       "section": "website-directory",
       "title": "Website Directory",
       "source": "output/pdf/smart-scale-systems-agency-chatbot-guide.pdf",
-      "content": "21. Website Directory Canonical page routes the assistant can use for concise calls to action. Company pages Home - https://www.smartscalesystems.tech/ Services - https://www.smartscalesystems.tech/services Team - https://www.smartscalesystems.tech/team Contact Us - https://www.smartscalesystems.tech/contact Service pages AI Model Training - https://www.smartscalesystems.tech/services/ai-model-training
-AI Automation - https://www.smartscalesystems.tech/services/ai-automation
-Computer Vision - https://www.smartscalesystems.tech/services/computer-vision
-NLP - https://www.smartscalesystems.tech/services/nlp
-LLM Solutions - https://www.smartscalesystems.tech/services/llm
-Data Annotation - https://www.smartscalesystems.tech/services/data-annotation
-AI Training Data - https://www.smartscalesystems.tech/services/ai-training-data
-Custom AI Solutions - https://www.smartscalesystems.tech/services/custom Legal pages Privacy Policy - https://www.smartscalesystems.tech/privacy-policy Terms of Service - https://www.smartscalesystems.tech/terms-of-service",
+      "content": "21. Website Directory Canonical page routes the assistant can use for concise calls to action. Company pages Home - https://www.smartscalesystems.tech/ Services - https://www.smartscalesystems.tech/services Team - https://www.smartscalesystems.tech/team Contact Us - https://www.smartscalesystems.tech/contact Service pages AI Model Training - https://www.smartscalesystems.tech/services/ai-model-training AI Automation - https://www.smartscalesystems.tech/services/ai-automation Computer Vision - https://www.smartscalesystems.tech/services/computer-vision NLP - https://www.smartscalesystems.tech/services/nlp LLM Solutions - https://www.smartscalesystems.tech/services/llm Data Annotation - https://www.smartscalesystems.tech/services/data-annotation AI Training Data - https://www.smartscalesystems.tech/services/ai-training-data Custom AI Solutions - https://www.smartscalesystems.tech/services/custom Legal pages Privacy Policy - https://www.smartscalesystems.tech/privacy-policy Terms of Service - https://www.smartscalesystems.tech/terms-of-service",
       "keywords": [
         "21.",
         "website",
@@ -3219,16 +3212,21 @@ Custom AI Solutions - https://www.smartscalesystems.tech/services/custom Legal p
         "ai",
         "model",
         "training",
-        "//www.smartscalesystems.tech/service",
+        "//www.smartscalesystems.tech/services/ai",
         "automation",
         "computer",
         "vision",
+        "//www.smartscalesystems.tech/services/computer",
         "nlp",
+        "//www.smartscalesystems.tech/services/nlp",
         "llm",
         "solutions",
+        "//www.smartscalesystems.tech/services/llm",
         "data",
         "annotation",
+        "//www.smartscalesystems.tech/services/data",
         "custom",
+        "//www.smartscalesystems.tech/services/custom",
         "legal",
         "privacy",
         "policy",
@@ -3236,7 +3234,7 @@ Custom AI Solutions - https://www.smartscalesystems.tech/services/custom Legal p
         "terms",
         "//www.smartscalesystems.tech/terms"
       ],
-      "tokenCount": 88
+      "tokenCount": 80
     }
   ]
 }
