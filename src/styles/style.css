@@ -7778,10 +7778,14 @@ html body .project-feature::after {
 }
 
 #contact-form {
-  padding: 0 40px 40px !important;
+  padding: 0 40px 0 !important;
 }
 
 #contact-form > .section-inner {
+  padding-top: 0;
+}
+
+#faq > .section-inner {
   padding-top: 0;
 }
 
