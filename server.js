@@ -21,6 +21,13 @@ const compressedTypes = new Map([
   ['.xml', 'application/xml; charset=utf-8'],
 ]);
 
+const allowedOrigins = new Set(
+  String(process.env.CORS_ORIGINS || 'https://www.smartscalesystems.tech,https://smartscalesystems.tech')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean)
+);
+
 function acceptsGzip(req) {
   return /\bgzip\b/.test(req.headers['accept-encoding'] || '');
 }
@@ -49,6 +56,16 @@ function sendStaticDocument(req, res, filePath, status = 200) {
 }
 
 app.disable('x-powered-by');
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.has(origin) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Origin not allowed by CORS'));
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+}));
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');

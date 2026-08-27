@@ -74,9 +74,10 @@ check(
   'lead form uses an inclusive email label and keeps company optional'
 );
 check(
-  app.includes("window.requestIdleCallback(loadSpline, { timeout: 1500 })")
-    && app.includes("window.setTimeout(loadSpline, 500)"),
-  'heavy Spline runtime waits for browser idle time'
+  app.includes('loadSplineModule().catch(() => {})')
+    && app.includes('supportsInteractiveSpline()')
+    && app.includes("navigator.connection?.saveData"),
+  'Spline starts immediately on capable devices and falls back on constrained devices'
 );
 
 console.log(`SEO, conversion, performance, and favicon behavior passed 13 checks across ${expectedTitles.length} indexable routes.`);
