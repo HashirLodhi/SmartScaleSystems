@@ -162,11 +162,14 @@ function renderRoute(baseHtml, route) {
   html = replaceMeta(html, 'property', 'og:description', `<meta property="og:description" content="${escapeHtml(route.description)}" />`);
   html = replaceMeta(html, 'property', 'og:type', '<meta property="og:type" content="website" />');
   html = replaceMeta(html, 'property', 'og:url', `<meta property="og:url" content="${url}" />`);
+  html = replaceMeta(html, 'property', 'og:image', `<meta property="og:image" content="${seo.socialImageUrl}" />`);
   html = replaceMeta(html, 'property', 'og:image:width', '<meta property="og:image:width" content="1536" />');
   html = replaceMeta(html, 'property', 'og:image:height', '<meta property="og:image:height" content="1024" />');
   html = replaceMeta(html, 'property', 'og:image:type', '<meta property="og:image:type" content="image/png" />');
+  html = replaceMeta(html, 'name', 'twitter:card', '<meta name="twitter:card" content="summary_large_image" />');
   html = replaceMeta(html, 'name', 'twitter:title', `<meta name="twitter:title" content="${escapeHtml(route.title)}" />`);
   html = replaceMeta(html, 'name', 'twitter:description', `<meta name="twitter:description" content="${escapeHtml(route.description)}" />`);
+  html = replaceMeta(html, 'name', 'twitter:image', `<meta name="twitter:image" content="${seo.socialImageUrl}" />`);
   html = html.replace(/<script\s+type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/i,
     `<script type="application/ld+json">${JSON.stringify(structuredData(route))}</script>`);
   return replaceRoot(html, stripPageChrome(source));
