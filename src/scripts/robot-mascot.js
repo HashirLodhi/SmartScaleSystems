@@ -963,8 +963,7 @@
     const timeoutId = window.setTimeout(() => controller.abort(), 32000);
 
     try {
-      const apiOrigin = String(window.__SSS_API_ORIGIN__ || '').replace(/\/$/, '');
-      const response = await fetch(`${apiOrigin}/api/chat`, {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text, history: chatHistory }),

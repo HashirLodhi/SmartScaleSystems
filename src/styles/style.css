@@ -5107,31 +5107,6 @@ body.route-transitioning {
   align-items: start;
 }
 
-.spline-wrapper::after,
-.team-hero-spline-shell::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background-image: var(--spline-poster), radial-gradient(circle at 50% 45%, #303030, #090909 70%);
-  background-size: cover;
-  background-position: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.spline-static::after { opacity: 1; }
-
-.spline-loader.spline-fallback {
-  background: transparent;
-}
-
-.spline-loader.spline-fallback .spline-loader-ring,
-.spline-loader.spline-fallback .spline-loader-core,
-.spline-loader.spline-fallback .spline-loader-scan {
-  display: none;
-}
-
 .projects-kicker {
   padding-top: 9px;
   color: #6d7478;

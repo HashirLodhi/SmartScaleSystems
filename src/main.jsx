@@ -8,46 +8,78 @@ import './styles/carousel.css';
 import navHtml from './components/nav.html?raw';
 import footerHtml from './components/footer.html?raw';
 import homeHtml from './pages/index.html?raw';
+import servicesHtml from './pages/services.html?raw';
+import projectsHtml from './pages/projects.html?raw';
+import teamHtml from './pages/team.html?raw';
+import contactHtml from './pages/contact.html?raw';
+import modelTrainingHtml from './pages/service-ai-model-training.html?raw';
+import automationHtml from './pages/service-ai-automation.html?raw';
+import customAiAgentsHtml from './pages/service-custom-ai-agents.html?raw';
+import dataAnalyticsHtml from './pages/service-data-analytics.html?raw';
+import aiIntegrationsHtml from './pages/service-ai-integrations.html?raw';
+import businessAutomationsHtml from './pages/service-business-automations.html?raw';
+import computerVisionHtml from './pages/service-computer-vision.html?raw';
+import nlpHtml from './pages/service-nlp.html?raw';
+import llmHtml from './pages/service-llm.html?raw';
+import dataAnnotationHtml from './pages/service-data-annotation.html?raw';
+import trainingDataHtml from './pages/service-ai-training-data.html?raw';
+import customServiceHtml from './pages/service-custom.html?raw';
+import privacyHtml from './pages/privacy-policy.html?raw';
+import termsHtml from './pages/terms-of-service.html?raw';
+import error403Html from './pages/error-403.html?raw';
 import error404Html from './pages/error-404.html?raw';
+import error500Html from './pages/error-500.html?raw';
 import seoConfig from './seo.config.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const pageModules = import.meta.glob(
-  ['./pages/*.html', '!./pages/index.html', '!./pages/error-404.html'],
-  { query: '?raw', import: 'default' }
-);
-const routeFiles = {
-  '/services': 'services', '/projects': 'projects', '/team': 'team', '/contact': 'contact',
-  '/services/ai-model-training': 'service-ai-model-training',
-  '/services/ai-automation': 'service-ai-automation',
-  '/services/custom-ai-agents': 'service-custom-ai-agents',
-  '/services/data-analytics': 'service-data-analytics',
-  '/services/ai-integrations': 'service-ai-integrations',
-  '/services/business-automations': 'service-business-automations',
-  '/services/computer-vision': 'service-computer-vision',
-  '/services/nlp': 'service-nlp', '/services/llm': 'service-llm',
-  '/services/data-annotation': 'service-data-annotation',
-  '/services/ai-training-data': 'service-ai-training-data',
-  '/services/custom': 'service-custom', '/privacy-policy': 'privacy-policy',
-  '/terms-of-service': 'terms-of-service', '/403': 'error-403', '/404': 'error-404', '/500': 'error-500',
+const pages = {
+  '/': homeHtml,
+  '/index': homeHtml,
+  '/index.html': homeHtml,
+  '/services': servicesHtml,
+  '/services.html': servicesHtml,
+  '/projects': projectsHtml,
+  '/projects.html': projectsHtml,
+  '/team': teamHtml,
+  '/team.html': teamHtml,
+  '/contact': contactHtml,
+  '/contact.html': contactHtml,
+  '/services/ai-model-training': modelTrainingHtml,
+  '/services/ai-model-training.html': modelTrainingHtml,
+  '/services/ai-automation': automationHtml,
+  '/services/ai-automation.html': automationHtml,
+  '/services/custom-ai-agents': customAiAgentsHtml,
+  '/services/custom-ai-agents.html': customAiAgentsHtml,
+  '/services/data-analytics': dataAnalyticsHtml,
+  '/services/data-analytics.html': dataAnalyticsHtml,
+  '/services/ai-integrations': aiIntegrationsHtml,
+  '/services/ai-integrations.html': aiIntegrationsHtml,
+  '/services/business-automations': businessAutomationsHtml,
+  '/services/business-automations.html': businessAutomationsHtml,
+  '/services/computer-vision': computerVisionHtml,
+  '/services/computer-vision.html': computerVisionHtml,
+  '/services/nlp': nlpHtml,
+  '/services/nlp.html': nlpHtml,
+  '/services/llm': llmHtml,
+  '/services/llm.html': llmHtml,
+  '/services/data-annotation': dataAnnotationHtml,
+  '/services/data-annotation.html': dataAnnotationHtml,
+  '/services/ai-training-data': trainingDataHtml,
+  '/services/ai-training-data.html': trainingDataHtml,
+  '/services/custom': customServiceHtml,
+  '/services/custom.html': customServiceHtml,
+  '/privacy-policy': privacyHtml,
+  '/privacy-policy.html': privacyHtml,
+  '/terms-of-service': termsHtml,
+  '/terms-of-service.html': termsHtml,
+  '/403': error403Html,
+  '/403.html': error403Html,
+  '/404': error404Html,
+  '/404.html': error404Html,
+  '/500': error500Html,
+  '/500.html': error500Html,
 };
-const pageCache = new Map([['/', homeHtml], ['/404', error404Html]]);
-
-function canonicalRoute(pathname) {
-  if (['/', '/index', '/index.html'].includes(pathname)) return '/';
-  return pathname.replace(/\.html$/, '');
-}
-
-async function loadPage(pathname) {
-  const route = canonicalRoute(pathname);
-  if (pageCache.has(route)) return pageCache.get(route);
-  const file = routeFiles[route];
-  const loader = file && pageModules[`./pages/${file}.html`];
-  const html = loader ? await loader() : error404Html;
-  pageCache.set(route, html);
-  return html;
-}
 
 function normalizeRoutePath(pathname) {
   if (!pathname) return '/';
@@ -72,20 +104,6 @@ function loadSplineModule() {
   return splineModulePromise;
 }
 
-function supportsInteractiveSpline() {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
-  if (navigator.connection?.saveData) return false;
-  if (navigator.deviceMemory && navigator.deviceMemory <= 4) return false;
-  if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) return false;
-
-  try {
-    const canvas = document.createElement('canvas');
-    return Boolean(canvas.getContext('webgl2') || canvas.getContext('webgl'));
-  } catch {
-    return false;
-  }
-}
-
 function primeSplineLoading(pathname) {
   const scene = SPLINE_SCENES[normalizeRoutePath(pathname)];
   if (!scene) return;
@@ -99,26 +117,9 @@ function primeSplineLoading(pathname) {
     document.head.appendChild(preconnect);
   }
 
-  if (!supportsInteractiveSpline()) return;
-
-  if (!document.head.querySelector(`link[data-spline-scene="${scene}"]`)) {
-    const preload = document.createElement('link');
-    preload.rel = 'preload';
-    preload.as = 'fetch';
-    preload.href = scene;
-    preload.crossOrigin = 'anonymous';
-    preload.dataset.splineScene = scene;
-    document.head.appendChild(preload);
-  }
-
-  loadSplineModule().catch(() => {});
 }
 
 primeSplineLoading(normalizeRoutePath(window.location.pathname));
-
-const API_ORIGIN = String(import.meta.env.VITE_API_ORIGIN || '').replace(/\/$/, '');
-const apiUrl = (path) => `${API_ORIGIN}${path}`;
-window.__SSS_API_ORIGIN__ = API_ORIGIN;
 
 const SITE_URL = seoConfig.siteUrl;
 const LOGO_IMAGE = `${SITE_URL}/logo-main.png`;
@@ -649,12 +650,8 @@ function initRevealAnimations() {
 function initSplineLoader() {
   const loaders = Array.from(document.querySelectorAll('.spline-loader'));
   if (!loaders.length) return () => {};
-  const showFallback = () => loaders.forEach((loader) => {
-    loader.classList.add('spline-fallback');
-    loader.closest('.spline-wrapper, .team-hero-spline-shell')?.classList.add('spline-static');
-    loader.querySelector('span')?.replaceChildren(document.createTextNode('Interactive preview unavailable'));
-  });
-  const timer = window.setTimeout(showFallback, 12000);
+  const hideLoaders = () => loaders.forEach((loader) => loader.classList.add('hidden'));
+  const timer = window.setTimeout(hideLoaders, 9000);
   return () => {
     window.clearTimeout(timer);
   };
@@ -730,15 +727,7 @@ function ReactSplineMounts({ contentKey }) {
   useEffect(() => {
     const splineMounts = mounts.filter((mount) => mount.dataset.splineUrl);
     if (!splineMounts.length) return undefined;
-    const interactive = supportsInteractiveSpline();
-    splineMounts.forEach((mount) => {
-      const shell = mount.closest('.spline-wrapper, .team-hero-spline-shell');
-      shell?.classList.toggle('spline-static', !interactive);
-      if (!interactive) {
-        shell?.querySelector('.spline-loader')?.classList.add('hidden');
-      }
-    });
-    setVisibleMounts(interactive ? splineMounts : []);
+    setVisibleMounts(splineMounts);
     primeSplineLoading(window.location.pathname);
     return undefined;
   }, [mounts]);
@@ -748,17 +737,19 @@ function ReactSplineMounts({ contentKey }) {
     if (SplineComponent) return undefined;
 
     let isMounted = true;
-    loadSplineModule().then((module) => {
-      if (isMounted) setSplineComponent(() => module.default);
-    }).catch(() => {
-      document.querySelectorAll('.spline-loader').forEach((loader) => {
-        loader.classList.add('spline-fallback');
-        loader.closest('.spline-wrapper, .team-hero-spline-shell')?.classList.add('spline-static');
+    const loadSpline = () => {
+      loadSplineModule().then((module) => {
+        if (isMounted) setSplineComponent(() => module.default);
       });
-    });
+    };
+    const idleId = 'requestIdleCallback' in window
+      ? window.requestIdleCallback(loadSpline, { timeout: 1500 })
+      : window.setTimeout(loadSpline, 500);
 
     return () => {
       isMounted = false;
+      if ('cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
+      else window.clearTimeout(idleId);
     };
   }, [visibleMounts, SplineComponent]);
 
@@ -1201,7 +1192,7 @@ function initForms() {
 
       try {
         const payload = makePayload(form);
-        const response = await fetch(apiUrl(endpoint), {
+        const response = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -1834,7 +1825,7 @@ function LeadCaptureModal({ pathname }) {
     delete data.b_website;
 
     try {
-      const response = await fetch(apiUrl('/api/lead'), {
+      const response = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -1900,27 +1891,18 @@ function LeadCaptureModal({ pathname }) {
 
 function App() {
   const [pathname, setPathname] = useState(() => normalizeRoutePath(window.location.pathname));
-  const [rawPage, setRawPage] = useState(() => pageCache.get(canonicalRoute(window.location.pathname)) || null);
   const currentPathRef = useRef(pathname);
   const transitionInProgressRef = useRef(false);
   const queuedNavigationRef = useRef(null);
   const navigateRef = useRef(null);
-  const content = useMemo(() => rawPage ? bodyContent(rawPage) : '', [rawPage]);
-
-  useEffect(() => {
-    let active = true;
-    loadPage(pathname).then((html) => {
-      if (active) setRawPage(html);
-    });
-    return () => { active = false; };
-  }, [pathname]);
+  const rawPage = pages[pathname] || error404Html;
+  const content = useMemo(() => bodyContent(rawPage), [rawPage]);
 
   useEffect(() => {
     currentPathRef.current = pathname;
   }, [pathname]);
 
   useEffect(() => {
-    if (!rawPage) return;
     updateDocumentSeo(rawPage, pathname);
   }, [rawPage, pathname]);
 
@@ -1945,7 +1927,7 @@ function App() {
     };
   }, []);
 
-  navigateRef.current = async (targetPath, { historyAction = 'push' } = {}) => {
+  navigateRef.current = (targetPath, { historyAction = 'push' } = {}) => {
     const normalizedTarget = normalizeRoutePath(targetPath);
     const currentPath = currentPathRef.current;
 
@@ -1959,14 +1941,11 @@ function App() {
       return;
     }
 
-    const nextPage = await loadPage(normalizedTarget);
-
     const commitRoute = () => {
       if (historyAction === 'push') {
         window.history.pushState({}, '', normalizedTarget);
       }
       currentPathRef.current = normalizedTarget;
-      setRawPage(nextPage);
       setPathname(normalizedTarget);
       scrollToPageTop();
     };
@@ -2126,22 +2105,8 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (!content) return undefined;
-    const cleanups = [initRevealAnimations(), initSplineLoader(), initForms()];
-    let cancelled = false;
-    const initializeEnhancements = () => {
-      if (cancelled) return;
-      cleanups.push(initCountUpStats(), initAiCanvases(), initCarousels(), initPremiumAnimations());
-    };
-    const idleId = 'requestIdleCallback' in window
-      ? window.requestIdleCallback(initializeEnhancements, { timeout: 800 })
-      : window.setTimeout(initializeEnhancements, 200);
-    return () => {
-      cancelled = true;
-      if ('cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
-      else window.clearTimeout(idleId);
-      cleanups.forEach((cleanup) => cleanup && cleanup());
-    };
+    const cleanups = [initRevealAnimations(), initSplineLoader(), initCountUpStats(), initAiCanvases(), initCarousels(), initForms(), initPremiumAnimations()];
+    return () => cleanups.forEach((cleanup) => cleanup && cleanup());
   }, [content]);
 
   return (
