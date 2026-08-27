@@ -375,6 +375,32 @@
       transform: translateY(-1px);
     }
 
+    .chat-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: -2px 0 8px;
+    }
+
+    .chat-action-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 8px 12px;
+      border: 1px solid var(--chat-ink);
+      border-radius: 999px;
+      color: var(--chat-ink);
+      background: #fff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .chat-action-link.primary {
+      color: #fff;
+      background: var(--chat-ink);
+    }
+
     .chat-composer {
       min-width: 0;
       flex: 0 0 auto;
@@ -878,11 +904,13 @@
     return message;
   }
 
-  function appendSuggestions() {
+  function appendSuggestions(items = suggestions) {
+    if (!Array.isArray(items) || !items.length) return;
     const container = document.createElement('div');
     container.className = 'chat-suggestions';
     container.setAttribute('aria-label', 'Suggested questions');
-    for (const [label, question] of suggestions) {
+    for (const item of items) {
+      const [label, question] = Array.isArray(item) ? item : [item, item];
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'chat-suggestion-btn';
@@ -891,6 +919,22 @@
       container.appendChild(button);
     }
     chatBody.appendChild(container);
+  }
+
+  function appendActions(actions) {
+    if (!Array.isArray(actions) || !actions.length) return;
+    const container = document.createElement('div');
+    container.className = 'chat-actions';
+    container.setAttribute('aria-label', 'Recommended next actions');
+    for (const action of actions) {
+      if (!action || typeof action.label !== 'string' || !isSafeHref(action.href)) continue;
+      const link = document.createElement('a');
+      link.className = `chat-action-link${action.primary ? ' primary' : ''}`;
+      link.href = action.href;
+      link.textContent = action.label;
+      container.appendChild(link);
+    }
+    if (container.childElementCount) chatBody.appendChild(container);
   }
 
   function renderWelcome() {
@@ -976,6 +1020,8 @@
 
       typing.remove();
       appendMessage(data.reply, 'bot');
+      appendActions(data.actions);
+      appendSuggestions(data.suggestions);
       chatHistory.push({ role: 'user', content: text });
       chatHistory.push({ role: 'assistant', content: data.reply });
       if (chatHistory.length > 12) chatHistory = chatHistory.slice(-12);

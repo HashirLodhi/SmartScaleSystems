@@ -38,11 +38,42 @@ async function main() {
     /does not currently publish/,
     /hiring or careers page/,
   ]);
+  await check('service discovery asks focused scoping questions', 'Which service should I use?', [
+    /two details/,
+    (_reply, result) => result.intent === 'discovery',
+    (_reply, result) => result.actions.some(action => action.href === '/services'),
+    (_reply, result) => result.suggestions.length >= 2,
+  ]);
+  await check('chatbot request recommends LLM service and useful follow-ups', 'I need a chatbot for our company knowledge base', [
+    (_reply, result) => result.intent === 'llm',
+    (_reply, result) => result.actions.some(action => action.href === '/services/llm'),
+    (_reply, result) => result.suggestions.some(item => /accuracy|knowledge/i.test(item)),
+  ]);
+  await check('grocery ordering receives a practical automation plan', 'I have a grocery store and want to automate ordering. What should I do?', [
+    /inventory-based automatic reordering/,
+    /pos/,
+    /supplier/,
+    /50-100 products/,
+    /smart scale systems can help/,
+    /ai automation service/,
+    (_reply, result) => result.intent === 'ordering',
+    (_reply, result) => result.actions.some(action => action.href === '/services/ai-automation'),
+    reply => !/contact and starting a project official|page https:/.test(reply),
+  ]);
+  const matureConversation = await createChatReply('What should we do next?', [
+    { role: 'user', content: 'We need to automate lead follow-up.' },
+    { role: 'assistant', content: 'AI Automation is a strong fit.' },
+    { role: 'user', content: 'We use HubSpot and n8n.' },
+    { role: 'assistant', content: 'Those tools can be integrated.' },
+  ]);
+  if (!matureConversation.actions.some(action => action.href === '/contact')) {
+    throw new Error('ScaleBot did not offer a project action after a mature conversation.');
+  }
 
   if (process.exitCode) {
     throw new Error('ScaleBot fallback regression checks failed.');
   }
-  console.log('ScaleBot conversation behavior passed 5 of 5 checks.');
+  console.log('ScaleBot conversation behavior passed 9 of 9 checks.');
 }
 
 main()
