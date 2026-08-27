@@ -23,7 +23,7 @@ function canonicalUrl(routePath) {
 
 function ogImageUrl(routePath) {
   const slug = routePath === '/' ? 'home' : routePath.replace(/^\//, '').replace(/\//g, '-');
-  return `${seo.siteUrl}/og/${slug}.png`;
+  return `${seo.siteUrl}/og/${slug}.png?v=20260827-2`;
 }
 
 function stripPageChrome(source) {
@@ -101,7 +101,7 @@ function structuredData(route) {
     about: { '@id': `${seo.siteUrl}/#organization` },
     dateModified: seo.lastmod,
     inLanguage: 'en',
-    primaryImageOfPage: { '@type': 'ImageObject', url: ogImageUrl(route.path), width: 1536, height: 1024 },
+    primaryImageOfPage: { '@type': 'ImageObject', url: ogImageUrl(route.path), width: 1200, height: 630 },
   });
 
   if (route.type === 'service') {
@@ -168,8 +168,8 @@ function renderRoute(baseHtml, route) {
   html = replaceMeta(html, 'property', 'og:type', '<meta property="og:type" content="website" />');
   html = replaceMeta(html, 'property', 'og:url', `<meta property="og:url" content="${url}" />`);
   html = replaceMeta(html, 'property', 'og:image', `<meta property="og:image" content="${ogImageUrl(route.path)}" />`);
-  html = replaceMeta(html, 'property', 'og:image:width', '<meta property="og:image:width" content="1536" />');
-  html = replaceMeta(html, 'property', 'og:image:height', '<meta property="og:image:height" content="1024" />');
+  html = replaceMeta(html, 'property', 'og:image:width', '<meta property="og:image:width" content="1200" />');
+  html = replaceMeta(html, 'property', 'og:image:height', '<meta property="og:image:height" content="630" />');
   html = replaceMeta(html, 'property', 'og:image:type', '<meta property="og:image:type" content="image/png" />');
   html = replaceMeta(html, 'name', 'twitter:card', '<meta name="twitter:card" content="summary_large_image" />');
   html = replaceMeta(html, 'name', 'twitter:title', `<meta name="twitter:title" content="${escapeHtml(route.title)}" />`);

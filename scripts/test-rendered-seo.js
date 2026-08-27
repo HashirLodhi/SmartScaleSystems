@@ -36,7 +36,7 @@ for (const route of seo.routes) {
   check(canonical === expectedCanonical, `${route.path} has a self-referencing canonical`);
   check(h1Count === 1, `${route.path} has exactly one H1`);
   check(html.includes(`property="og:url" content="${expectedCanonical}"`), `${route.path} has its route-specific Open Graph URL`);
-  check(html.includes('property="og:image:width" content="1536"') && html.includes('property="og:image:height" content="1024"'), `${route.path} declares social image dimensions`);
+  check(html.includes('property="og:image:width" content="1200"') && html.includes('property="og:image:height" content="630"'), `${route.path} declares social image dimensions`);
   check(html.includes('application/ld+json'), `${route.path} has JSON-LD`);
   const jsonLd = html.match(/<script\s+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/i)?.[1] || '';
   check(Boolean(JSON.parse(jsonLd)['@graph']), `${route.path} has valid JSON-LD serialization`);

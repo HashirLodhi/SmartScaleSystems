@@ -133,7 +133,7 @@ module.exports = {
   team,
   brandName: 'Smart Scale Systems',
   logoUrl: `${siteUrl}/logo-main.png`,
-  socialImageUrl: `${siteUrl}/og/home.png`,
+  socialImageUrl: `${siteUrl}/og/home.png?v=20260827-2`,
   sameAs: [
     'https://github.com/SmartScaleSystems',
     'https://www.instagram.com/smart.scale.systems/',
