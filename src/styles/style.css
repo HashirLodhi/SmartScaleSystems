@@ -5102,7 +5102,7 @@ body.route-transitioning {
 
 .projects-intro-grid {
   display: grid;
-  grid-template-columns: 0.7fr 2.1fr 1fr;
+  grid-template-columns: 0.55fr 1.75fr 1.2fr;
   gap: clamp(32px, 6vw, 90px);
   align-items: start;
 }
@@ -5126,6 +5126,8 @@ body.route-transitioning {
 }
 
 .projects-intro-grid > p:last-child {
+  grid-column: 2 / 4;
+  max-width: 900px;
   color: #5d6367;
   font-size: 0.98rem;
   line-height: 1.75;
@@ -7149,6 +7151,10 @@ body,
 
   .projects-intro-grid {
     grid-template-columns: 1fr;
+  }
+
+  .projects-intro-grid > p:last-child {
+    grid-column: auto;
   }
 
   .projects-intro h2 {
