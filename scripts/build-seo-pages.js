@@ -3,7 +3,7 @@ const path = require('path');
 const seo = require('../seo.config.cjs');
 
 const root = path.join(__dirname, '..');
-const distDir = path.join(root, 'dist');
+const distDir = path.join(root, process.env.BUILD_OUT_DIR || 'site-dist');
 const pagesDir = path.join(root, 'src', 'pages');
 const baseHtmlPath = path.join(distDir, 'index.html');
 const navHtml = fs.readFileSync(path.join(root, 'src', 'components', 'nav.html'), 'utf8');
@@ -19,6 +19,11 @@ function escapeHtml(value) {
 
 function canonicalUrl(routePath) {
   return `${seo.siteUrl}${routePath === '/' ? '' : routePath}`;
+}
+
+function ogImageUrl(routePath) {
+  const slug = routePath === '/' ? 'home' : routePath.replace(/^\//, '').replace(/\//g, '-');
+  return `${seo.siteUrl}/og/${slug}.png`;
 }
 
 function stripPageChrome(source) {
@@ -96,7 +101,7 @@ function structuredData(route) {
     about: { '@id': `${seo.siteUrl}/#organization` },
     dateModified: seo.lastmod,
     inLanguage: 'en',
-    primaryImageOfPage: { '@type': 'ImageObject', url: seo.socialImageUrl, width: 1536, height: 1024 },
+    primaryImageOfPage: { '@type': 'ImageObject', url: ogImageUrl(route.path), width: 1536, height: 1024 },
   });
 
   if (route.type === 'service') {
@@ -162,14 +167,14 @@ function renderRoute(baseHtml, route) {
   html = replaceMeta(html, 'property', 'og:description', `<meta property="og:description" content="${escapeHtml(route.description)}" />`);
   html = replaceMeta(html, 'property', 'og:type', '<meta property="og:type" content="website" />');
   html = replaceMeta(html, 'property', 'og:url', `<meta property="og:url" content="${url}" />`);
-  html = replaceMeta(html, 'property', 'og:image', `<meta property="og:image" content="${seo.socialImageUrl}" />`);
+  html = replaceMeta(html, 'property', 'og:image', `<meta property="og:image" content="${ogImageUrl(route.path)}" />`);
   html = replaceMeta(html, 'property', 'og:image:width', '<meta property="og:image:width" content="1536" />');
   html = replaceMeta(html, 'property', 'og:image:height', '<meta property="og:image:height" content="1024" />');
   html = replaceMeta(html, 'property', 'og:image:type', '<meta property="og:image:type" content="image/png" />');
   html = replaceMeta(html, 'name', 'twitter:card', '<meta name="twitter:card" content="summary_large_image" />');
   html = replaceMeta(html, 'name', 'twitter:title', `<meta name="twitter:title" content="${escapeHtml(route.title)}" />`);
   html = replaceMeta(html, 'name', 'twitter:description', `<meta name="twitter:description" content="${escapeHtml(route.description)}" />`);
-  html = replaceMeta(html, 'name', 'twitter:image', `<meta name="twitter:image" content="${seo.socialImageUrl}" />`);
+  html = replaceMeta(html, 'name', 'twitter:image', `<meta name="twitter:image" content="${ogImageUrl(route.path)}" />`);
   html = html.replace(/<script\s+type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/i,
     `<script type="application/ld+json">${JSON.stringify(structuredData(route))}</script>`);
   return replaceRoot(html, stripPageChrome(source));

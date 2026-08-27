@@ -4,7 +4,8 @@
   "description": "Smart Scale Systems - AI Services, Automation and Training Data",
   "main": "server.js",
   "scripts": {
-    "build": "vite build && node scripts/build-seo-pages.js",
+    "build": "node scripts/generate-og-images.js && vite build && node scripts/build-seo-pages.js",
+    "generate:og": "node scripts/generate-og-images.js",
     "check:links": "node scripts/check-links.js",
     "api": "node scripts/start-api.js",
     "start": "node server.js",

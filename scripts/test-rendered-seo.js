@@ -3,7 +3,7 @@ const path = require('path');
 const seo = require('../seo.config.cjs');
 
 const root = path.join(__dirname, '..');
-const dist = path.join(root, 'dist');
+const dist = path.join(root, process.env.BUILD_OUT_DIR || 'site-dist');
 const seenTitles = new Set();
 const seenDescriptions = new Set();
 const canonicalPaths = new Set(seo.routes.map((route) => route.path));

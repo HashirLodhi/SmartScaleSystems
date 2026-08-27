@@ -11,7 +11,7 @@ function gzipTextAssetsPlugin() {
     name: 'gzip-text-assets',
     apply: 'build',
     closeBundle() {
-      const outDir = path.resolve(__dirname, 'dist');
+      const outDir = path.resolve(__dirname, 'site-dist');
       if (!fs.existsSync(outDir)) return;
 
       const compressFile = (filePath) => {
@@ -26,7 +26,12 @@ function gzipTextAssetsPlugin() {
         const source = fs.readFileSync(filePath);
         const compressed = zlib.gzipSync(source, { level: 9 });
         if (compressed.length < source.length) {
-          fs.writeFileSync(`${filePath}.gz`, compressed);
+          try {
+            fs.writeFileSync(`${filePath}.gz`, compressed);
+          } catch (error) {
+            if (error.code !== 'EPERM') throw error;
+            console.warn(`Skipping gzip for ${path.relative(outDir, filePath)}: ${error.message}`);
+          }
         }
       };
 
@@ -48,7 +53,7 @@ module.exports = defineConfig({
     },
   },
   build: {
-    outDir: 'dist',
+    outDir: 'site-dist',
     emptyOutDir: true,
     chunkSizeWarningLimit: 2500,
   },

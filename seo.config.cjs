@@ -1,5 +1,5 @@
 const siteUrl = 'https://www.smartscalesystems.tech';
-const lastmod = '2026-08-26';
+const lastmod = '2026-08-27';
 const team = [
   { name: 'Muhammad Hashir Lodhi', jobTitle: 'Founder' },
   { name: 'Muhammad Nouman Qadeer', jobTitle: 'AI Engineer' },
@@ -133,7 +133,7 @@ module.exports = {
   team,
   brandName: 'Smart Scale Systems',
   logoUrl: `${siteUrl}/logo-main.png`,
-  socialImageUrl: `${siteUrl}/og.png`,
+  socialImageUrl: `${siteUrl}/og/home.png`,
   sameAs: [
     'https://github.com/SmartScaleSystems',
     'https://www.instagram.com/smart.scale.systems/',

@@ -8,7 +8,8 @@ const seo = require('./seo.config.cjs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const distDir = path.join(__dirname, 'dist');
+const buildDirName = process.env.BUILD_OUT_DIR || (fs.existsSync(path.join(__dirname, 'site-dist')) ? 'site-dist' : 'dist');
+const distDir = path.join(__dirname, buildDirName);
 const reactIndex = path.join(distDir, 'index.html');
 const compressedTypes = new Map([
   ['.css', 'text/css; charset=utf-8'],
